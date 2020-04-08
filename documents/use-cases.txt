@@ -1,0 +1,19 @@
+- user opens App
+- user closes App
+
+- user chooses instrument
+- user chooses color
+
+- user loads file
+- user saves file
+- user saves file as
+
+- user draws by chosen instrument
+- user returns undo
+- user cancels returns undo
+- user cleans drawing
+- user cleans area
+
+- user changes scale
+- user moves area
+- user moves parts of drawing
