@@ -85,6 +85,7 @@ public class SwingViewImpl extends JFrame implements View {
         saveAsMenu = new JMenuItem();
 
         mainPanel = new MyPanel();
+//        mainPanel.setFocusable(true);
         mainPanel.setBounds(0,0,mainFrame.getWidth(),mainFrame.getHeight());
         mainPanel.setBackground(Color.white);
         mainPanel.setOpaque(true);

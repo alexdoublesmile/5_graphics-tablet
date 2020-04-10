@@ -66,6 +66,14 @@ public class DrawListenerBuilder {
 
         @Override
         public void mouseClicked(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON3) {
+                if (view.getMainColor() == Color.red) {
+                    view.setMainColor(Color.black);
+                } else if (view.getMainColor() == Color.black) {
+                    view.setMainColor(Color.red);
+                }
+                view.getColorButton().setBackground(view.getMainColor());
+            }
             Graphics g = view.getMainImage().getGraphics();
             Graphics2D g2 = (Graphics2D)g;
             g2.setColor(view.getMainColor());
@@ -105,6 +113,7 @@ public class DrawListenerBuilder {
 
         @Override
         public void mouseReleased(MouseEvent e) {
+
             Graphics g = view.getMainImage().getGraphics();
             Graphics2D g2 = (Graphics2D)g;
             g2.setColor(view.getMainColor());
@@ -158,6 +167,8 @@ public class DrawListenerBuilder {
 
         @Override
         public void keyTyped(KeyEvent e) {
+
+
             if (model.getDrawMode() == 3){
 
                 Graphics g = view.getMainImage().getGraphics();
@@ -180,6 +191,16 @@ public class DrawListenerBuilder {
         @Override
         public void keyPressed(KeyEvent e) {
 
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_Z:
+                    view.setMainImage(model.getPreviousAction());
+                    mainPanel.repaint();
+                    break;
+                case KeyEvent.VK_X:
+                    view.setMainImage(model.getNextAction());
+                    mainPanel.repaint();
+                    break;
+            }
         }
 
         @Override
