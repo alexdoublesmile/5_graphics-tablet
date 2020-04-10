@@ -24,6 +24,8 @@ public class SwingControllerImpl implements Controller{
 
     @Override
     public void setControlSettings() {
+        model.saveImage(view.getMainImage());
+
         setMenuActions();
         setToolListeners();
         setDrawListeners();
@@ -51,6 +53,9 @@ public class SwingControllerImpl implements Controller{
         view.getRectButton().addActionListener(tools.getRECT_BUTTON_LISTENER());
         view.getTextButton().addActionListener(tools.getTEXT_BUTTON_LISTENER());
 
+        view.getUndoButton().addActionListener(tools.getUNDO_BUTTON_LISTENER());
+        view.getRedoButton().addActionListener(tools.getREDO_BUTTON_LISTENER());
+
         view.getColorButton().addActionListener(colorTools.getCOLOR_BUTTON_LISTENER());
         view.getRedButton().addActionListener(colorTools.getRED_BUTTON_LISTENER());
         view.getBlackButton().addActionListener(colorTools.getBLACK_BUTTON_LISTENER());
@@ -69,6 +74,7 @@ public class SwingControllerImpl implements Controller{
         view.getMainPanel().addMouseMotionListener(drawListeners.getMOUSE_MOTION_ADAPTER());
         view.getMainPanel().addMouseListener(drawListeners.getMOUSE_ADAPTER());
         view.getMainPanel().addKeyListener(drawListeners.getKEY_ADAPTER());
+
     }
 
     private void setImageListeners() {

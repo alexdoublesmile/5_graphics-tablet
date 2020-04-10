@@ -25,6 +25,8 @@ public class Config {
     public static final String ELLIPSE_ICON_PATH = "ellipse.icon.path";
     public static final String RECT_ICON_PATH = "rect.icon.path";
     public static final String TEXT_ICON_PATH = "text.icon.path";
+    public static final String UNDO_ICON_PATH = "undo.icon.path";
+    public static final String REDO_ICON_PATH = "redo.icon.path";
 
     private static Properties properties = new Properties();
 

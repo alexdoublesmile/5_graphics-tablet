@@ -16,19 +16,13 @@ public class DrawListenerBuilder {
     private SwingViewImpl view;
     private PaintModel model;
     private JPanel mainPanel;
-//
-//    private boolean mouseIsPressed = false;
-//
-//    private int  xPad;
-//    private int  yPad;
-//    private int  xf;
-//    private int  yf;
+    private int num = 1;
 
     public DrawListenerBuilder(SwingViewImpl view, PaintModel model) {
         this.view = view;
         this.model = model;
-
         mainPanel = view.getMainPanel();
+
         MOUSE_MOTION_ADAPTER = new MouseMotionAdapter();
         MOUSE_ADAPTER = new MouseAdapter();
         KEY_ADAPTER = new KeyAdapter();
@@ -47,7 +41,7 @@ public class DrawListenerBuilder {
                         g2.drawLine(model.getxPad(), model.getyPad(), e.getX(), e.getY());
                         break;
                     case 1:
-                        g2.setStroke(new  BasicStroke(3.0f));
+                        g2.setStroke(new  BasicStroke(5.0f));
                         g2.drawLine(model.getxPad(), model.getyPad(), e.getX(), e.getY());
                         break;
                     case 2:
@@ -124,6 +118,15 @@ public class DrawListenerBuilder {
             }
 
             switch(model.getDrawMode()) {
+                case 0:
+                    model.saveImage(view.getMainImage());
+                    break;
+                case 1:
+                    model.saveImage(view.getMainImage());
+                    break;
+                case 2:
+                    model.saveImage(view.getMainImage());
+                    break;
                 case 4:
                     g.drawLine(model.getXf(), model.getYf(), e.getX(), e.getY());
                     break;
@@ -156,6 +159,7 @@ public class DrawListenerBuilder {
         @Override
         public void keyTyped(KeyEvent e) {
             if (model.getDrawMode() == 3){
+
                 Graphics g = view.getMainImage().getGraphics();
                 Graphics2D g2 = (Graphics2D)g;
                 g2.setColor(view.getMainColor());
@@ -165,7 +169,9 @@ public class DrawListenerBuilder {
                 str += e.getKeyChar();
                 g2.setFont(new  Font("Arial", 0, 15));
                 g2.drawString(str, model.getxPad(), model.getyPad());
+
                 model.setxPad(model.getxPad() + 10);
+
                 mainPanel.requestFocus();
                 mainPanel.repaint();
             }

@@ -14,6 +14,8 @@ public class IconBuilder {
     private final ImageIcon ELLIPSE_ICON;
     private final ImageIcon RECT_ICON;
     private final ImageIcon TEXT_ICON;
+    private final ImageIcon UNDO_ICON;
+    private final ImageIcon REDO_ICON;
 
     public IconBuilder() {
         PENCIL_ICON = getIconFromPath(
@@ -30,6 +32,10 @@ public class IconBuilder {
                 Config.getProperty(Config.RECT_ICON_PATH));
         TEXT_ICON = getIconFromPath(
                 Config.getProperty(Config.TEXT_ICON_PATH));
+        UNDO_ICON = getIconFromPath(
+                Config.getProperty(Config.UNDO_ICON_PATH));
+        REDO_ICON = getIconFromPath(
+                Config.getProperty(Config.REDO_ICON_PATH));
     }
 
     public ImageIcon getPENCIL_ICON() {
@@ -58,6 +64,14 @@ public class IconBuilder {
 
     public ImageIcon getTEXT_ICON() {
         return TEXT_ICON;
+    }
+
+    public ImageIcon getUNDO_ICON() {
+        return UNDO_ICON;
+    }
+
+    public ImageIcon getREDO_ICON() {
+        return REDO_ICON;
     }
 
     private ImageIcon getIconFromPath(String path) {

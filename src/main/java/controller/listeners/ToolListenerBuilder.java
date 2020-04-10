@@ -21,6 +21,9 @@ public class ToolListenerBuilder {
     private final RectButtonListener RECT_BUTTON_LISTENER;
     private final TextButtonListener TEXT_BUTTON_LISTENER;
 
+    private final UndoButtonListener UNDO_BUTTON_LISTENER;
+    private final RedoButtonListener REDO_BUTTON_LISTENER;
+
     private final TrnsformImageButtonListener TRANSFORM_IMAGE_BUTTON_LISTENER;
     private final CleanButtonListener CLEAN_BUTTON_LISTENER;
 
@@ -40,6 +43,10 @@ public class ToolListenerBuilder {
         ELLIPSE_BUTTON_LISTENER = new EllipseButtonListener();
         RECT_BUTTON_LISTENER = new RectButtonListener();
         TEXT_BUTTON_LISTENER = new TextButtonListener();
+
+        UNDO_BUTTON_LISTENER = new UndoButtonListener();
+        REDO_BUTTON_LISTENER = new RedoButtonListener();
+
         TRANSFORM_IMAGE_BUTTON_LISTENER = new TrnsformImageButtonListener();
         CLEAN_BUTTON_LISTENER = new CleanButtonListener();
     }
@@ -104,6 +111,24 @@ public class ToolListenerBuilder {
         public void actionPerformed(ActionEvent e) {
             model.setDrawMode(3);
             mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+        }
+    }
+
+    private class UndoButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            view.setMainImage(model.getPreviousAction());
+            mainPanel.repaint();
+        }
+    }
+
+    private class RedoButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            view.setMainImage(model.getNextAction());
+            mainPanel.repaint();
         }
     }
 
@@ -180,6 +205,14 @@ public class ToolListenerBuilder {
 
     public TextButtonListener getTEXT_BUTTON_LISTENER() {
         return TEXT_BUTTON_LISTENER;
+    }
+
+    public UndoButtonListener getUNDO_BUTTON_LISTENER() {
+        return UNDO_BUTTON_LISTENER;
+    }
+
+    public RedoButtonListener getREDO_BUTTON_LISTENER() {
+        return REDO_BUTTON_LISTENER;
     }
 
     public CleanButtonListener getCLEAN_BUTTON_LISTENER() {

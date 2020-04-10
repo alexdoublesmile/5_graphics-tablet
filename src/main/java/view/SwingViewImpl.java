@@ -38,6 +38,9 @@ public class SwingViewImpl extends JFrame implements View {
     private JButton rectButton;
     private JButton textButton;
 
+    private JButton undoButton;
+    private JButton redoButton;
+
     private JButton colorButton;
     private JButton redButton;
     private JButton blackButton;
@@ -52,6 +55,8 @@ public class SwingViewImpl extends JFrame implements View {
 
     private BufferedImage mainImage;
     private Color mainColor;
+    private int drawNumber = 2;
+    private boolean isNotRepainting = true;
 
     public SwingViewImpl(PaintModel model) {
         this.model = model;
@@ -94,6 +99,9 @@ public class SwingViewImpl extends JFrame implements View {
         ellipseButton = new JButton(new IconBuilder().getELLIPSE_ICON());
         rectButton = new JButton(new IconBuilder().getRECT_ICON());
         textButton = new  JButton(new IconBuilder().getTEXT_ICON());
+
+        undoButton = new  JButton(new IconBuilder().getUNDO_ICON());
+        redoButton = new  JButton(new IconBuilder().getREDO_ICON());
 
         colorBar = new  JToolBar(JToolBar.HORIZONTAL);
 //        colorBar.setBounds(30, 0, 160, 20);
@@ -140,6 +148,9 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar.add(ellipseButton);
         toolBar.add(rectButton);
         toolBar.add(textButton);
+        toolBar.addSeparator();
+        toolBar.add(undoButton);
+        toolBar.add(redoButton);
 
         colorBar.add(colorButton);
         colorBar.add(redButton);
@@ -153,7 +164,10 @@ public class SwingViewImpl extends JFrame implements View {
         mainMenu.add(colorBar);
 
         mainMenu.add(transformImageButton);
+        mainMenu.add(new JToolBar.Separator());
         mainMenu.add(cleanButton);
+        mainMenu.add(new JToolBar.Separator());
+
         this.setJMenuBar(mainMenu);
         this.add(mainPanel);
     }
@@ -165,9 +179,9 @@ public class SwingViewImpl extends JFrame implements View {
         mainFrame.addComponentListener(new  ComponentAdapter() {
             public void componentResized(ComponentEvent evt) {
                 if(model.isLoading() == false) {
-
-                    JOptionPane.showMessageDialog(mainFrame,
-                            "Такого файла не существует");
+//
+//                    JOptionPane.showMessageDialog(mainFrame,
+//                            "Такого файла не существует");
                     mainPanel.setSize(mainImage.getWidth(), mainImage.getHeight());
                     BufferedImage tempImage = new  BufferedImage(mainPanel.getWidth(), mainPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
                     Graphics2D d2 = (Graphics2D) tempImage.createGraphics();
@@ -208,13 +222,18 @@ public class SwingViewImpl extends JFrame implements View {
         public void paintComponent (Graphics g) {
 
             super.paintComponent(g);
-            g.drawImage(mainImage, 0, 0,this);
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHint ( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2.setRenderingHint ( RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+            g2.setRenderingHint ( RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR );
+
+            g2.drawImage(mainImage, 0, 0,this);
+
+
 
         }
     }
-
-
-
 
 
 
@@ -297,6 +316,14 @@ public class SwingViewImpl extends JFrame implements View {
         return textButton;
     }
 
+    public JButton getUndoButton() {
+        return undoButton;
+    }
+
+    public JButton getRedoButton() {
+        return redoButton;
+    }
+
     public JButton getColorButton() {
         return colorButton;
     }
@@ -338,115 +365,28 @@ public class SwingViewImpl extends JFrame implements View {
     }
 
     public Color getMainColor() {
+
         return mainColor;
     }
 
-    ///////////
-
-
-
-    public void setModel(PaintModel model) {
-        this.model = model;
+    public JButton getTransformImageButton() {
+        return transformImageButton;
     }
 
-    public void setMainFrame(JFrame mainFrame) {
-        this.mainFrame = mainFrame;
+    public int getDrawNumber() {
+        return drawNumber;
     }
 
-    public void setMainMenu(JMenuBar mainMenu) {
-        this.mainMenu = mainMenu;
+    public void setDrawNumber(int drawNumber) {
+        this.drawNumber = drawNumber;
     }
 
-    public void setFileMenu(JMenu fileMenu) {
-        this.fileMenu = fileMenu;
+    public boolean isNotRepainting() {
+        return isNotRepainting;
     }
 
-    public void setLoadMenu(JMenuItem loadMenu) {
-        this.loadMenu = loadMenu;
-    }
-
-    public void setSaveMenu(JMenuItem saveMenu) {
-        this.saveMenu = saveMenu;
-    }
-
-    public void setSaveAsMenu(JMenuItem saveAsMenu) {
-        this.saveAsMenu = saveAsMenu;
-    }
-
-    public void setMainPanel(JPanel mainPanel) {
-        this.mainPanel = mainPanel;
-    }
-
-    public void setToolBar(JToolBar toolBar) {
-        this.toolBar = toolBar;
-    }
-
-    public void setColorBar(JToolBar colorBar) {
-        this.colorBar = colorBar;
-    }
-
-    public void setPencilButton(JButton pencilButton) {
-        this.pencilButton = pencilButton;
-    }
-
-    public void setMarkerButton(JButton markerButton) {
-        this.markerButton = markerButton;
-    }
-
-    public void setEraserButton(JButton eraserButton) {
-        this.eraserButton = eraserButton;
-    }
-
-    public void setLineButton(JButton lineButton) {
-        this.lineButton = lineButton;
-    }
-
-    public void setEllipseButton(JButton ellipseButton) {
-        this.ellipseButton = ellipseButton;
-    }
-
-    public void setRectButton(JButton rectButton) {
-        this.rectButton = rectButton;
-    }
-
-    public void setTextButton(JButton textButton) {
-        this.textButton = textButton;
-    }
-
-    public void setColorButton(JButton colorButton) {
-        this.colorButton = colorButton;
-    }
-
-    public void setRedButton(JButton redButton) {
-        this.redButton = redButton;
-    }
-
-    public void setBlackButton(JButton blackButton) {
-        this.blackButton = blackButton;
-    }
-
-    public void setBlueButton(JButton blueButton) {
-        this.blueButton = blueButton;
-    }
-
-    public void setGreenButton(JButton greenButton) {
-        this.greenButton = greenButton;
-    }
-
-    public void setWhiteButton(JButton whiteButton) {
-        this.whiteButton = whiteButton;
-    }
-
-    public void setColorChooser(JColorChooser colorChooser) {
-        this.colorChooser = colorChooser;
-    }
-
-    public void setFileChooser(JFileChooser fileChooser) {
-        this.fileChooser = fileChooser;
-    }
-
-    public void setCleanButton(JButton cleanButton) {
-        this.cleanButton = cleanButton;
+    public void setNotRepainting(boolean notRepainting) {
+        isNotRepainting = notRepainting;
     }
 
     public void setMainImage(BufferedImage mainImage) {
@@ -457,16 +397,4 @@ public class SwingViewImpl extends JFrame implements View {
         this.mainColor = mainColor;
     }
 
-
-    public String getMAIN_FRAME_NAME() {
-        return MAIN_FRAME_NAME;
-    }
-
-    public void setMAIN_FRAME_NAME(String MAIN_FRAME_NAME) {
-        this.MAIN_FRAME_NAME = MAIN_FRAME_NAME;
-    }
-
-    public JButton getTransformImageButton() {
-        return transformImageButton;
-    }
 }
