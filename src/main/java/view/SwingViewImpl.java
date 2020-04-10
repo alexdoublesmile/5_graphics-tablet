@@ -1,6 +1,6 @@
 package view;
 
-import domain.PaintModel;
+import model.PaintModel;
 import util.CursorBuilder;
 import util.IconBuilder;
 

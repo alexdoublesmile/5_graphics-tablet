@@ -1,6 +1,6 @@
 import controller.Controller;
 import controller.SwingControllerImpl;
-import domain.PaintModel;
+import model.PaintModel;
 import view.SwingViewImpl;
 import view.View;
 

@@ -1,9 +1,6 @@
-package domain;
+package model;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class PaintModel {
 
@@ -16,54 +13,22 @@ public class PaintModel {
     private boolean mouseIsPressed;
     private boolean loading;
 
-    private List<BufferedImage> savedActions;
-    private int actionsCounter;
-    private boolean returned;
-    private BufferedImage previousImage;
+    private UndoRedoService undoService;
 
     public PaintModel() {
-        savedActions = new ArrayList<>(1000);
+        undoService = new UndoRedoService();
     }
 
-    public void saveImage(BufferedImage action) {
-        if (returned) {
-            BufferedImage changedImage = savedActions.get(actionsCounter - 1);
-            changedImage = previousImage;
-            returned = false;
-        }
-        savedActions.add(getNewImage(action));
-        actionsCounter++;
+    public  void saveImage(BufferedImage action) {
+        undoService.saveImage(action);
     }
 
     public BufferedImage getPreviousAction() {
-        if (actionsCounter > 1) {
-            actionsCounter--;
-        }
-        returned = true;
-        List<BufferedImage> tempList = savedActions.stream()
-                .limit(actionsCounter)
-                .collect(Collectors.toList());
-        savedActions = tempList;
-
-        previousImage = getNewImage(savedActions.get(actionsCounter - 1));
-        return previousImage;
+        return undoService.getPreviousAction();
     }
 
     public BufferedImage getNextAction() {
-        if (actionsCounter < savedActions.size()) {
-            actionsCounter++;
-        }
-        return savedActions.get(actionsCounter - 1);
-    }
-
-    private BufferedImage getNewImage(BufferedImage oldImage) {
-        BufferedImage newImage = new BufferedImage(
-                oldImage.getColorModel(),
-                oldImage.copyData(null),
-                oldImage.isAlphaPremultiplied(),
-                null
-        );
-        return newImage;
+        return undoService.getNextAction();
     }
 
     public String getFileName() {

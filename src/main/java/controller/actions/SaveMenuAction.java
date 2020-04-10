@@ -1,6 +1,6 @@
 package controller.actions;
 
-import domain.PaintModel;
+import model.PaintModel;
 import util.TextFileFilter;
 import view.SwingViewImpl;
 

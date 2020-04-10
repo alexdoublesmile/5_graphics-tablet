@@ -6,7 +6,7 @@ import controller.actions.SaveAsMenuAction;
 import controller.listeners.ColorListenerBuilder;
 import controller.listeners.DrawListenerBuilder;
 import controller.listeners.ToolListenerBuilder;
-import domain.PaintModel;
+import model.PaintModel;
 import view.SwingViewImpl;
 import view.View;
 

@@ -1,6 +1,6 @@
 package controller.listeners;
 
-import domain.PaintModel;
+import model.PaintModel;
 import util.CursorBuilder;
 import view.SwingViewImpl;
 
