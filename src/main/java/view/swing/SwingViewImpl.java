@@ -4,6 +4,9 @@ import model.PaintModel;
 import util.CursorBuilder;
 import util.IconBuilder;
 import view.View;
+import view.swing.buttons.ColorButton;
+import view.swing.buttons.FunctionButton;
+import view.swing.buttons.ToolButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +19,7 @@ public class SwingViewImpl extends JFrame implements View {
     private static final String FILE_MENU_NAME = "Файл";
     private static final String TRANSFORM_IMAGE_BUTTON_NAME = "Обесцветить";
     private static final String CLEAN_BUTTON_NAME = "Очистить планшетик";
+    private static final Color CONTROL_PANEL_COLOR = new Color(0xD2E9D2);
 
     private PaintModel model;
 
@@ -83,6 +87,7 @@ public class SwingViewImpl extends JFrame implements View {
         this.mainColor = Color.black;
 
         mainMenu = new JMenuBar();
+        mainMenu.setBackground(CONTROL_PANEL_COLOR);
 //        mainMenu.setBounds(0,0,350,20);
 
         fileMenu = new JMenu(FILE_MENU_NAME);
@@ -99,8 +104,11 @@ public class SwingViewImpl extends JFrame implements View {
         mainPanel.setCursor(new CursorBuilder().getPENCIL_CURSOR());
 
         toolBar = new JToolBar(JToolBar.HORIZONTAL);
+        toolBar.setBackground(CONTROL_PANEL_COLOR);
+
 //        toolBar.setBounds(0, 0, 300, 30);
         pencilButton = new ToolButton(new IconBuilder().getPENCIL_ICON());
+
         markerButton = new ToolButton(new IconBuilder().getMARKER_ICON());
         brushButton = new ToolButton(new IconBuilder().getBRUSH_ICON());
         eraserButton = new ToolButton(new IconBuilder().getERASER_ICON());
@@ -118,6 +126,8 @@ public class SwingViewImpl extends JFrame implements View {
 
 
         colorBar = new  JToolBar(JToolBar.HORIZONTAL);
+        colorBar.setBackground(CONTROL_PANEL_COLOR);
+
 //        colorBar.setBounds(30, 0, 160, 20);
 
         colorBar.setLayout(null);
@@ -127,6 +137,7 @@ public class SwingViewImpl extends JFrame implements View {
         blueButton = new ColorButton(Color.blue);
         greenButton = new  ColorButton(new Color(0x128D12));
         whiteButton = new  ColorButton(Color.white);
+//        whiteButton.setBorderPainted(true);
 
         colorChooser = new  JColorChooser(mainColor);
         colorChooser.getSelectionModel().addChangeListener(e -> {
@@ -151,7 +162,7 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar.add(eraserButton);
         toolBar.addSeparator();
         toolBar.add(lineButton);
-        toolBar.add(dottedLineButton);
+//        toolBar.add(dottedLineButton);
         toolBar.add(ellipseButton);
         toolBar.add(rectButton);
         toolBar.add(pyramidButton);
@@ -211,6 +222,20 @@ public class SwingViewImpl extends JFrame implements View {
         });
     }
 
+    public void resetToolButtonBorders() {
+        pencilButton.setBorderPainted(false);
+        markerButton.setBorderPainted(false);
+        brushButton.setBorderPainted(false);
+        eraserButton.setBorderPainted(false);
+        lineButton.setBorderPainted(false);
+        dottedLineButton.setBorderPainted(false);
+        ellipseButton.setBorderPainted(false);
+        rectButton.setBorderPainted(false);
+        pyramidButton.setBorderPainted(false);
+        prismButton.setBorderPainted(false);
+        textButton.setBorderPainted(false);
+        fillButton.setBorderPainted(false);
+    }
 
 
     public class ColorDialog extends JDialog {
@@ -238,10 +263,10 @@ public class SwingViewImpl extends JFrame implements View {
 
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
-            g2.setRenderingHint ( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+            g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            g2.setRenderingHint ( RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
-            g2.setRenderingHint ( RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR );
+            g2.setRenderingHint (RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+            g2.setRenderingHint (RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR );
 
             g2.drawImage(mainImage, 0, 0,this);
 

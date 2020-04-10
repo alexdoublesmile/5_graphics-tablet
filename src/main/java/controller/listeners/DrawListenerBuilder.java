@@ -102,9 +102,9 @@ public class DrawListenerBuilder {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getButton() == MouseEvent.BUTTON3) {
-                if (view.getMainColor() == Color.red) {
+                if (view.getMainColor() != Color.black) {
                     view.setMainColor(Color.black);
-                } else if (view.getMainColor() == Color.black) {
+                } else {
                     view.setMainColor(Color.red);
                 }
                 view.getColorButton().setBackground(view.getMainColor());
@@ -239,7 +239,6 @@ public class DrawListenerBuilder {
                 model.setxPad(model.getxPad() + Integer.valueOf(Config.getProperty(Config.TEXT_BASIC_OFFSET)));
                 mainPanel.requestFocus();
 
-                model.saveImage(view.getMainImage());
                 mainPanel.repaint();
             }
         }

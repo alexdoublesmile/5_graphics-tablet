@@ -1,4 +1,4 @@
-package view.swing;
+package view.swing.buttons;
 
 import config.Config;
 
@@ -161,6 +161,8 @@ public class ColorButton extends JButton{
     }
 
     public ColorButton(Color color, int size) {
+        this.setBorderPainted(false);
+        this.setFocusPainted(false);
         this.setBounds(
                 X_POINT +  buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET) - fixValue,
                 Y_POINT,
@@ -205,6 +207,8 @@ public class ColorButton extends JButton{
     public ColorButton(Color color, boolean counterFix, int fixValue) {
         buttonCounter++;
         ColorButton.fixValue = fixValue;
+        this.setBorderPainted(false);
+        this.setFocusPainted(false);
         this.setBackground(color);
         this.setBounds(
                 X_POINT + buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET) - fixValue,
@@ -237,6 +241,9 @@ public class ColorButton extends JButton{
 
     public ColorButton(Color color) {
         this.setBackground(color);
+
+        this.setBorderPainted(false);
+        this.setFocusPainted(false);
         this.setBounds(
                 X_POINT + buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET) - fixValue,
                 Y_POINT,

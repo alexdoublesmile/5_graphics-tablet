@@ -68,6 +68,9 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            view.resetToolButtonBorders();
+            view.getPencilButton().setBorderPainted(true);
+
             model.setDrawMode(DrawMode.PENCIL);
             mainPanel.setCursor(new CursorBuilder().getPENCIL_CURSOR());
         }
@@ -77,6 +80,9 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            view.resetToolButtonBorders();
+            view.getMarkerButton().setBorderPainted(true);
+
             model.setDrawMode(DrawMode.MARKER);
             mainPanel.setCursor(new CursorBuilder().getMARKER_CURSOR());
         }
@@ -86,6 +92,9 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            view.resetToolButtonBorders();
+            view.getBrushButton().setBorderPainted(true);
+
             model.setDrawMode(DrawMode.BRUSH);
             mainPanel.setCursor(new CursorBuilder().getBRUSH_CURSOR());
         }
@@ -95,6 +104,9 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            view.resetToolButtonBorders();
+            view.getEraserButton().setBorderPainted(true);
+
             model.setDrawMode(DrawMode.ERASER);
             mainPanel.setCursor(new CursorBuilder().getERASER_CURSOR());
         }
@@ -104,6 +116,9 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            view.resetToolButtonBorders();
+            view.getLineButton().setBorderPainted(true);
+
             model.setDrawMode(DrawMode.LINE);
             mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
         }
@@ -113,6 +128,9 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            view.resetToolButtonBorders();
+            view.getDottedLineButton().setBorderPainted(true);
+
             // TODO: 10.04.2020
 
             JOptionPane.showMessageDialog(view.getMainFrame(),
@@ -126,6 +144,9 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            view.resetToolButtonBorders();
+            view.getEllipseButton().setBorderPainted(true);
+
             model.setDrawMode(DrawMode.ELLIPSE);
             mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
         }
@@ -135,6 +156,9 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            view.resetToolButtonBorders();
+            view.getRectButton().setBorderPainted(true);
+
             model.setDrawMode(DrawMode.RECTANGLE);
             mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
         }
@@ -144,6 +168,9 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            view.resetToolButtonBorders();
+            view.getPyramidButton().setBorderPainted(true);
+
             // TODO: 10.04.2020
             JOptionPane.showMessageDialog(view.getMainFrame(),
                     "Этот фукционал еще в разработке");
@@ -156,20 +183,14 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            view.resetToolButtonBorders();
+            view.getPrismButton().setBorderPainted(true);
+
             // TODO: 10.04.2020
             JOptionPane.showMessageDialog(view.getMainFrame(),
                     "Этот фукционал еще в разработке");
             model.setDrawMode(DrawMode.PRISM);
             mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-        }
-    }
-
-    private class FillButtonListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            model.setDrawMode(DrawMode.FILL);
-            mainPanel.setCursor(new CursorBuilder().getFILL_CURSOR());
         }
     }
 
@@ -195,18 +216,23 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            view.resetToolButtonBorders();
+            view.getTextButton().setBorderPainted(true);
+
             model.setDrawMode(DrawMode.TEXT);
             mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
         }
     }
 
-    private class CalculatorButtonListener implements ActionListener {
+    private class FillButtonListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            // TODO: 10.04.2020
-            JOptionPane.showMessageDialog(view.getMainFrame(),
-                    "Этот фукционал еще в нескорой разработке, Катюша :)");
+            view.resetToolButtonBorders();
+            view.getFillButton().setBorderPainted(true);
+
+            model.setDrawMode(DrawMode.FILL);
+            mainPanel.setCursor(new CursorBuilder().getFILL_CURSOR());
         }
     }
 
@@ -244,16 +270,23 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            view.setExtendedState(MAXIMIZED_BOTH);
-            view.getMainPanel().setSize(view.getWidth(), view.getHeight());
-            view.setMainImage(new BufferedImage(view.getWidth(), view.getHeight(), BufferedImage.TYPE_INT_RGB));
-
             Graphics g = view.getMainImage().getGraphics();
             Graphics2D g2 = (Graphics2D)g;
             g2.setColor(Color.white);
             g2.fillRect(0, 0, mainPanel.getSize().width, mainPanel.getSize().height);
             g2.setColor(Color.black);
             mainPanel.repaint();
+        }
+    }
+
+    private class CalculatorButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            // TODO: 10.04.2020
+            JOptionPane.showMessageDialog(view.getMainFrame(),
+                    "Этот фукционал еще в нескорой разработке, Катюша :)");
         }
     }
 
