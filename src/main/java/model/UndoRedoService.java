@@ -9,6 +9,7 @@ public class UndoRedoService {
 
     private static final String FORWARD_DIRECTION = "Forward";
     private static final String BACK_DIRECTION = "Back";
+    private static final int UNDO_QUANTITY = 20;
 
     private List<BufferedImage> actionList;
     private int actionCounter;
@@ -16,7 +17,7 @@ public class UndoRedoService {
     private BufferedImage selectedImage;
 
     public UndoRedoService() {
-        actionList = new ArrayList<>(1000);
+        actionList = new ArrayList<>(UNDO_QUANTITY);
     }
 
     public void saveImage(BufferedImage action) {
@@ -26,7 +27,15 @@ public class UndoRedoService {
             BufferedImage rewrittenImage = actionList.get(actionCounter - 1);
             rewrittenImage = selectedImage;
         }
-        actionList.add(getNewImage(action));
+        if (actionList.size() < UNDO_QUANTITY) {
+            actionList.add(getNewImage(action));
+        } else {
+//            for (BufferedImage image : actionList) {
+//                actionList.set(actionList.indexOf(image), )
+//            }
+//            actionList.add(UNDO_QUANTITY - 1, getNewImage(action));
+//            actionList.remove(UNDO_QUANTITY);
+        }
         actionCounter++;
     }
 

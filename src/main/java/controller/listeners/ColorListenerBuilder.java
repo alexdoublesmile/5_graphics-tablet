@@ -1,7 +1,7 @@
 package controller.listeners;
 
 import model.PaintModel;
-import view.SwingViewImpl;
+import view.swing.SwingViewImpl;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

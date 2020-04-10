@@ -2,7 +2,7 @@ package controller.actions;
 
 import model.PaintModel;
 import util.TextFileFilter;
-import view.SwingViewImpl;
+import view.swing.SwingViewImpl;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

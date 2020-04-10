@@ -8,7 +8,9 @@ public class CursorBuilder {
 
     private final Cursor PENCIL_CURSOR;
     private final Cursor MARKER_CURSOR;
+    private final Cursor BRUSH_CURSOR;
     private final Cursor ERASER_CURSOR;
+    private final Cursor FILL_CURSOR;
 
     public CursorBuilder() {
         PENCIL_CURSOR = getCursorFromPath(
@@ -21,11 +23,21 @@ public class CursorBuilder {
                 Integer.parseInt(Config.getProperty(Config.MARKER_CURSOR_XPOINT, "0")),
                 Integer.parseInt(Config.getProperty(Config.MARKER_CURSOR_YPOINT, "0")),
                 "marker");
+        BRUSH_CURSOR = getCursorFromPath(
+                Config.getProperty(Config.BRUSH_CURSOR_PATH),
+                Integer.parseInt(Config.getProperty(Config.BRUSH_CURSOR_XPOINT, "0")),
+                Integer.parseInt(Config.getProperty(Config.BRUSH_CURSOR_YPOINT, "0")),
+                "brush");
         ERASER_CURSOR = getCursorFromPath(
                 Config.getProperty(Config.ERASER_CURSOR_PATH),
                 Integer.parseInt(Config.getProperty(Config.ERASER_CURSOR_XPOINT, "0")),
                 Integer.parseInt(Config.getProperty(Config.ERASER_CURSOR_YPOINT, "0")),
                 "eraser");
+        FILL_CURSOR = getCursorFromPath(
+                Config.getProperty(Config.FILL_CURSOR_PATH),
+                Integer.parseInt(Config.getProperty(Config.FILL_CURSOR_XPOINT, "0")),
+                Integer.parseInt(Config.getProperty(Config.FILL_CURSOR_YPOINT, "0")),
+                "fill");
     }
 
     private static final Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -40,6 +52,14 @@ public class CursorBuilder {
 
     public Cursor getERASER_CURSOR() {
         return ERASER_CURSOR;
+    }
+
+    public Cursor getBRUSH_CURSOR() {
+        return BRUSH_CURSOR;
+    }
+
+    public Cursor getFILL_CURSOR() {
+        return FILL_CURSOR;
     }
 
     private Cursor getCursorFromPath(String path, int pointX, int pointY, String name) {

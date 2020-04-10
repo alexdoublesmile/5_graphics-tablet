@@ -1,12 +1,16 @@
 package controller.listeners;
 
+import config.Config;
+import model.DrawMode;
 import model.PaintModel;
-import view.SwingViewImpl;
+import view.swing.SwingViewImpl;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 
+import static java.awt.Frame.MAXIMIZED_BOTH;
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 
 public class DrawListenerBuilder {
@@ -63,15 +67,20 @@ public class DrawListenerBuilder {
                 Graphics2D g2 = (Graphics2D)g;
                 g2.setColor(view.getMainColor());
                 switch (model.getDrawMode()) {
-                    case 0:
+                    case PENCIL:
+                        g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.PENCIL_BASIC_STROKE))));
                         g2.drawLine(model.getxPad(), model.getyPad(), e.getX(), e.getY());
                         break;
-                    case 1:
-                        g2.setStroke(new  BasicStroke(5.0f));
+                    case MARKER:
+                        g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.MARKER_BASIC_STROKE))));
                         g2.drawLine(model.getxPad(), model.getyPad(), e.getX(), e.getY());
                         break;
-                    case 2:
-                        g2.setStroke(new  BasicStroke(30.0f));
+                    case BRUSH:
+                        g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.BRUSH_BASIC_STROKE))));
+                        g2.drawLine(model.getxPad(), model.getyPad(), e.getX(), e.getY());
+                        break;
+                    case ERASER:
+                        g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.ERASER_BASIC_STROKE))));
                         g2.setColor(Color.WHITE);
                         g2.drawLine(model.getxPad(), model.getyPad(), e.getX(), e.getY());
                         break;
@@ -104,19 +113,30 @@ public class DrawListenerBuilder {
             Graphics2D g2 = (Graphics2D)g;
             g2.setColor(view.getMainColor());
             switch (model.getDrawMode()) {
-                case 0:
+                case PENCIL:
+                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.PENCIL_BASIC_STROKE))));
                     g2.drawLine(model.getxPad(), model.getyPad(), model.getxPad()+1, model.getyPad()+1);
                     break;
-                case 1:
-                    g2.setStroke(new  BasicStroke(3.0f));
+                case MARKER:
+                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.MARKER_BASIC_STROKE))));
                     g2.drawLine(model.getxPad(), model.getyPad(), model.getxPad()+1, model.getyPad()+1);
                     break;
-                case 2:
-                    g2.setStroke(new  BasicStroke(15.0f));
+                case BRUSH:
+                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.BRUSH_BASIC_STROKE))));
+                    g2.drawLine(model.getxPad(), model.getyPad(), model.getxPad()+1, model.getyPad()+1);
+                    break;
+                case ERASER:
+                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.ERASER_BASIC_STROKE))));
                     g2.setColor(Color.WHITE);
                     g2.drawLine(model.getxPad(), model.getyPad(), model.getxPad()+1, model.getyPad()+1);
                     break;
-                case 3:
+                case FILL:
+                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FILL_BASIC_STROKE))));
+                    g2.setColor(view.getMainColor());
+                    g2.fillRect(0, 0, mainPanel.getSize().width, mainPanel.getSize().height);
+                    mainPanel.repaint();
+                    break;
+                case TEXT:
                     mainPanel.requestFocus();
                     break;
             }
@@ -153,23 +173,32 @@ public class DrawListenerBuilder {
             }
 
             switch(model.getDrawMode()) {
-                case 0:
+                case PENCIL:
                     model.saveImage(view.getMainImage());
                     break;
-                case 1:
+                case MARKER:
                     model.saveImage(view.getMainImage());
                     break;
-                case 2:
+                case BRUSH:
                     model.saveImage(view.getMainImage());
                     break;
-                case 4:
+                case ERASER:
+                    model.saveImage(view.getMainImage());
+                    break;
+                case LINE:
+                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
                     g.drawLine(model.getXf(), model.getYf(), e.getX(), e.getY());
+                    model.saveImage(view.getMainImage());
                     break;
-                case 5:
+                case ELLIPSE:
+                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
                     g.drawOval(x1, y1, (x2 - x1), (y2 - y1));
+                    model.saveImage(view.getMainImage());
                     break;
-                case 6:
+                case RECTANGLE:
+                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
                     g.drawRect(x1, y1, (x2 - x1), (y2 - y1));
+                    model.saveImage(view.getMainImage());
                     break;
             }
             model.setxPad(0);
@@ -193,21 +222,24 @@ public class DrawListenerBuilder {
 
         @Override
         public void keyTyped(KeyEvent e) {
-            if (model.getDrawMode() == 3){
+            if (model.getDrawMode().equals(DrawMode.TEXT)){
 
                 Graphics g = view.getMainImage().getGraphics();
                 Graphics2D g2 = (Graphics2D)g;
                 g2.setColor(view.getMainColor());
-                g2.setStroke(new  BasicStroke(2.0f));
+                g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.TEXT_BASIC_STROKE))));
 
                 String str = new  String("");
                 str += e.getKeyChar();
-                g2.setFont(new  Font("Arial", 0, 15));
+                g2.setFont(new  Font(Config.getProperty(Config.TEXT_BASIC_FONT),
+                        Integer.valueOf(Config.getProperty(Config.TEXT_BASIC_FONT_STYLE)),
+                        Integer.valueOf(Config.getProperty(Config.TEXT_BASIC_FONT_SIZE))));
                 g2.drawString(str, model.getxPad(), model.getyPad());
 
-                model.setxPad(model.getxPad() + 10);
-
+                model.setxPad(model.getxPad() + Integer.valueOf(Config.getProperty(Config.TEXT_BASIC_OFFSET)));
                 mainPanel.requestFocus();
+
+                model.saveImage(view.getMainImage());
                 mainPanel.repaint();
             }
         }

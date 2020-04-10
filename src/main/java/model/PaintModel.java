@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 public class PaintModel {
 
     private String fileName;
-    private int drawMode;
+    private DrawMode drawMode;
     private int  xPad;
     private int  xf;
     private int  yf;
@@ -16,7 +16,9 @@ public class PaintModel {
     private UndoRedoService undoService;
 
     public PaintModel() {
+
         undoService = new UndoRedoService();
+        drawMode = DrawMode.PENCIL;
     }
 
     public  void saveImage(BufferedImage action) {
@@ -39,11 +41,11 @@ public class PaintModel {
         this.fileName = fileName;
     }
 
-    public int getDrawMode() {
+    public DrawMode getDrawMode() {
         return drawMode;
     }
 
-    public void setDrawMode(int drawMode) {
+    public void setDrawMode(DrawMode drawMode) {
         this.drawMode = drawMode;
     }
 

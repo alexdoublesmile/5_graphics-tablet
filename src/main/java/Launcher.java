@@ -1,7 +1,7 @@
 import controller.Controller;
 import controller.SwingControllerImpl;
 import model.PaintModel;
-import view.SwingViewImpl;
+import view.swing.SwingViewImpl;
 import view.View;
 
 public class Launcher {
