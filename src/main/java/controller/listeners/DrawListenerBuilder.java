@@ -7,25 +7,51 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
+
 public class DrawListenerBuilder {
     private final MouseMotionAdapter MOUSE_MOTION_ADAPTER;
     private final MouseAdapter MOUSE_ADAPTER;
     private final KeyAdapter KEY_ADAPTER;
 
+    private final InputMap inputMap;
+    private final ActionMap actionMap;
 
     private SwingViewImpl view;
     private PaintModel model;
     private JPanel mainPanel;
-    private int num = 1;
 
     public DrawListenerBuilder(SwingViewImpl view, PaintModel model) {
         this.view = view;
         this.model = model;
         mainPanel = view.getMainPanel();
 
+        inputMap = mainPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW);
+        actionMap = mainPanel.getActionMap();
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK), "undo");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.SHIFT_DOWN_MASK), "redo");
+
         MOUSE_MOTION_ADAPTER = new MouseMotionAdapter();
         MOUSE_ADAPTER = new MouseAdapter();
         KEY_ADAPTER = new KeyAdapter();
+
+        actionMap.put("undo", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                view.setMainImage(model.getPreviousAction());
+                mainPanel.repaint();
+            }
+        });
+
+        actionMap.put("redo", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                view.setMainImage(model.getNextAction());
+                mainPanel.repaint();
+            }
+        });
     }
 
     private class MouseMotionAdapter implements MouseMotionListener {
@@ -167,8 +193,6 @@ public class DrawListenerBuilder {
 
         @Override
         public void keyTyped(KeyEvent e) {
-
-
             if (model.getDrawMode() == 3){
 
                 Graphics g = view.getMainImage().getGraphics();
@@ -190,22 +214,10 @@ public class DrawListenerBuilder {
 
         @Override
         public void keyPressed(KeyEvent e) {
-
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_Z:
-                    view.setMainImage(model.getPreviousAction());
-                    mainPanel.repaint();
-                    break;
-                case KeyEvent.VK_X:
-                    view.setMainImage(model.getNextAction());
-                    mainPanel.repaint();
-                    break;
-            }
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-
         }
     }
 

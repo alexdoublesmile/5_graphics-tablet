@@ -73,6 +73,7 @@ public class SwingControllerImpl implements Controller{
 
         view.getMainPanel().addMouseMotionListener(drawListeners.getMOUSE_MOTION_ADAPTER());
         view.getMainPanel().addMouseListener(drawListeners.getMOUSE_ADAPTER());
+        view.getMainPanel().addKeyListener(drawListeners.getKEY_ADAPTER());
         view.addKeyListener(drawListeners.getKEY_ADAPTER());
 
     }
