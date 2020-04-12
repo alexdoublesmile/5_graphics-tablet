@@ -54,7 +54,7 @@ public class LoadMenuAction extends AbstractAction {
                 panel.setSize(image.getWidth(), image.getHeight());
                 view.setTitle(fileName);
 
-                model.saveImage(view.getMainImage());
+                model.saveAction(view.getMainImage());
                 panel.repaint();
 
             } catch (FileNotFoundException ex) {

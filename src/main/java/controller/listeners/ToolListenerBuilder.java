@@ -11,13 +11,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
-import static java.awt.Frame.MAXIMIZED_BOTH;
-
 public class ToolListenerBuilder {
     private final PencilButtonListener PENCIL_BUTTON_LISTENER;
     private final MarkerButtonListener MARKER_BUTTON_LISTENER;
     private final BrushButtonListener BRUSH_BUTTON_LISTENER;
     private final EraserButtonListener ERASER_BUTTON_LISTENER;
+    private final RagButtonListener RAG_BUTTON_LISTENER;
     private final LineButtonListener LINE_BUTTON_LISTENER;
     private final DottedLineButtonListener DOTTED_LINE_BUTTON_LISTENER;
     private final EllipseButtonListener ELLIPSE_BUTTON_LISTENER;
@@ -47,6 +46,7 @@ public class ToolListenerBuilder {
         MARKER_BUTTON_LISTENER = new MarkerButtonListener();
         BRUSH_BUTTON_LISTENER = new BrushButtonListener();
         ERASER_BUTTON_LISTENER = new EraserButtonListener();
+        RAG_BUTTON_LISTENER = new RagButtonListener();
         LINE_BUTTON_LISTENER = new LineButtonListener();
         DOTTED_LINE_BUTTON_LISTENER = new DottedLineButtonListener();
         ELLIPSE_BUTTON_LISTENER = new EllipseButtonListener();
@@ -112,6 +112,18 @@ public class ToolListenerBuilder {
         }
     }
 
+    private class RagButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            view.resetToolButtonBorders();
+            view.getRagButton().setBorderPainted(true);
+
+            model.setDrawMode(DrawMode.RAG);
+            mainPanel.setCursor(new CursorBuilder().getRAG_CURSOR());
+        }
+    }
+
     private class LineButtonListener implements ActionListener {
 
         @Override
@@ -130,11 +142,6 @@ public class ToolListenerBuilder {
         public void actionPerformed(ActionEvent e) {
             view.resetToolButtonBorders();
             view.getDottedLineButton().setBorderPainted(true);
-
-            // TODO: 10.04.2020
-
-            JOptionPane.showMessageDialog(view.getMainFrame(),
-                    "Этот фукционал еще в разработке.");
             model.setDrawMode(DrawMode.DOTTEDLINE);
             mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
         }
@@ -170,10 +177,6 @@ public class ToolListenerBuilder {
         public void actionPerformed(ActionEvent e) {
             view.resetToolButtonBorders();
             view.getPyramidButton().setBorderPainted(true);
-
-            // TODO: 10.04.2020
-            JOptionPane.showMessageDialog(view.getMainFrame(),
-                    "Этот фукционал еще в разработке");
             model.setDrawMode(DrawMode.PYRAMID);
             mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
         }
@@ -185,10 +188,6 @@ public class ToolListenerBuilder {
         public void actionPerformed(ActionEvent e) {
             view.resetToolButtonBorders();
             view.getPrismButton().setBorderPainted(true);
-
-            // TODO: 10.04.2020
-            JOptionPane.showMessageDialog(view.getMainFrame(),
-                    "Этот фукционал еще в разработке");
             model.setDrawMode(DrawMode.PRISM);
             mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
         }
@@ -241,28 +240,32 @@ public class ToolListenerBuilder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-                BufferedImage source = view.getMainImage();
-                BufferedImage result = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
+            BufferedImage source = view.getMainImage();
+            BufferedImage result = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
 
-                for (int x = 0; x < source.getWidth(); x++) {
-                    for (int y = 0; y < source.getHeight(); y++) {
+            for (int x = 0; x < source.getWidth(); x++) {
+                for (int y = 0; y < source.getHeight(); y++) {
 
-                        Color color = new Color(source.getRGB(x, y));
-                        int blue = color.getBlue();
-                        int red = color.getRed();
-                        int green = color.getGreen();
+                    Color color = new Color(source.getRGB(x, y));
+                    int blue = color.getBlue();
+                    int red = color.getRed();
+                    int green = color.getGreen();
 
-                        int grey = (int) (red * 0.299 + green * 0.587 + blue * 0.114);
-                        int newRed = grey;
-                        int newGreen = grey;
-                        int newBlue = grey;
-                        Color newColor = new Color(newRed, newGreen, newBlue);
-                        result.setRGB(x, y, newColor.getRGB());
-                    }
+                    int grey = (int) (red * 0.299 + green * 0.587 + blue * 0.114);
+                    int newRed = grey;
+                    int newGreen = grey;
+                    int newBlue = grey;
+                    Color newColor = new Color(newRed, newGreen, newBlue);
+                    result.setRGB(x, y, newColor.getRGB());
                 }
+            }
 
-                view.setMainImage(result);
-                mainPanel.repaint();
+            view.setMainImage(result);
+
+            model.saveAction(view.getMainImage());
+            view.saveCurrentImage();
+
+            mainPanel.repaint();
         }
     }
 
@@ -275,6 +278,10 @@ public class ToolListenerBuilder {
             g2.setColor(Color.white);
             g2.fillRect(0, 0, mainPanel.getSize().width, mainPanel.getSize().height);
             g2.setColor(Color.black);
+
+            model.saveAction(view.getMainImage());
+            view.saveCurrentImage();
+
             mainPanel.repaint();
         }
     }
@@ -356,5 +363,9 @@ public class ToolListenerBuilder {
 
     public CalculatorButtonListener getCALCULATOR_BUTTON_LISTENER() {
         return CALCULATOR_BUTTON_LISTENER;
+    }
+
+    public RagButtonListener getRAG_BUTTON_LISTENER() {
+        return RAG_BUTTON_LISTENER;
     }
 }

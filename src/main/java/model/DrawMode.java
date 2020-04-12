@@ -5,12 +5,18 @@ public enum DrawMode {
     MARKER,
     BRUSH,
     ERASER,
+    RAG,
     LINE,
     DOTTEDLINE,
+    CIRCLE,
     ELLIPSE,
     RECTANGLE,
+    PARALLELOGRAM,
+    PARALLELEPIPED,
     PYRAMID,
+    TETRA_PYRAMID,
     PRISM,
+    QUADRA_PRISM,
     FILL,
     TEXT
 }

@@ -10,6 +10,7 @@ public class CursorBuilder {
     private final Cursor MARKER_CURSOR;
     private final Cursor BRUSH_CURSOR;
     private final Cursor ERASER_CURSOR;
+    private final Cursor RAG_CURSOR;
     private final Cursor FILL_CURSOR;
 
     public CursorBuilder() {
@@ -33,6 +34,11 @@ public class CursorBuilder {
                 Integer.parseInt(Config.getProperty(Config.ERASER_CURSOR_XPOINT, "0")),
                 Integer.parseInt(Config.getProperty(Config.ERASER_CURSOR_YPOINT, "0")),
                 "eraser");
+        RAG_CURSOR = getCursorFromPath(
+                Config.getProperty(Config.RAG_CURSOR_PATH),
+                Integer.parseInt(Config.getProperty(Config.RAG_CURSOR_XPOINT, "0")),
+                Integer.parseInt(Config.getProperty(Config.RAG_CURSOR_YPOINT, "0")),
+                "rag");
         FILL_CURSOR = getCursorFromPath(
                 Config.getProperty(Config.FILL_CURSOR_PATH),
                 Integer.parseInt(Config.getProperty(Config.FILL_CURSOR_XPOINT, "0")),
@@ -54,6 +60,10 @@ public class CursorBuilder {
         return ERASER_CURSOR;
     }
 
+    public Cursor getRAG_CURSOR() {
+        return RAG_CURSOR;
+    }
+
     public Cursor getBRUSH_CURSOR() {
         return BRUSH_CURSOR;
     }
@@ -61,6 +71,7 @@ public class CursorBuilder {
     public Cursor getFILL_CURSOR() {
         return FILL_CURSOR;
     }
+
 
     private Cursor getCursorFromPath(String path, int pointX, int pointY, String name) {
         Image cursorImage = toolkit.getImage(getClass().getResource(path));

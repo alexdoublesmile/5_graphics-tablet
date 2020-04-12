@@ -24,7 +24,7 @@ public class SwingControllerImpl implements Controller{
 
     @Override
     public void setControlSettings() {
-        model.saveImage(view.getMainImage());
+        model.saveAction(view.getMainImage());
 
         setMenuActions();
         setToolListeners();
@@ -49,6 +49,7 @@ public class SwingControllerImpl implements Controller{
         view.getMarkerButton().addActionListener(tools.getMARKER_BUTTON_LISTENER());
         view.getBrushButton().addActionListener(tools.getBRUSH_BUTTON_LISTENER());
         view.getEraserButton().addActionListener(tools.getERASER_BUTTON_LISTENER());
+        view.getRagButton().addActionListener(tools.getRAG_BUTTON_LISTENER());
         view.getLineButton().addActionListener(tools.getLINE_BUTTON_LISTENER());
         view.getDottedLineButton().addActionListener(tools.getDOTTED_LINE_BUTTON_LISTENER());
         view.getEllipseButton().addActionListener(tools.getELLIPSE_BUTTON_LISTENER());

@@ -11,6 +11,7 @@ public class IconBuilder {
     private final ImageIcon MARKER_ICON;
     private final ImageIcon BRUSH_ICON;
     private final ImageIcon ERASER_ICON;
+    private final ImageIcon RAG_ICON;
     private final ImageIcon LINE_ICON;
     private final ImageIcon DOTTED_LINE_ICON;
     private final ImageIcon ELLIPSE_ICON;
@@ -33,6 +34,8 @@ public class IconBuilder {
                 Config.getProperty(Config.BRUSH_ICON_PATH));
         ERASER_ICON = getIconFromPath(
                 Config.getProperty(Config.ERASER_ICON_PATH));
+        RAG_ICON = getIconFromPath(
+                Config.getProperty(Config.RAG_ICON_PATH));
         LINE_ICON = getIconFromPath(
                 Config.getProperty(Config.LINE_ICON_PATH));
         DOTTED_LINE_ICON = getIconFromPath(
@@ -120,5 +123,9 @@ public class IconBuilder {
 
     public ImageIcon getCALCULATOR_ICON() {
         return CALCULATOR_ICON;
+    }
+
+    public ImageIcon getRAG_ICON() {
+        return RAG_ICON;
     }
 }

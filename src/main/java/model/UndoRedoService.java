@@ -14,18 +14,20 @@ public class UndoRedoService {
     private List<BufferedImage> actionList;
     private int actionCounter;
     private boolean wasIterated;
-    private BufferedImage selectedImage;
+    private BufferedImage selectedAction;
+
+
 
     public UndoRedoService() {
         actionList = new ArrayList<>(UNDO_QUANTITY);
     }
 
-    public void saveImage(BufferedImage action) {
+    public void saveAction(BufferedImage action) {
         if (wasIterated) {
             cropList();
             // change the rewritten BufferedImage object to the previously selected
             BufferedImage rewrittenImage = actionList.get(actionCounter - 1);
-            rewrittenImage = selectedImage;
+            rewrittenImage = selectedAction;
         }
         if (actionList.size() < UNDO_QUANTITY) {
             actionList.add(getNewImage(action));
@@ -62,8 +64,8 @@ public class UndoRedoService {
                 break;
         }
         wasIterated = true;
-        selectedImage = getNewImage(actionList.get(actionCounter - 1));
-        return selectedImage;
+        selectedAction = getNewImage(actionList.get(actionCounter - 1));
+        return selectedAction;
     }
 
     private BufferedImage getNewImage(BufferedImage oldImage) {
@@ -83,5 +85,13 @@ public class UndoRedoService {
         actionList = newList;
 
         wasIterated = false;
+    }
+
+    public boolean isWasIterated() {
+        return wasIterated;
+    }
+
+    public void setWasIterated(boolean wasIterated) {
+        this.wasIterated = wasIterated;
     }
 }

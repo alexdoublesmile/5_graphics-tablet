@@ -1,5 +1,6 @@
 package view.swing;
 
+import config.Config;
 import model.PaintModel;
 import util.CursorBuilder;
 import util.IconBuilder;
@@ -19,7 +20,7 @@ public class SwingViewImpl extends JFrame implements View {
     private static final String FILE_MENU_NAME = "Файл";
     private static final String TRANSFORM_IMAGE_BUTTON_NAME = "Обесцветить";
     private static final String CLEAN_BUTTON_NAME = "Очистить планшетик";
-    private static final Color CONTROL_PANEL_COLOR = new Color(0xD2E9D2);
+    private static final Color CONTROL_PANEL_COLOR = new Color(0xE9D6BF);
 
     private PaintModel model;
 
@@ -39,6 +40,7 @@ public class SwingViewImpl extends JFrame implements View {
     private JButton markerButton;
     private JButton brushButton;
     private JButton eraserButton;
+    private JButton ragButton;
     private JButton lineButton;
     private JButton dottedLineButton;
     private JButton ellipseButton;
@@ -65,8 +67,8 @@ public class SwingViewImpl extends JFrame implements View {
     private JButton cleanButton;
 
     private BufferedImage mainImage;
+    private BufferedImage previousImage;
     private Color mainColor;
-    private int drawNumber = 2;
     private boolean isNotRepainting = true;
 
     public SwingViewImpl(PaintModel model) {
@@ -80,7 +82,6 @@ public class SwingViewImpl extends JFrame implements View {
         this.setSize(6400, 4800);
         this.setVisible(true);
         this.setExtendedState(MAXIMIZED_BOTH);
-
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         this.setBackground(Color.yellow);
@@ -112,6 +113,8 @@ public class SwingViewImpl extends JFrame implements View {
         markerButton = new ToolButton(new IconBuilder().getMARKER_ICON());
         brushButton = new ToolButton(new IconBuilder().getBRUSH_ICON());
         eraserButton = new ToolButton(new IconBuilder().getERASER_ICON());
+        ragButton = new ToolButton(new IconBuilder().getRAG_ICON());
+
         lineButton = new ToolButton(new IconBuilder().getLINE_ICON());
         dottedLineButton = new ToolButton(new IconBuilder().getDOTTED_LINE_ICON());
         ellipseButton = new ToolButton(new IconBuilder().getELLIPSE_ICON());
@@ -135,7 +138,7 @@ public class SwingViewImpl extends JFrame implements View {
         redButton = new  ColorButton(Color.red, true, 15);
         blackButton = new  ColorButton(Color.black);
         blueButton = new ColorButton(Color.blue);
-        greenButton = new  ColorButton(new Color(0x128D12));
+        greenButton = new  ColorButton(new Color(0x12A612));
         whiteButton = new  ColorButton(Color.white);
 //        whiteButton.setBorderPainted(true);
 
@@ -160,9 +163,10 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar.add(markerButton);
         toolBar.add(brushButton);
         toolBar.add(eraserButton);
+        toolBar.add(ragButton);
         toolBar.addSeparator();
         toolBar.add(lineButton);
-//        toolBar.add(dottedLineButton);
+        toolBar.add(dottedLineButton);
         toolBar.add(ellipseButton);
         toolBar.add(rectButton);
         toolBar.add(pyramidButton);
@@ -171,7 +175,7 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar.add(undoButton);
         toolBar.add(redoButton);
         toolBar.addSeparator();
-        toolBar.add(textButton);
+//        toolBar.add(textButton);
         toolBar.add(fillButton);
         toolBar.addSeparator();
 
@@ -227,6 +231,7 @@ public class SwingViewImpl extends JFrame implements View {
         markerButton.setBorderPainted(false);
         brushButton.setBorderPainted(false);
         eraserButton.setBorderPainted(false);
+        ragButton.setBorderPainted(false);
         lineButton.setBorderPainted(false);
         dottedLineButton.setBorderPainted(false);
         ellipseButton.setBorderPainted(false);
@@ -237,6 +242,20 @@ public class SwingViewImpl extends JFrame implements View {
         fillButton.setBorderPainted(false);
     }
 
+
+    public void saveCurrentImage() {
+        previousImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics g = previousImage.getGraphics();
+        g.drawImage(mainImage, 0, 0, null);
+    }
+
+
+    public void loadSavedImage() {
+        Graphics g = mainImage.getGraphics();
+        if (previousImage != null) {
+            g.drawImage(previousImage, 0, 0, null);
+        }
+    }
 
     public class ColorDialog extends JDialog {
         public ColorDialog(JFrame owner, String title) {
@@ -252,9 +271,9 @@ public class SwingViewImpl extends JFrame implements View {
             if (mainImage == null) {
 
                 mainImage = new BufferedImage(mainFrame.getWidth(), mainFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
-                Graphics2D d2 = (Graphics2D) mainImage.createGraphics();
-                d2.setColor(Color.white);
-                d2.fillRect(0, 0, mainFrame.getWidth(), mainFrame.getHeight());
+                Graphics2D g2 = (Graphics2D) mainImage.createGraphics();
+                g2.setColor(Color.white);
+                g2.fillRect(0, 0, mainFrame.getWidth(), mainFrame.getHeight());
 
             }
         }
@@ -276,9 +295,13 @@ public class SwingViewImpl extends JFrame implements View {
     }
 
 
+    public BufferedImage getPreviousImage() {
+        return previousImage;
+    }
 
-
-
+    public void setPreviousImage(BufferedImage previousImage) {
+        this.previousImage = previousImage;
+    }
 
     public static String getFileMenuName() {
         return FILE_MENU_NAME;
@@ -413,14 +436,6 @@ public class SwingViewImpl extends JFrame implements View {
         return transformImageButton;
     }
 
-    public int getDrawNumber() {
-        return drawNumber;
-    }
-
-    public void setDrawNumber(int drawNumber) {
-        this.drawNumber = drawNumber;
-    }
-
     public boolean isNotRepainting() {
         return isNotRepainting;
     }
@@ -459,5 +474,9 @@ public class SwingViewImpl extends JFrame implements View {
 
     public JButton getCalculatorButton() {
         return calculatorButton;
+    }
+
+    public JButton getRagButton() {
+        return ragButton;
     }
 }

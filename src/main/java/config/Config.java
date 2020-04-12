@@ -27,6 +27,13 @@ public class Config {
     public static final String ERASER_CURSOR_XPOINT = "eraser.cursor.xpoint";
     public static final String ERASER_CURSOR_YPOINT = "eraser.cursor.ypoint";
     public static final String ERASER_BASIC_STROKE = "eraser.basic.stroke";
+    public static final String ERASER_XPOINT_OFFSET = "eraser.xpoint.offset";
+    public static final String ERASER_YPOINT_OFFSET = "eraser.ypoint.offset";
+
+    public static final String RAG_CURSOR_PATH = "rag.cursor.path";
+    public static final String RAG_CURSOR_XPOINT = "rag.cursor.xpoint";
+    public static final String RAG_CURSOR_YPOINT = "rag.cursor.ypoint";
+    public static final String RAG_BASIC_STROKE = "rag.basic.stroke";
 
     public static final String FILL_CURSOR_PATH = "fill.cursor.path";
     public static final String FILL_CURSOR_XPOINT = "fill.cursor.xpoint";
@@ -45,6 +52,7 @@ public class Config {
     public static final String MARKER_ICON_PATH = "marker.icon.path";
     public static final String BRUSH_ICON_PATH = "brush.icon.path";
     public static final String ERASER_ICON_PATH = "eraser.icon.path";
+    public static final String RAG_ICON_PATH = "rag.icon.path";
     public static final String LINE_ICON_PATH = "line.icon.path";
     public static final String DOTTED_LINE_ICON_PATH = "dottedLine.icon.path";
     public static final String ELLIPSE_ICON_PATH = "ellipse.icon.path";
