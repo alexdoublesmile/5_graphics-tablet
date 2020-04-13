@@ -1,82 +1,85 @@
 package util;
 
 import config.Config;
+import model.DrawMode;
 
 import java.awt.*;
+import java.lang.reflect.Field;
 
 public class CursorBuilder {
 
-    private final Cursor PENCIL_CURSOR;
-    private final Cursor MARKER_CURSOR;
-    private final Cursor BRUSH_CURSOR;
-    private final Cursor ERASER_CURSOR;
-    private final Cursor RAG_CURSOR;
-    private final Cursor FILL_CURSOR;
-
-    public CursorBuilder() {
-        PENCIL_CURSOR = getCursorFromPath(
-                Config.getProperty(Config.PENCIL_CURSOR_PATH),
-                Integer.parseInt(Config.getProperty(Config.PENCIL_CURSOR_XPOINT, "0")),
-                Integer.parseInt(Config.getProperty(Config.PENCIL_CURSOR_YPOINT, "0")),
-                "pencil");
-        MARKER_CURSOR = getCursorFromPath(
-                Config.getProperty(Config.MARKER_CURSOR_PATH),
-                Integer.parseInt(Config.getProperty(Config.MARKER_CURSOR_XPOINT, "0")),
-                Integer.parseInt(Config.getProperty(Config.MARKER_CURSOR_YPOINT, "0")),
-                "marker");
-        BRUSH_CURSOR = getCursorFromPath(
-                Config.getProperty(Config.BRUSH_CURSOR_PATH),
-                Integer.parseInt(Config.getProperty(Config.BRUSH_CURSOR_XPOINT, "0")),
-                Integer.parseInt(Config.getProperty(Config.BRUSH_CURSOR_YPOINT, "0")),
-                "brush");
-        ERASER_CURSOR = getCursorFromPath(
-                Config.getProperty(Config.ERASER_CURSOR_PATH),
-                Integer.parseInt(Config.getProperty(Config.ERASER_CURSOR_XPOINT, "0")),
-                Integer.parseInt(Config.getProperty(Config.ERASER_CURSOR_YPOINT, "0")),
-                "eraser");
-        RAG_CURSOR = getCursorFromPath(
-                Config.getProperty(Config.RAG_CURSOR_PATH),
-                Integer.parseInt(Config.getProperty(Config.RAG_CURSOR_XPOINT, "0")),
-                Integer.parseInt(Config.getProperty(Config.RAG_CURSOR_YPOINT, "0")),
-                "rag");
-        FILL_CURSOR = getCursorFromPath(
-                Config.getProperty(Config.FILL_CURSOR_PATH),
-                Integer.parseInt(Config.getProperty(Config.FILL_CURSOR_XPOINT, "0")),
-                Integer.parseInt(Config.getProperty(Config.FILL_CURSOR_YPOINT, "0")),
-                "fill");
-    }
+    private static final String CURSOR_PATH_NAME_PATTERN = "%s_CURSOR_PATH";
+    private static final String CURSOR_XPOINT_NAME_PATTERN = "%s_CURSOR_XPOINT";
+    private static final String CURSOR_YPOINT_NAME_PATTERN = "%s_CURSOR_YPOINT";
 
     private static final Toolkit toolkit = Toolkit.getDefaultToolkit();
 
-    public Cursor getPENCIL_CURSOR() {
-        return PENCIL_CURSOR;
+    private static boolean cursorIsDefault = true;
+    private static Cursor cursor;
+    private static Cursor defaultCursor;
+
+
+    public static Cursor buildCursorByDrawMode(DrawMode drawMode) throws IllegalAccessException {
+        String drawModeName = drawMode.name();
+        resetCursor();
+
+        String pathFieldName = String.format(CURSOR_PATH_NAME_PATTERN, drawModeName);
+        String xPointFieldName = String.format(CURSOR_XPOINT_NAME_PATTERN, drawModeName);
+        String yPointFieldName = String.format(CURSOR_YPOINT_NAME_PATTERN, drawModeName);
+        Image cursorImage;
+        int firstPoint = 0;
+        int secondPoint = 0;
+
+        Field[] configFields = Config.class.getDeclaredFields();
+        for (Field field : configFields) {
+            if (field.getName().equals(pathFieldName)) {
+                String fieldValue = (String) field.get(null);
+                cursorImage = toolkit.getImage(
+                        CursorBuilder.class.getResource(Config.getProperty(fieldValue)));
+
+                firstPoint = getPointValue(xPointFieldName, firstPoint, configFields);
+                secondPoint = getPointValue(yPointFieldName, secondPoint, configFields);
+
+                cursor = toolkit.createCustomCursor(
+                        cursorImage, new Point(firstPoint, secondPoint), drawModeName.toLowerCase());
+
+                cursorIsDefault = false;
+            }
+        }
+
+        if (cursorIsDefault) {
+            cursor = buildDefaultCursor(drawModeName);
+        }
+
+        return cursor;
     }
 
-    public Cursor getMARKER_CURSOR() {
-        return MARKER_CURSOR;
-    }
-
-    public Cursor getERASER_CURSOR() {
-        return ERASER_CURSOR;
-    }
-
-    public Cursor getRAG_CURSOR() {
-        return RAG_CURSOR;
-    }
-
-    public Cursor getBRUSH_CURSOR() {
-        return BRUSH_CURSOR;
-    }
-
-    public Cursor getFILL_CURSOR() {
-        return FILL_CURSOR;
-    }
-
-
-    private Cursor getCursorFromPath(String path, int pointX, int pointY, String name) {
-        Image cursorImage = toolkit.getImage(getClass().getResource(path));
-        Cursor cursor = toolkit.createCustomCursor(
+    public static Cursor buildICursorByPath(String path, int pointX, int pointY, String name) {
+        Image cursorImage = toolkit.getImage(Cursor.class.getResource(path));
+        cursor = toolkit.createCustomCursor(
                 cursorImage, new Point(pointX, pointY), name);
         return cursor;
+    }
+
+    private static int getPointValue(String fieldName, int pointValue, Field[] fields) throws IllegalAccessException {
+        for (Field field : fields) {
+            if (field.getName().equals(fieldName)) {
+                String fieldValue = (String) field.get(null);
+                pointValue = Integer.parseInt(Config.getProperty(fieldValue, "0"));
+            }
+        }
+        return pointValue;
+    }
+
+    private static Cursor buildDefaultCursor(String drawModeName) {
+        switch(drawModeName) {
+            default:
+                defaultCursor = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+        }
+        return defaultCursor;
+    }
+
+    private static void resetCursor() {
+        cursorIsDefault = true;
     }
 }

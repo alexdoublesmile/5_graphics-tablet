@@ -5,7 +5,7 @@ import config.Config;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class PaintModel {
+public class Model {
 
     private String fileName;
     private DrawMode drawMode;
@@ -31,7 +31,7 @@ public class PaintModel {
 
     private UndoRedoService undoService;
 
-    public PaintModel() {
+    public Model() {
 
         undoService = new UndoRedoService();
 

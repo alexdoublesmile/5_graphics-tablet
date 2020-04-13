@@ -1,7 +1,8 @@
 package view.swing;
 
 import config.Config;
-import model.PaintModel;
+import model.DrawMode;
+import model.Model;
 import util.CursorBuilder;
 import util.IconBuilder;
 import view.View;
@@ -13,6 +14,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SwingViewImpl extends JFrame implements View {
 
@@ -22,7 +25,9 @@ public class SwingViewImpl extends JFrame implements View {
     private static final String CLEAN_BUTTON_NAME = "Очистить планшетик";
     private static final Color CONTROL_PANEL_COLOR = new Color(0xE9D6BF);
 
-    private PaintModel model;
+    private Model model;
+
+    private final Map<String, ToolButton> toolButtons;
 
     private JFrame mainFrame;
 
@@ -36,45 +41,49 @@ public class SwingViewImpl extends JFrame implements View {
     private JToolBar toolBar;
     private JToolBar colorBar;
 
-    private JButton pencilButton;
-    private JButton markerButton;
-    private JButton brushButton;
-    private JButton eraserButton;
-    private JButton ragButton;
-    private JButton lineButton;
-    private JButton dottedLineButton;
-    private JButton ellipseButton;
-    private JButton rectButton;
-    private JButton pyramidButton;
-    private JButton prismButton;
-    private JButton fillButton;
-
     private JButton undoButton;
     private JButton redoButton;
-    private JButton textButton;
-    private JButton calculatorButton;
 
     private JButton colorButton;
-    private JButton redButton;
-    private JButton blackButton;
-    private JButton blueButton;
-    private JButton greenButton;
-    private JButton whiteButton;
+    private ColorButton redButton;
+    private ColorButton blackButton;
+    private ColorButton blueButton;
+    private ColorButton greenButton;
+    private ColorButton whiteButton;
     private JColorChooser colorChooser;
     private JFileChooser fileChooser;
 
-    private JButton transformImageButton;
+    private JButton discolorButton;
     private JButton cleanButton;
+    private JButton calculatorButton;
 
     private BufferedImage mainImage;
     private BufferedImage previousImage;
     private Color mainColor;
     private boolean isNotRepainting = true;
 
-    public SwingViewImpl(PaintModel model) {
+    public SwingViewImpl(Model model) {
         this.model = model;
+        toolButtons = new HashMap<>();
+        initToolButtons();
         createView();
     }
+
+    private void initToolButtons() {
+        for (DrawMode drawMode : DrawMode.values()) {
+            toolButtons.put(
+                    drawMode.name(),
+                    new ToolButton(IconBuilder.buildIconByDrawMode(drawMode)));
+        }
+    }
+
+//    private void initColorButtons() {
+//        for (DrawMode drawMode : DrawMode.values()) {
+//            toolButtons.put(
+//                    drawMode.name(),
+//                    new ToolButton(IconBuilder.buildIconByDrawMode(drawMode)));
+//        }
+//    }
 
     private void createView() {
         this.mainFrame = this;
@@ -102,31 +111,23 @@ public class SwingViewImpl extends JFrame implements View {
         mainPanel.setBounds(0,0,mainFrame.getWidth(),mainFrame.getHeight());
         mainPanel.setBackground(Color.white);
         mainPanel.setOpaque(true);
-        mainPanel.setCursor(new CursorBuilder().getPENCIL_CURSOR());
+        try {
+            mainPanel.setCursor(CursorBuilder.buildCursorByDrawMode(DrawMode.PENCIL));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
         toolBar = new JToolBar(JToolBar.HORIZONTAL);
         toolBar.setBackground(CONTROL_PANEL_COLOR);
-
 //        toolBar.setBounds(0, 0, 300, 30);
-        pencilButton = new ToolButton(new IconBuilder().getPENCIL_ICON());
 
-        markerButton = new ToolButton(new IconBuilder().getMARKER_ICON());
-        brushButton = new ToolButton(new IconBuilder().getBRUSH_ICON());
-        eraserButton = new ToolButton(new IconBuilder().getERASER_ICON());
-        ragButton = new ToolButton(new IconBuilder().getRAG_ICON());
-
-        lineButton = new ToolButton(new IconBuilder().getLINE_ICON());
-        dottedLineButton = new ToolButton(new IconBuilder().getDOTTED_LINE_ICON());
-        ellipseButton = new ToolButton(new IconBuilder().getELLIPSE_ICON());
-        rectButton = new ToolButton(new IconBuilder().getRECT_ICON());
-        pyramidButton = new ToolButton(new IconBuilder().getPYRAMID_ICON());
-        prismButton = new ToolButton(new IconBuilder().getPRISM_ICON());
-
-        undoButton = new  ToolButton(new IconBuilder().getUNDO_ICON());
-        redoButton = new  ToolButton(new IconBuilder().getREDO_ICON());
-        textButton = new  ToolButton(new IconBuilder().getTEXT_ICON());
-        fillButton = new ToolButton(new IconBuilder().getFILL_ICON());
-
+        undoButton = new  ToolButton(IconBuilder.buildIconByPath(
+                Config.getProperty(Config.UNDO_ICON_PATH)));
+        redoButton = new  ToolButton(IconBuilder.buildIconByPath(
+                Config.getProperty(Config.REDO_ICON_PATH)));
+        calculatorButton = new  ToolButton(IconBuilder.buildIconByPath(
+                Config.getProperty(Config.CALCULATOR_ICON_PATH)
+        ));
 
         colorBar = new  JToolBar(JToolBar.HORIZONTAL);
         colorBar.setBackground(CONTROL_PANEL_COLOR);
@@ -150,33 +151,32 @@ public class SwingViewImpl extends JFrame implements View {
 
         fileChooser = new JFileChooser();
 
-        transformImageButton = new FunctionButton(TRANSFORM_IMAGE_BUTTON_NAME);
+        discolorButton = new FunctionButton(TRANSFORM_IMAGE_BUTTON_NAME);
         cleanButton = new FunctionButton(CLEAN_BUTTON_NAME);
-        calculatorButton = new  ToolButton(new IconBuilder().getCALCULATOR_ICON());
 
 
         fileMenu.add(loadMenu);
         fileMenu.add(saveMenu);
         fileMenu.add(saveAsMenu);
 
-        toolBar.add(pencilButton);
-        toolBar.add(markerButton);
-        toolBar.add(brushButton);
-        toolBar.add(eraserButton);
-        toolBar.add(ragButton);
+        toolBar.add(toolButtons.get(DrawMode.PENCIL.name()));
+        toolBar.add(toolButtons.get(DrawMode.MARKER.name()));
+        toolBar.add(toolButtons.get(DrawMode.BRUSH.name()));
+        toolBar.add(toolButtons.get(DrawMode.ERASER.name()));
+        toolBar.add(toolButtons.get(DrawMode.RAG.name()));
         toolBar.addSeparator();
-        toolBar.add(lineButton);
-        toolBar.add(dottedLineButton);
-        toolBar.add(ellipseButton);
-        toolBar.add(rectButton);
-        toolBar.add(pyramidButton);
-        toolBar.add(prismButton);
+        toolBar.add(toolButtons.get(DrawMode.LINE.name()));
+        toolBar.add(toolButtons.get(DrawMode.DOTTEDLINE.name()));
+        toolBar.add(toolButtons.get(DrawMode.CIRCLE.name()));
+        toolBar.add(toolButtons.get(DrawMode.RECT.name()));
+        toolBar.add(toolButtons.get(DrawMode.PYRAMID.name()));
+        toolBar.add(toolButtons.get(DrawMode.PRISM.name()));
         toolBar.addSeparator();
         toolBar.add(undoButton);
         toolBar.add(redoButton);
         toolBar.addSeparator();
-//        toolBar.add(textButton);
-        toolBar.add(fillButton);
+//        toolBar.add(toolButtons.get(DrawMode.TEXT.name()));
+        toolBar.add(toolButtons.get(DrawMode.FILL.name()));
         toolBar.addSeparator();
 
         colorBar.add(colorButton);
@@ -191,7 +191,7 @@ public class SwingViewImpl extends JFrame implements View {
         mainMenu.add(colorBar);
         mainMenu.add(new JToolBar.Separator());
 
-        mainMenu.add(transformImageButton);
+        mainMenu.add(discolorButton);
         mainMenu.add(new JToolBar.Separator());
         mainMenu.add(cleanButton);
         mainMenu.add(new JToolBar.Separator());
@@ -227,19 +227,9 @@ public class SwingViewImpl extends JFrame implements View {
     }
 
     public void resetToolButtonBorders() {
-        pencilButton.setBorderPainted(false);
-        markerButton.setBorderPainted(false);
-        brushButton.setBorderPainted(false);
-        eraserButton.setBorderPainted(false);
-        ragButton.setBorderPainted(false);
-        lineButton.setBorderPainted(false);
-        dottedLineButton.setBorderPainted(false);
-        ellipseButton.setBorderPainted(false);
-        rectButton.setBorderPainted(false);
-        pyramidButton.setBorderPainted(false);
-        prismButton.setBorderPainted(false);
-        textButton.setBorderPainted(false);
-        fillButton.setBorderPainted(false);
+        for (Map.Entry<String, ToolButton> pair : toolButtons.entrySet()) {
+            pair.getValue().setBorderPainted(false);
+        }
     }
 
 
@@ -257,21 +247,11 @@ public class SwingViewImpl extends JFrame implements View {
         }
     }
 
-    public class ColorDialog extends JDialog {
-        public ColorDialog(JFrame owner, String title) {
-            super(owner, title, true);
-            add(colorChooser);
-            setSize(200, 200);
-        }
-    }
-
     class MyPanel extends JPanel {
-
         public MyPanel() {
             if (mainImage == null) {
-
                 mainImage = new BufferedImage(mainFrame.getWidth(), mainFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
-                Graphics2D g2 = (Graphics2D) mainImage.createGraphics();
+                Graphics2D g2 = mainImage.createGraphics();
                 g2.setColor(Color.white);
                 g2.fillRect(0, 0, mainFrame.getWidth(), mainFrame.getHeight());
 
@@ -279,7 +259,6 @@ public class SwingViewImpl extends JFrame implements View {
         }
 
         public void paintComponent (Graphics g) {
-
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
@@ -288,9 +267,15 @@ public class SwingViewImpl extends JFrame implements View {
             g2.setRenderingHint (RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR );
 
             g2.drawImage(mainImage, 0, 0,this);
+        }
+    }
 
+    public class ColorDialog extends JDialog {
 
-
+        public ColorDialog (JFrame owner, String title, int width, int height) {
+            super(owner, title, true);
+            add(colorChooser);
+            setSize(width, height);
         }
     }
 
@@ -303,6 +288,17 @@ public class SwingViewImpl extends JFrame implements View {
         this.previousImage = previousImage;
     }
 
+    public Map<String, ToolButton> getToolButtons() {
+        return toolButtons;
+    }
+
+
+
+
+
+
+
+
     public static String getFileMenuName() {
         return FILE_MENU_NAME;
     }
@@ -311,7 +307,7 @@ public class SwingViewImpl extends JFrame implements View {
         return CLEAN_BUTTON_NAME;
     }
 
-    public PaintModel getModel() {
+    public Model getModel() {
         return model;
     }
 
@@ -351,34 +347,6 @@ public class SwingViewImpl extends JFrame implements View {
         return colorBar;
     }
 
-    public JButton getPencilButton() {
-        return pencilButton;
-    }
-
-    public JButton getMarkerButton() {
-        return markerButton;
-    }
-
-    public JButton getEraserButton() {
-        return eraserButton;
-    }
-
-    public JButton getLineButton() {
-        return lineButton;
-    }
-
-    public JButton getEllipseButton() {
-        return ellipseButton;
-    }
-
-    public JButton getRectButton() {
-        return rectButton;
-    }
-
-    public JButton getTextButton() {
-        return textButton;
-    }
-
     public JButton getUndoButton() {
         return undoButton;
     }
@@ -391,23 +359,23 @@ public class SwingViewImpl extends JFrame implements View {
         return colorButton;
     }
 
-    public JButton getRedButton() {
+    public ColorButton getRedButton() {
         return redButton;
     }
 
-    public JButton getBlackButton() {
+    public ColorButton getBlackButton() {
         return blackButton;
     }
 
-    public JButton getBlueButton() {
+    public ColorButton getBlueButton() {
         return blueButton;
     }
 
-    public JButton getGreenButton() {
+    public ColorButton getGreenButton() {
         return greenButton;
     }
 
-    public JButton getWhiteButton() {
+    public ColorButton getWhiteButton() {
         return whiteButton;
     }
 
@@ -432,8 +400,8 @@ public class SwingViewImpl extends JFrame implements View {
         return mainColor;
     }
 
-    public JButton getTransformImageButton() {
-        return transformImageButton;
+    public JButton getDiscolorButton() {
+        return discolorButton;
     }
 
     public boolean isNotRepainting() {
@@ -452,31 +420,7 @@ public class SwingViewImpl extends JFrame implements View {
         this.mainColor = mainColor;
     }
 
-    public JButton getBrushButton() {
-        return brushButton;
-    }
-
-    public JButton getDottedLineButton() {
-        return dottedLineButton;
-    }
-
-    public JButton getPyramidButton() {
-        return pyramidButton;
-    }
-
-    public JButton getPrismButton() {
-        return prismButton;
-    }
-
-    public JButton getFillButton() {
-        return fillButton;
-    }
-
     public JButton getCalculatorButton() {
         return calculatorButton;
-    }
-
-    public JButton getRagButton() {
-        return ragButton;
     }
 }

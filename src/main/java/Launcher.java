@@ -1,24 +1,22 @@
 import controller.Controller;
-import controller.SwingControllerImpl;
-import model.PaintModel;
+import controller.swing.SwingControllerImpl;
+import model.Model;
 import view.swing.SwingViewImpl;
 import view.View;
 
-import javax.swing.*;
-
 public class Launcher {
-    private static Controller theController;
-    private static PaintModel theModel;
-    private static View theView;
+    private Controller theController;
+    private Model theModel;
+    private View theView;
 
     public static void main(String[] args) {
-
-        SwingUtilities.invokeLater(() -> new Launcher().execute());
+        new Launcher().execute();
     }
 
     public void execute() {
-        theModel = new PaintModel();
+        theModel = new Model();
         theView = new SwingViewImpl(theModel);
         theController = new SwingControllerImpl(theView, theModel);
+        theController.load();
     }
 }

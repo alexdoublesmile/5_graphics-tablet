@@ -54,15 +54,15 @@ public class Config {
     public static final String ERASER_ICON_PATH = "eraser.icon.path";
     public static final String RAG_ICON_PATH = "rag.icon.path";
     public static final String LINE_ICON_PATH = "line.icon.path";
-    public static final String DOTTED_LINE_ICON_PATH = "dottedLine.icon.path";
-    public static final String ELLIPSE_ICON_PATH = "ellipse.icon.path";
+    public static final String DOTTEDLINE_ICON_PATH = "dottedLine.icon.path";
+    public static final String CIRCLE_ICON_PATH = "circle.icon.path";
     public static final String RECT_ICON_PATH = "rect.icon.path";
     public static final String PYRAMID_ICON_PATH = "pyramid.icon.path";
     public static final String PRISM_ICON_PATH = "prism.icon.path";
     public static final String FILL_ICON_PATH = "fill.icon.path";
+    public static final String TEXT_ICON_PATH = "text.icon.path";
     public static final String UNDO_ICON_PATH = "undo.icon.path";
     public static final String REDO_ICON_PATH = "redo.icon.path";
-    public static final String TEXT_ICON_PATH = "text.icon.path";
     public static final String CALCULATOR_ICON_PATH = "calculator.icon.path";
 
     public static final String TOOL_BUTTON_XPOINT = "toolButtons.main.xPoint";

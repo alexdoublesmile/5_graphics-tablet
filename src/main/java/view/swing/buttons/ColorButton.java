@@ -15,6 +15,8 @@ public class ColorButton extends JButton{
     private final int BUTTON_SIZE;
     private final int BUTTON_OFFSET;
 
+    private Color color;
+
     {
         X_POINT = Integer.parseInt(Config.getProperty(Config.COLOR_BUTTON_XPOINT));
         Y_POINT = Integer.parseInt(Config.getProperty(Config.COLOR_BUTTON_YPOINT));
@@ -25,30 +27,22 @@ public class ColorButton extends JButton{
 
     public ColorButton(Color color, int customXPoint, int customYPoint, int customWidth, int customHeight, ImageIcon icon) {
         super(icon);
+        this.color = color;
         this.setBounds(customXPoint, customYPoint, customWidth, customHeight);
         this.setBackground(color);
         buttonCounter++;
     }
 
     public ColorButton(Color color, int customXPoint, int customYPoint, int customWidth, int customHeight) {
+        this.color = color;
         this.setBounds(customXPoint, customYPoint, customWidth, customHeight);
         this.setBackground(color);
         buttonCounter++;
     }
 
-    public ColorButton(int customXPoint, int customYPoint, int customWidth, int customHeight, ImageIcon icon) {
-        super(icon);
-        this.setBounds(customXPoint, customYPoint, customWidth, customHeight);
-        buttonCounter++;
-    }
-
-    public ColorButton(int customXPoint, int customYPoint, int customWidth, int customHeight) {
-        this.setBounds(customXPoint, customYPoint, customWidth, customHeight);
-        buttonCounter++;
-    }
-
     public ColorButton(String verticalMarker, Color color, int extraYOffset, ImageIcon icon) {
         super(icon);
+        this.color = color;
         this.setBounds(
                 X_POINT,
                 Y_POINT + buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET + extraYOffset) - fixValue,
@@ -59,6 +53,7 @@ public class ColorButton extends JButton{
     }
 
     public ColorButton(String verticalMarker, Color color, int extraYOffset) {
+        this.color = color;
         this.setBounds(
                 X_POINT,
                 Y_POINT + buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET + extraYOffset) - fixValue,
@@ -68,27 +63,9 @@ public class ColorButton extends JButton{
         buttonCounter++;
     }
 
-    public ColorButton(String verticalMarker, int extraYOffset, ImageIcon icon) {
-        super(icon);
-        this.setBounds(
-                X_POINT,
-                Y_POINT + buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET + extraYOffset) - fixValue,
-                BUTTON_SIZE,
-                BUTTON_SIZE);
-        buttonCounter++;
-    }
-
-    public ColorButton(String verticalMarker, int extraYOffset) {
-        this.setBounds(
-                X_POINT,
-                Y_POINT + buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET + extraYOffset) - fixValue,
-                BUTTON_SIZE,
-                BUTTON_SIZE);
-        buttonCounter++;
-    }
-
     public ColorButton(Color color, int extraXOffset, ImageIcon icon) {
         super(icon);
+        this.color = color;
         this.setBounds(
                 X_POINT +  buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET + extraXOffset) - fixValue,
                 Y_POINT,
@@ -101,6 +78,7 @@ public class ColorButton extends JButton{
 
     public ColorButton(Color color, int customXPoint, int customYPoint, int size, ImageIcon icon) {
         super(icon);
+        this.color = color;
         this.setBounds(
                 customXPoint,
                 customYPoint,
@@ -112,6 +90,7 @@ public class ColorButton extends JButton{
 
     public ColorButton(Color color, int customXPoint, int customYPoint, ImageIcon icon) {
         super(icon);
+        this.color = color;
         this.setBounds(
                 customXPoint,
                 customYPoint,
@@ -122,6 +101,7 @@ public class ColorButton extends JButton{
     }
 
     public ColorButton(Color color, int customXPoint, int customYPoint, int size) {
+        this.color = color;
         this.setBounds(
                 customXPoint,
                 customYPoint,
@@ -132,6 +112,7 @@ public class ColorButton extends JButton{
     }
 
     public ColorButton(Color color, int customXPoint, int customYPoint) {
+        this.color = color;
         this.setBounds(
                 customXPoint,
                 customYPoint,
@@ -141,26 +122,8 @@ public class ColorButton extends JButton{
         buttonCounter++;
     }
 
-    public ColorButton(int customXPoint, int customYPoint, ImageIcon icon) {
-        super(icon);
-        this.setBounds(
-                customXPoint,
-                customYPoint,
-                BUTTON_SIZE,
-                BUTTON_SIZE);
-        buttonCounter++;
-    }
-
-    public ColorButton(int customXPoint, int customYPoint) {
-        this.setBounds(
-                customXPoint,
-                customYPoint,
-                BUTTON_SIZE,
-                BUTTON_SIZE);
-        buttonCounter++;
-    }
-
     public ColorButton(Color color, int size) {
+        this.color = color;
         this.setBorderPainted(false);
         this.setFocusPainted(false);
         this.setBounds(
@@ -172,18 +135,9 @@ public class ColorButton extends JButton{
         buttonCounter++;
     }
 
-    public ColorButton(int extraXOffset, ImageIcon icon) {
-        super(icon);
-        this.setBounds(
-                X_POINT +  buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET + extraXOffset) - fixValue,
-                Y_POINT,
-                BUTTON_SIZE,
-                BUTTON_SIZE);
-        buttonCounter++;
-    }
-
     public ColorButton(Color color, ImageIcon icon) {
         super(icon);
+        this.color = color;
         this.setBackground(color);
         this.setBounds(
                 X_POINT + buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET) - fixValue,
@@ -195,6 +149,7 @@ public class ColorButton extends JButton{
     }
 
     public ColorButton(Color color, double extraXOffset) {
+        this.color = color;
         this.setBackground(color);
         this.setBounds(
                 X_POINT +  buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET + (int) extraXOffset) - fixValue,
@@ -205,6 +160,7 @@ public class ColorButton extends JButton{
     }
 
     public ColorButton(Color color, boolean counterFix, int fixValue) {
+        this.color = color;
         buttonCounter++;
         ColorButton.fixValue = fixValue;
         this.setBorderPainted(false);
@@ -219,27 +175,8 @@ public class ColorButton extends JButton{
 
     }
 
-    public ColorButton(int extraXOffset) {
-        this.setBounds(
-                X_POINT +  buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET + extraXOffset) - fixValue,
-                Y_POINT,
-                BUTTON_SIZE,
-                BUTTON_SIZE);
-        buttonCounter++;
-    }
-
-    public ColorButton(ImageIcon icon) {
-        super(icon);
-        this.setBounds(
-                X_POINT + buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET) - fixValue,
-                Y_POINT,
-                BUTTON_SIZE,
-                BUTTON_SIZE);
-        buttonCounter++;
-
-    }
-
     public ColorButton(Color color) {
+        this.color = color;
         this.setBackground(color);
 
         this.setBorderPainted(false);
@@ -252,16 +189,6 @@ public class ColorButton extends JButton{
         buttonCounter++;
 
 
-
-    }
-
-    public ColorButton() {
-        this.setBounds(
-                X_POINT + buttonCounter * (BUTTON_SIZE + BUTTON_OFFSET) - fixValue,
-                Y_POINT,
-                BUTTON_SIZE,
-                BUTTON_SIZE);
-        buttonCounter++;
 
     }
 
@@ -307,5 +234,9 @@ public class ColorButton extends JButton{
 
     public int getBUTTON_OFFSET() {
         return BUTTON_OFFSET;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }

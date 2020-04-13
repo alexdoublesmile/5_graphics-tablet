@@ -1,8 +1,8 @@
-package controller.listeners;
+package controller.swing.listeners;
 
 import config.Config;
 import model.DrawMode;
-import model.PaintModel;
+import model.Model;
 import view.swing.SwingViewImpl;
 
 import javax.swing.*;
@@ -11,7 +11,7 @@ import java.awt.event.*;
 
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 
-public class DrawListenerBuilder {
+public class DrawListener {
     private final MouseMotionAdapter MOUSE_MOTION_ADAPTER;
     private final MouseAdapter MOUSE_ADAPTER;
     private final KeyAdapter KEY_ADAPTER;
@@ -20,10 +20,10 @@ public class DrawListenerBuilder {
     private final ActionMap actionMap;
 
     private SwingViewImpl view;
-    private PaintModel model;
+    private Model model;
     private JPanel mainPanel;
 
-    public DrawListenerBuilder(SwingViewImpl view, PaintModel model) {
+    public DrawListener(SwingViewImpl view, Model model) {
         this.view = view;
         this.model = model;
         mainPanel = view.getMainPanel();
@@ -129,8 +129,6 @@ public class DrawListenerBuilder {
                         g2.drawLine(model.getXf(), model.getYf(), model.getxPad(), model.getyPad());
                         break;
                     case CIRCLE:
-                        break;
-                    case ELLIPSE:
 
                         int radius = Math.abs(model.getXf() - model.getxPad()) / 2;
 
@@ -142,7 +140,7 @@ public class DrawListenerBuilder {
                                 (int) Math.abs(model.getOvalCenterPoint().getX() - model.getxPad())
                         );
                         break;
-                    case RECTANGLE:
+                    case RECT:
                         g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
                         g2.drawRect(
                                 Math.min(model.getxPad(), model.getXf()),
@@ -354,7 +352,7 @@ public class DrawListenerBuilder {
             model.setXf(mouseEvent.getX());
             model.setYf(mouseEvent.getY());
 
-            if (model.getDrawMode() == DrawMode.ELLIPSE) {
+            if (model.getDrawMode() == DrawMode.CIRCLE) {
                 model.setOvalCenterPoint(new Point(mouseEvent.getX(), mouseEvent.getY()));
             }
         }
@@ -389,7 +387,7 @@ public class DrawListenerBuilder {
 
                     view.saveCurrentImage();
                     break;
-                case ELLIPSE:
+                case CIRCLE:
 
                     int radius = Math.abs(model.getXf() - model.getxPad()) / 2;
 
@@ -409,7 +407,7 @@ public class DrawListenerBuilder {
 
                     view.saveCurrentImage();
                     break;
-                case RECTANGLE:
+                case RECT:
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
                     g2.drawRect(
                             Math.min(model.getxPad(), model.getXf()),
