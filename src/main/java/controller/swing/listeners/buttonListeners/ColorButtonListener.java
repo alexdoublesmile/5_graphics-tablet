@@ -3,16 +3,15 @@ package controller.swing.listeners.buttonListeners;
 import view.swing.SwingViewImpl;
 import view.swing.buttons.ColorButton;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ColorButtonListener implements ActionListener{
-    private static final String COLOR_DIALOG_TITLE = "Выбор цвета";
-    private final int COLOR_DIALOG_WIDTH = 200;
-    private final int COLOR_DIALOG_HEIGHT = 200;
-
     private SwingViewImpl view;
     private ColorButton button;
+    private ColorDysplayButtonListener colorDysplayButtonListener;
     private ChooseColorListener chooseColorListener;
 
     public ColorButtonListener (SwingViewImpl view, ColorButton button) {
@@ -22,6 +21,7 @@ public class ColorButtonListener implements ActionListener{
 
     public ColorButtonListener (SwingViewImpl view) {
         this.view = view;
+        colorDysplayButtonListener = new ColorDysplayButtonListener();
         chooseColorListener = new ChooseColorListener();
 
     }
@@ -32,13 +32,24 @@ public class ColorButtonListener implements ActionListener{
         view.getColorButton().setBackground(button.getColor());
     }
 
-    private class ChooseColorListener implements ActionListener {
-
+    private class ColorDysplayButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            SwingViewImpl.ColorDialog colorDialog = view.new ColorDialog(view, COLOR_DIALOG_TITLE, COLOR_DIALOG_WIDTH, COLOR_DIALOG_HEIGHT);
+            SwingViewImpl.ColorDialog colorDialog = view.new ColorDialog(view);
             colorDialog.setVisible(true);
         }
+    }
+
+    private class ChooseColorListener implements ChangeListener {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            view.setMainColor(view.getColorChooser().getColor());
+            view.getColorButton().setBackground(view.getMainColor());
+        }
+    }
+
+    public ColorDysplayButtonListener getColorDysplayButtonListener() {
+        return colorDysplayButtonListener;
     }
 
     public ChooseColorListener getChooseColorListener() {

@@ -1,6 +1,7 @@
 package controller.swing;
 
 import controller.Controller;
+import controller.swing.listeners.FrameListener;
 import controller.swing.listeners.UndoListener;
 import controller.swing.listeners.buttonListeners.FunctionButtonListener;
 import controller.swing.menuActions.FileAction;
@@ -13,8 +14,6 @@ import util.CursorBuilder;
 import view.swing.SwingViewImpl;
 import view.View;
 
-import java.awt.*;
-
 public class SwingControllerImpl implements Controller {
 
     private SwingViewImpl view;
@@ -23,8 +22,8 @@ public class SwingControllerImpl implements Controller {
     public SwingControllerImpl(View view, Model model) {
         this.model = model;
         this.view = (SwingViewImpl) view;
-        this.view.drawTablet();
     }
+
     @Override
     public void load() {
         model.saveAction(view.getMainImage());
@@ -64,7 +63,8 @@ public class SwingControllerImpl implements Controller {
         view.getUndoButton().addActionListener(undoListener.getUNDO_BUTTON_LISTENER());
         view.getRedoButton().addActionListener(undoListener.getREDO_BUTTON_LISTENER());
 
-        view.getColorButton().addActionListener(colorListener.getChooseColorListener());
+        view.getColorButton().addActionListener(colorListener.getColorDysplayButtonListener());
+        view.getColorChooser().getSelectionModel().addChangeListener(colorListener.getChooseColorListener());
         view.getRedButton().addActionListener(new ColorButtonListener(view, view.getRedButton()));
         view.getBlackButton().addActionListener(new ColorButtonListener(view, view.getBlackButton()));
         view.getBlueButton().addActionListener(new ColorButtonListener(view, view.getBlueButton()));
@@ -91,7 +91,7 @@ public class SwingControllerImpl implements Controller {
     }
 
     private void setFrameListeners() {
-
+        view.addComponentListener(new FrameListener(view, model).getFrameResizeListener());
     }
 
     public View getView() {

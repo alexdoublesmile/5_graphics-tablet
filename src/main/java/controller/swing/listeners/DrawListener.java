@@ -70,26 +70,26 @@ public class DrawListener {
                 switch (model.getDrawMode()) {
                     case PENCIL:
                         g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.PENCIL_BASIC_STROKE))));
-                        g2.drawLine(model.getxPad(), model.getyPad(), mouseEvent.getX(), mouseEvent.getY());
+                        g2.drawLine(model.getFinalXPoint(), model.getFinalYPoint(), mouseEvent.getX(), mouseEvent.getY());
 
-                        model.setxPad(mouseEvent.getX());
-                        model.setyPad(mouseEvent.getY());
+                        model.setFinalXPoint(mouseEvent.getX());
+                        model.setFinalYPoint(mouseEvent.getY());
                         view.saveCurrentImage();
                         break;
                     case MARKER:
                         g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.MARKER_BASIC_STROKE))));
-                        g2.drawLine(model.getxPad(), model.getyPad(), mouseEvent.getX(), mouseEvent.getY());
+                        g2.drawLine(model.getFinalXPoint(), model.getFinalYPoint(), mouseEvent.getX(), mouseEvent.getY());
 
-                        model.setxPad(mouseEvent.getX());
-                        model.setyPad(mouseEvent.getY());
+                        model.setFinalXPoint(mouseEvent.getX());
+                        model.setFinalYPoint(mouseEvent.getY());
                         view.saveCurrentImage();
                         break;
                     case BRUSH:
                         g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.BRUSH_BASIC_STROKE))));
-                        g2.drawLine(model.getxPad(), model.getyPad(), mouseEvent.getX(), mouseEvent.getY());
+                        g2.drawLine(model.getFinalXPoint(), model.getFinalYPoint(), mouseEvent.getX(), mouseEvent.getY());
 
-                        model.setxPad(mouseEvent.getX());
-                        model.setyPad(mouseEvent.getY());
+                        model.setFinalXPoint(mouseEvent.getX());
+                        model.setFinalYPoint(mouseEvent.getY());
                         view.saveCurrentImage();
                         break;
                     case ERASER:
@@ -100,23 +100,23 @@ public class DrawListener {
                                 model.getEraserStroke(),
                                 model.getEraserStroke());
 
-                        model.setxPad(mouseEvent.getX());
-                        model.setyPad(mouseEvent.getY());
+                        model.setFinalXPoint(mouseEvent.getX());
+                        model.setFinalYPoint(mouseEvent.getY());
                         view.saveCurrentImage();
                         break;
                     case RAG:
                         g2.setStroke(new  BasicStroke(model.getRagStroke()));
                         g2.setColor(Color.WHITE);
-                        g2.drawLine(model.getxPad(), model.getyPad(), mouseEvent.getX(), mouseEvent.getY());
+                        g2.drawLine(model.getFinalXPoint(), model.getFinalYPoint(), mouseEvent.getX(), mouseEvent.getY());
 
-                        model.setxPad(mouseEvent.getX());
-                        model.setyPad(mouseEvent.getY());
+                        model.setFinalXPoint(mouseEvent.getX());
+                        model.setFinalYPoint(mouseEvent.getY());
                         view.saveCurrentImage();
                         break;
 
                     case LINE:
                         g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
-                        g2.drawLine(model.getXf(), model.getYf(), model.getxPad(), model.getyPad());
+                        g2.drawLine(model.getStartXPoint(), model.getStartYPoint(), model.getFinalXPoint(), model.getFinalYPoint());
                         break;
                     case DOTTEDLINE:
                         g2.setStroke(new BasicStroke(
@@ -126,32 +126,32 @@ public class DrawListener {
                                 10.0f,
                                 new float[]{7.0f},
                                 0.0f));
-                        g2.drawLine(model.getXf(), model.getYf(), model.getxPad(), model.getyPad());
+                        g2.drawLine(model.getStartXPoint(), model.getStartYPoint(), model.getFinalXPoint(), model.getFinalYPoint());
                         break;
                     case CIRCLE:
 
-                        int radius = Math.abs(model.getXf() - model.getxPad()) / 2;
+                        int radius = Math.abs(model.getStartXPoint() - model.getFinalXPoint()) / 2;
 
                         g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
                         g2.drawOval(
                                 (int) (model.getOvalCenterPoint().getX() - radius),
                                 (int) (model.getOvalCenterPoint().getY() - radius),
-                                (int) Math.abs(model.getOvalCenterPoint().getX() - model.getxPad()),
-                                (int) Math.abs(model.getOvalCenterPoint().getX() - model.getxPad())
+                                (int) Math.abs(model.getOvalCenterPoint().getX() - model.getFinalXPoint()),
+                                (int) Math.abs(model.getOvalCenterPoint().getX() - model.getFinalXPoint())
                         );
                         break;
                     case RECT:
                         g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
                         g2.drawRect(
-                                Math.min(model.getxPad(), model.getXf()),
-                                Math.min(model.getyPad(), model.getYf()),
-                                Math.abs(model.getXf() - model.getxPad()),
-                                Math.abs(model.getYf() - model.getyPad()));
+                                Math.min(model.getFinalXPoint(), model.getStartXPoint()),
+                                Math.min(model.getFinalYPoint(), model.getStartYPoint()),
+                                Math.abs(model.getStartXPoint() - model.getFinalXPoint()),
+                                Math.abs(model.getStartYPoint() - model.getFinalYPoint()));
                         break;
                     case PYRAMID:
                         double mainLineLenght = Math.sqrt(
-                                Math.pow(model.getXf() - model.getxPad(), 2.0) +
-                                        Math.pow(model.getYf() - model.getyPad(), 2.0)
+                                Math.pow(model.getStartXPoint() - model.getFinalXPoint(), 2.0) +
+                                        Math.pow(model.getStartYPoint() - model.getFinalYPoint(), 2.0)
                         );
 
                         g2.setStroke(new BasicStroke(
@@ -163,43 +163,43 @@ public class DrawListener {
                                 0.0f));
 
                         g2.drawLine(
-                                model.getXf(),
-                                model.getYf(),
-                                (int) (model.getXf() - mainLineLenght * 0.2),
-                                model.getyPad());
+                                model.getStartXPoint(),
+                                model.getStartYPoint(),
+                                (int) (model.getStartXPoint() - mainLineLenght * 0.2),
+                                model.getFinalYPoint());
 
                         g2.drawLine(
-                                model.getXf(),
-                                model.getYf(),
-                                (int) (model.getxPad() - mainLineLenght * 0.223),
-                                (int) (model.getyPad() - mainLineLenght * 0.243));
+                                model.getStartXPoint(),
+                                model.getStartYPoint(),
+                                (int) (model.getFinalXPoint() - mainLineLenght * 0.223),
+                                (int) (model.getFinalYPoint() - mainLineLenght * 0.243));
 
                         g2.drawLine(
-                                model.getXf(),
-                                model.getYf(),
-                                (int) (model.getxPad() + mainLineLenght * 0.624),
-                                (int) (model.getyPad() - mainLineLenght * 0.243));
+                                model.getStartXPoint(),
+                                model.getStartYPoint(),
+                                (int) (model.getFinalXPoint() + mainLineLenght * 0.624),
+                                (int) (model.getFinalYPoint() - mainLineLenght * 0.243));
 
                         break;
                     case PRISM:
                         double frontLineLenght = Math.sqrt(
-                                Math.pow(model.getXf() - model.getxPad(), 2.0) +
-                                        Math.pow(model.getYf() - model.getyPad(), 2.0)
+                                Math.pow(model.getStartXPoint() - model.getFinalXPoint(), 2.0) +
+                                        Math.pow(model.getStartYPoint() - model.getFinalYPoint(), 2.0)
                         );
 
 
                         model.getTriPrismLeftTopPoint().setLocation(
-                                (model.getXf() - frontLineLenght * 0.223),
-                                (model.getYf() - frontLineLenght * 0.243));
+                                (model.getStartXPoint() - frontLineLenght * 0.223),
+                                (model.getStartYPoint() - frontLineLenght * 0.243));
                         model.getTriPrismRightTopPoint().setLocation(
-                                (model.getXf() + frontLineLenght * 0.624),
-                                (model.getYf() - frontLineLenght * 0.243));
+                                (model.getStartXPoint() + frontLineLenght * 0.624),
+                                (model.getStartYPoint() - frontLineLenght * 0.243));
                         model.getTriPrismLeftBottomPoint().setLocation(
-                                (model.getXf() - frontLineLenght * 0.223),
-                                (model.getyPad() - frontLineLenght * 0.243));
+                                (model.getStartXPoint() - frontLineLenght * 0.223),
+                                (model.getFinalYPoint() - frontLineLenght * 0.243));
                         model.getTriPrismRightBottomPoint().setLocation(
-                                (model.getXf() + frontLineLenght * 0.624),
-                                (model.getyPad() - frontLineLenght * 0.243));
+                                (model.getStartXPoint() + frontLineLenght * 0.624),
+                                (model.getFinalYPoint() - frontLineLenght * 0.243));
 
 
                         g2.setStroke(new BasicStroke(
@@ -212,10 +212,10 @@ public class DrawListener {
 
                         // main vertical line
                         g2.drawLine(
-                                model.getxPad(),
-                                model.getYf(),
-                                model.getxPad(),
-                                model.getyPad());
+                                model.getFinalXPoint(),
+                                model.getStartYPoint(),
+                                model.getFinalXPoint(),
+                                model.getFinalYPoint());
 
                         // main horizontal line
                         g2.drawLine(
@@ -242,22 +242,22 @@ public class DrawListener {
 
                         // left horizontal line
                         g2.drawLine(
-                                model.getxPad(),
-                                model.getyPad(),
+                                model.getFinalXPoint(),
+                                model.getFinalYPoint(),
                                 (int) model.getTriPrismLeftBottomPoint().getX(),
                                 (int) model.getTriPrismLeftBottomPoint().getY());
 
 
                         // right horizontal line
                         g2.drawLine(
-                                model.getxPad(),
-                                model.getyPad(),
+                                model.getFinalXPoint(),
+                                model.getFinalYPoint(),
                                 (int) model.getTriPrismRightBottomPoint().getX(),
                                 (int) model.getTriPrismRightBottomPoint().getY());
                         break;
                 }
-                model.setxPad(mouseEvent.getX());
-                model.setyPad(mouseEvent.getY());
+                model.setFinalXPoint(mouseEvent.getX());
+                model.setFinalYPoint(mouseEvent.getY());
 //            }
             mainPanel.repaint();
         }
@@ -283,15 +283,15 @@ public class DrawListener {
             switch (model.getDrawMode()) {
                 case PENCIL:
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.PENCIL_BASIC_STROKE))));
-                    g2.drawLine(model.getxPad(), model.getyPad(), model.getxPad()+1, model.getyPad()+1);
+                    g2.drawLine(model.getFinalXPoint(), model.getFinalYPoint(), model.getFinalXPoint()+1, model.getFinalYPoint()+1);
                     break;
                 case MARKER:
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.MARKER_BASIC_STROKE))));
-                    g2.drawLine(model.getxPad(), model.getyPad(), model.getxPad()+1, model.getyPad()+1);
+                    g2.drawLine(model.getFinalXPoint(), model.getFinalYPoint(), model.getFinalXPoint()+1, model.getFinalYPoint()+1);
                     break;
                 case BRUSH:
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.BRUSH_BASIC_STROKE))));
-                    g2.drawLine(model.getxPad(), model.getyPad(), model.getxPad()+1, model.getyPad()+1);
+                    g2.drawLine(model.getFinalXPoint(), model.getFinalYPoint(), model.getFinalXPoint()+1, model.getFinalYPoint()+1);
                     break;
                 case ERASER:
                     g2.setStroke(new  BasicStroke(model.getEraserStroke()));
@@ -318,8 +318,8 @@ public class DrawListener {
 //                    mainPanel.requestFocus();
                     break;
             }
-            model.setxPad(mouseEvent.getX());
-            model.setyPad(mouseEvent.getY());
+            model.setFinalXPoint(mouseEvent.getX());
+            model.setFinalYPoint(mouseEvent.getY());
 
             view.saveCurrentImage();
             mainPanel.repaint();
@@ -347,10 +347,10 @@ public class DrawListener {
                 view.saveCurrentImage();
             }
 
-            model.setxPad(mouseEvent.getX());
-            model.setyPad(mouseEvent.getY());
-            model.setXf(mouseEvent.getX());
-            model.setYf(mouseEvent.getY());
+            model.setFinalXPoint(mouseEvent.getX());
+            model.setFinalYPoint(mouseEvent.getY());
+            model.setStartXPoint(mouseEvent.getX());
+            model.setStartYPoint(mouseEvent.getY());
 
             if (model.getDrawMode() == DrawMode.CIRCLE) {
                 model.setOvalCenterPoint(new Point(mouseEvent.getX(), mouseEvent.getY()));
@@ -371,7 +371,7 @@ public class DrawListener {
             switch(model.getDrawMode()) {
                 case LINE:
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
-                    g.drawLine(model.getXf(), model.getYf(), mouseEvent.getX(), mouseEvent.getY());
+                    g.drawLine(model.getStartXPoint(), model.getStartYPoint(), mouseEvent.getX(), mouseEvent.getY());
 
                     view.saveCurrentImage();
                     break;
@@ -383,20 +383,20 @@ public class DrawListener {
                             10.0f,
                             new float[]{7.0f},
                             0.0f));
-                    g.drawLine(model.getXf(), model.getYf(), mouseEvent.getX(), mouseEvent.getY());
+                    g.drawLine(model.getStartXPoint(), model.getStartYPoint(), mouseEvent.getX(), mouseEvent.getY());
 
                     view.saveCurrentImage();
                     break;
                 case CIRCLE:
 
-                    int radius = Math.abs(model.getXf() - model.getxPad()) / 2;
+                    int radius = Math.abs(model.getStartXPoint() - model.getFinalXPoint()) / 2;
 
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
                     g2.drawOval(
                             (int) (model.getOvalCenterPoint().getX() - radius),
                             (int) (model.getOvalCenterPoint().getY() - radius),
-                            (int) Math.abs(model.getOvalCenterPoint().getX() - model.getxPad()),
-                            (int) Math.abs(model.getOvalCenterPoint().getX() - model.getxPad())
+                            (int) Math.abs(model.getOvalCenterPoint().getX() - model.getFinalXPoint()),
+                            (int) Math.abs(model.getOvalCenterPoint().getX() - model.getFinalXPoint())
                     );
                     g2.drawLine(
                             (int) (model.getOvalCenterPoint().getX()),
@@ -410,15 +410,15 @@ public class DrawListener {
                 case RECT:
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
                     g2.drawRect(
-                            Math.min(model.getxPad(), model.getXf()),
-                            Math.min(model.getyPad(), model.getYf()),
-                            Math.abs(model.getXf() - model.getxPad()),
-                            Math.abs(model.getYf() - model.getyPad()));
+                            Math.min(model.getFinalXPoint(), model.getStartXPoint()),
+                            Math.min(model.getFinalYPoint(), model.getStartYPoint()),
+                            Math.abs(model.getStartXPoint() - model.getFinalXPoint()),
+                            Math.abs(model.getStartYPoint() - model.getFinalYPoint()));
                     g2.drawLine(
-                            Math.min(model.getxPad(), model.getXf()) + Math.abs(model.getXf() - model.getxPad()) / 2,
-                            Math.min(model.getyPad(), model.getYf()) + Math.abs(model.getYf() - model.getyPad()) / 2,
-                            Math.min(model.getxPad(), model.getXf()) + Math.abs(model.getXf() - model.getxPad()) / 2,
-                            Math.min(model.getyPad(), model.getYf()) + Math.abs(model.getYf() - model.getyPad()) / 2
+                            Math.min(model.getFinalXPoint(), model.getStartXPoint()) + Math.abs(model.getStartXPoint() - model.getFinalXPoint()) / 2,
+                            Math.min(model.getFinalYPoint(), model.getStartYPoint()) + Math.abs(model.getStartYPoint() - model.getFinalYPoint()) / 2,
+                            Math.min(model.getFinalXPoint(), model.getStartXPoint()) + Math.abs(model.getStartXPoint() - model.getFinalXPoint()) / 2,
+                            Math.min(model.getFinalYPoint(), model.getStartYPoint()) + Math.abs(model.getStartYPoint() - model.getFinalYPoint()) / 2
                     );
 
                     view.saveCurrentImage();
@@ -427,37 +427,37 @@ public class DrawListener {
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
 
                     double mainLineLenght = Math.sqrt(
-                            Math.pow(model.getXf() - model.getxPad(), 2.0) +
-                                    Math.pow(model.getYf() - model.getyPad(), 2.0)
+                            Math.pow(model.getStartXPoint() - model.getFinalXPoint(), 2.0) +
+                                    Math.pow(model.getStartYPoint() - model.getFinalYPoint(), 2.0)
                     );
 
                     model.getTriPyramidLeftPoint().setLocation(
-                            (model.getxPad() - mainLineLenght * 0.223),
-                            (model.getyPad() - mainLineLenght * 0.243));
+                            (model.getFinalXPoint() - mainLineLenght * 0.223),
+                            (model.getFinalYPoint() - mainLineLenght * 0.243));
                     model.getTriPyramidRightPoint().setLocation(
-                            (model.getxPad() + mainLineLenght * 0.624),
-                            (model.getyPad() - mainLineLenght * 0.243));
+                            (model.getFinalXPoint() + mainLineLenght * 0.624),
+                            (model.getFinalYPoint() - mainLineLenght * 0.243));
 
                     g2.drawLine(
-                            model.getXf(),
-                            model.getYf(),
-                            (int) (model.getXf() - mainLineLenght * 0.2),
-                            model.getyPad());
+                            model.getStartXPoint(),
+                            model.getStartYPoint(),
+                            (int) (model.getStartXPoint() - mainLineLenght * 0.2),
+                            model.getFinalYPoint());
 
                     g2.drawLine(
-                            model.getXf(),
-                            model.getYf(),
-                            (int) (model.getxPad() - mainLineLenght * 0.223),
-                            (int) (model.getyPad() - mainLineLenght * 0.243));
+                            model.getStartXPoint(),
+                            model.getStartYPoint(),
+                            (int) (model.getFinalXPoint() - mainLineLenght * 0.223),
+                            (int) (model.getFinalYPoint() - mainLineLenght * 0.243));
 
                     g2.drawLine(
-                            model.getXf(),
-                            model.getYf(),
-                            (int) (model.getxPad() + mainLineLenght * 0.624),
-                            (int) (model.getyPad() - mainLineLenght * 0.243));
+                            model.getStartXPoint(),
+                            model.getStartYPoint(),
+                            (int) (model.getFinalXPoint() + mainLineLenght * 0.624),
+                            (int) (model.getFinalYPoint() - mainLineLenght * 0.243));
 
-                    g2.drawLine(model.getTriPyramidLeftPoint().x, model.getTriPyramidLeftPoint().y, (int) (model.getXf() - mainLineLenght * 0.2), model.getyPad());
-                    g2.drawLine(model.getTriPyramidRightPoint().x, model.getTriPyramidRightPoint().y, (int) (model.getXf() - mainLineLenght * 0.2), model.getyPad());
+                    g2.drawLine(model.getTriPyramidLeftPoint().x, model.getTriPyramidLeftPoint().y, (int) (model.getStartXPoint() - mainLineLenght * 0.2), model.getFinalYPoint());
+                    g2.drawLine(model.getTriPyramidRightPoint().x, model.getTriPyramidRightPoint().y, (int) (model.getStartXPoint() - mainLineLenght * 0.2), model.getFinalYPoint());
 
                     g2.setStroke(new BasicStroke(
                             Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)),
@@ -476,30 +476,30 @@ public class DrawListener {
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
 
                     double frontLineLenght = Math.sqrt(
-                            Math.pow(model.getXf() - model.getxPad(), 2.0) +
-                                    Math.pow(model.getYf() - model.getyPad(), 2.0)
+                            Math.pow(model.getStartXPoint() - model.getFinalXPoint(), 2.0) +
+                                    Math.pow(model.getStartYPoint() - model.getFinalYPoint(), 2.0)
                     );
 
 
                     model.getTriPrismLeftTopPoint().setLocation(
-                            (model.getXf() - frontLineLenght * 0.223),
-                            (model.getYf() - frontLineLenght * 0.243));
+                            (model.getStartXPoint() - frontLineLenght * 0.223),
+                            (model.getStartYPoint() - frontLineLenght * 0.243));
                     model.getTriPrismRightTopPoint().setLocation(
-                            (model.getXf() + frontLineLenght * 0.624),
-                            (model.getYf() - frontLineLenght * 0.243));
+                            (model.getStartXPoint() + frontLineLenght * 0.624),
+                            (model.getStartYPoint() - frontLineLenght * 0.243));
                     model.getTriPrismLeftBottomPoint().setLocation(
-                            (model.getXf() - frontLineLenght * 0.223),
-                            (model.getyPad() - frontLineLenght * 0.243));
+                            (model.getStartXPoint() - frontLineLenght * 0.223),
+                            (model.getFinalYPoint() - frontLineLenght * 0.243));
                     model.getTriPrismRightBottomPoint().setLocation(
-                            (model.getXf() + frontLineLenght * 0.624),
-                            (model.getyPad() - frontLineLenght * 0.243));
+                            (model.getStartXPoint() + frontLineLenght * 0.624),
+                            (model.getFinalYPoint() - frontLineLenght * 0.243));
 
                     // main vertical line
                     g2.drawLine(
-                            model.getxPad(),
-                            model.getYf(),
-                            model.getxPad(),
-                            model.getyPad());
+                            model.getFinalXPoint(),
+                            model.getStartYPoint(),
+                            model.getFinalXPoint(),
+                            model.getFinalYPoint());
 
                     // main horizontal line
                     g2.drawLine(
@@ -514,18 +514,18 @@ public class DrawListener {
                     g2.drawLine(
                             (int) model.getTriPrismLeftTopPoint().getX(),
                             (int) model.getTriPrismLeftTopPoint().getY(),
-                            model.getxPad(),
-                            model.getYf());
+                            model.getFinalXPoint(),
+                            model.getStartYPoint());
 
                     // top right horizontal line
                     g2.drawLine(
                             (int) model.getTriPrismRightTopPoint().getX(),
                             (int) model.getTriPrismRightTopPoint().getY(),
-                            model.getxPad(),
-                            model.getYf());
+                            model.getFinalXPoint(),
+                            model.getStartYPoint());
 
 
-                    if (model.getxPad() > (int) model.getTriPrismRightBottomPoint().getX()) {
+                    if (model.getFinalXPoint() > (int) model.getTriPrismRightBottomPoint().getX()) {
                         g2.setStroke(new BasicStroke(
                                 Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)),
                                 BasicStroke.CAP_BUTT,
@@ -545,15 +545,15 @@ public class DrawListener {
 
                     // right horizontal line
                     g2.drawLine(
-                            model.getxPad(),
-                            model.getyPad(),
+                            model.getFinalXPoint(),
+                            model.getFinalYPoint(),
                             (int) model.getTriPrismRightBottomPoint().getX(),
                             (int) model.getTriPrismRightBottomPoint().getY());
 
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE))));
 
 
-                    if (model.getxPad() < (int) model.getTriPrismLeftBottomPoint().getX()) {
+                    if (model.getFinalXPoint() < (int) model.getTriPrismLeftBottomPoint().getX()) {
                         g2.setStroke(new BasicStroke(
                                 Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)),
                                 BasicStroke.CAP_BUTT,
@@ -565,8 +565,8 @@ public class DrawListener {
 
                     // left horizontal line
                     g2.drawLine(
-                            model.getxPad(),
-                            model.getyPad(),
+                            model.getFinalXPoint(),
+                            model.getFinalYPoint(),
                             (int) model.getTriPrismLeftBottomPoint().getX(),
                             (int) model.getTriPrismLeftBottomPoint().getY());
 
@@ -603,8 +603,8 @@ public class DrawListener {
                     break;
             }
 
-            model.setxPad(0);
-            model.setyPad(0);
+            model.setFinalXPoint(0);
+            model.setFinalYPoint(0);
 
             model.saveAction(view.getMainImage());
             mainPanel.repaint();
@@ -637,9 +637,9 @@ public class DrawListener {
 //                g2.setFont(new  Font(Config.getProperty(Config.TEXT_BASIC_FONT),
 //                        Integer.valueOf(Config.getProperty(Config.TEXT_BASIC_FONT_STYLE)),
 //                        Integer.valueOf(Config.getProperty(Config.TEXT_BASIC_FONT_SIZE))));
-//                g2.drawString(str, model.getxPad(), model.getyPad());
+//                g2.drawString(str, model.getFinalXPoint(), model.getFinalYPoint());
 //
-//                model.setxPad(model.getxPad() + Integer.valueOf(Config.getProperty(Config.TEXT_BASIC_OFFSET)));
+//                model.setFinalXPoint(model.getFinalXPoint() + Integer.valueOf(Config.getProperty(Config.TEXT_BASIC_OFFSET)));
 //                mainPanel.requestFocus();
 //
 //                mainPanel.repaint();

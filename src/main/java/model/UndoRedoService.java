@@ -1,5 +1,7 @@
 package model;
 
+import config.Config;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +11,7 @@ public class UndoRedoService {
 
     private static final String FORWARD_DIRECTION = "Forward";
     private static final String BACK_DIRECTION = "Back";
-    private static final int UNDO_QUANTITY = 50;
+    private static final int UNDO_QUANTITY = Integer.parseInt(Config.getProperty(Config.UNDO_ACTIONS_QUANTITY));
 
     private List<BufferedImage> actionList;
     private int actionCounter;

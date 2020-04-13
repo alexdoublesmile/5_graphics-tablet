@@ -7,16 +7,18 @@ import java.awt.image.BufferedImage;
 
 public class Model {
 
-    private String fileName;
+    private UndoRedoService undoService;
     private DrawMode drawMode;
-    private int  xPad;
-    private int  xf;
-    private int  yf;
-    private int  yPad;
-//    private boolean mouseIsPressed;
-    private boolean loading;
+    private int startXPoint;
+    private int startYPoint;
+    private int finalXPoint;
+    private int finalYPoint;
+
     private int eraserStroke;
     private int ragStroke;
+    private String fileName;
+    private boolean loading;
+
     private Point triPyramidLeftPoint;
     private Point triPyramidRightPoint;
     private Point tetraPyramidLeftPoint;
@@ -28,11 +30,7 @@ public class Model {
     private Point triPrismRightBottomPoint;
     private Point ovalCenterPoint;
 
-
-    private UndoRedoService undoService;
-
     public Model() {
-
         undoService = new UndoRedoService();
 
         drawMode = DrawMode.PENCIL;
@@ -43,25 +41,18 @@ public class Model {
         tetraPyramidLeftPoint = new Point(0, 0);
         tetraPyramidBackPoint = new Point(0, 0);
         tetraPyramidRightPoint = new Point(0, 0);
-
-
         triPrismLeftTopPoint = new Point(0, 0);
         triPrismLeftBottomPoint = new Point(0, 0);
         triPrismRightTopPoint = new Point(0, 0);
         triPrismRightBottomPoint = new Point(0, 0);
 
         ovalCenterPoint = new Point(0, 0);
-
-
     }
 
     public boolean wasIterated() {
         return undoService.isWasIterated();
     }
 
-    public  void resetIteratedFlag() {
-        undoService.setWasIterated(false);
-    }
     public  void saveAction(BufferedImage action) {
         undoService.saveAction(action);
     }
@@ -90,45 +81,37 @@ public class Model {
         this.drawMode = drawMode;
     }
 
-    public int getxPad() {
-        return xPad;
+    public int getFinalXPoint() {
+        return finalXPoint;
     }
 
-    public void setxPad(int xPad) {
-        this.xPad = xPad;
+    public void setFinalXPoint(int finalXPoint) {
+        this.finalXPoint = finalXPoint;
     }
 
-    public int getXf() {
-        return xf;
+    public int getStartXPoint() {
+        return startXPoint;
     }
 
-    public void setXf(int xf) {
-        this.xf = xf;
+    public void setStartXPoint(int startXPoint) {
+        this.startXPoint = startXPoint;
     }
 
-    public int getYf() {
-        return yf;
+    public int getStartYPoint() {
+        return startYPoint;
     }
 
-    public void setYf(int yf) {
-        this.yf = yf;
+    public void setStartYPoint(int startYPoint) {
+        this.startYPoint = startYPoint;
     }
 
-    public int getyPad() {
-        return yPad;
+    public int getFinalYPoint() {
+        return finalYPoint;
     }
 
-    public void setyPad(int yPad) {
-        this.yPad = yPad;
+    public void setFinalYPoint(int finalYPoint) {
+        this.finalYPoint = finalYPoint;
     }
-//
-//    public boolean isMouseIsPressed() {
-//        return mouseIsPressed;
-//    }
-//
-//    public void setMouseIsPressed(boolean mouseIsPressed) {
-//        this.mouseIsPressed = mouseIsPressed;
-//    }
 
     public boolean isLoading() {
         return loading;

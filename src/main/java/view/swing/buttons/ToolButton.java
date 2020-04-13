@@ -6,17 +6,6 @@ import view.swing.buttons.Button;
 import javax.swing.*;
 
 public class ToolButton extends Button {
-    private static final String PENCIL_TYPE = "pencil";
-    private static final String MARKER_TYPE = "marker";
-    private static final String ERASER_TYPE = "eraser";
-    private static final String LINE_TYPE = "line";
-    private static final String ELLIPSE_TYPE = "ellipse";
-    private static final String RECT_TYPE = "rect";
-    private static final String PYRAMID_TYPE = "pyramid";
-    private static final String PRISM_TYPE = "prism";
-    private static final String TEXT_TYPE = "text";
-    private static final String UNDO_TYPE = "undo";
-    private static final String REDO_TYPE = "redo";
 
     private static final int TOOL_BUTTON_XPOINT;
     private static final int TOOL_BUTTON_YPOINT;

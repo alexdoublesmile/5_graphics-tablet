@@ -3,7 +3,6 @@ package view.swing;
 import config.Config;
 import model.DrawMode;
 import model.Model;
-import util.CursorBuilder;
 import util.IconBuilder;
 import view.View;
 import view.swing.buttons.ColorButton;
@@ -12,23 +11,24 @@ import view.swing.buttons.ToolButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SwingViewImpl extends JFrame implements View {
-
     private String MAIN_FRAME_NAME = "Графический планшетик";
     private static final String FILE_MENU_NAME = "Файл";
-    private static final String TRANSFORM_IMAGE_BUTTON_NAME = "Обесцветить";
+    private static final String DISCOLOR_BUTTON_NAME = "Обесцветить";
     private static final String CLEAN_BUTTON_NAME = "Очистить планшетик";
     private static final Color CONTROL_PANEL_COLOR = new Color(0xE9D6BF);
-
-    private Model model;
+    private static final String COLOR_DIALOG_TITLE = "Выбор цвета";
+    private final int MAIN_FRAME_WIDTH = Integer.parseInt(Config.getProperty(Config.MAIN_FRAME_WIDTH));
+    private final int MAIN_FRAME_HEIGHT = Integer.parseInt(Config.getProperty(Config.MAIN_FRAME_HEIGHT));
+    private final int COLOR_DIALOG_WIDTH = Integer.parseInt(Config.getProperty(Config.COLOR_DIALOG_WIDTH));
+    private final int COLOR_DIALOG_HEIGHT = Integer.parseInt(Config.getProperty(Config.COLOR_DIALOG_HEIGHT));
 
     private final Map<String, ToolButton> toolButtons;
-
+    private Model model;
     private JFrame mainFrame;
 
     private JMenuBar mainMenu;
@@ -41,15 +41,16 @@ public class SwingViewImpl extends JFrame implements View {
     private JToolBar toolBar;
     private JToolBar colorBar;
 
-    private JButton undoButton;
-    private JButton redoButton;
-
     private JButton colorButton;
     private ColorButton redButton;
     private ColorButton blackButton;
     private ColorButton blueButton;
     private ColorButton greenButton;
     private ColorButton whiteButton;
+
+    private JButton undoButton;
+    private JButton redoButton;
+
     private JColorChooser colorChooser;
     private JFileChooser fileChooser;
 
@@ -60,16 +61,53 @@ public class SwingViewImpl extends JFrame implements View {
     private BufferedImage mainImage;
     private BufferedImage previousImage;
     private Color mainColor;
-    private boolean isNotRepainting = true;
 
     public SwingViewImpl(Model model) {
         this.model = model;
         toolButtons = new HashMap<>();
-        initToolButtons();
-        createView();
+        mainColor = Color.black;
+
+        compareCanvas();
     }
 
-    private void initToolButtons() {
+    @Override
+    public void compareCanvas() {
+        initMainWindow();
+        initMenu();
+        initToolBar();
+        initColorBar();
+        initButtons();
+        initDrawingPanel();
+        collectAllElements();
+    }
+
+    private void initMainWindow() {
+        this.mainFrame = this;
+        this.setTitle(MAIN_FRAME_NAME);
+        this.setSize(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
+//        this.setVisible(true);
+        this.setExtendedState(MAXIMIZED_BOTH);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setBackground(Color.yellow);
+    }
+
+    private void initMenu() {
+        mainMenu = new JMenuBar();
+        mainMenu.setBackground(CONTROL_PANEL_COLOR);
+//        mainMenu.setBounds(0,0,350,20);
+        fileMenu = new JMenu(FILE_MENU_NAME);
+        loadMenu = new JMenuItem();
+        saveMenu = new JMenuItem();
+        saveAsMenu = new JMenuItem();
+        fileChooser = new JFileChooser();
+
+    }
+
+    private void initToolBar() {
+        toolBar = new JToolBar(JToolBar.HORIZONTAL);
+        toolBar.setBackground(CONTROL_PANEL_COLOR);
+//        toolBar.setBounds(0, 0, 300, 30);
+
         for (DrawMode drawMode : DrawMode.values()) {
             toolButtons.put(
                     drawMode.name(),
@@ -77,50 +115,22 @@ public class SwingViewImpl extends JFrame implements View {
         }
     }
 
-//    private void initColorButtons() {
-//        for (DrawMode drawMode : DrawMode.values()) {
-//            toolButtons.put(
-//                    drawMode.name(),
-//                    new ToolButton(IconBuilder.buildIconByDrawMode(drawMode)));
-//        }
-//    }
+    private void initColorBar() {
+        colorBar = new  JToolBar(JToolBar.HORIZONTAL);
+        colorBar.setBackground(CONTROL_PANEL_COLOR);
+//        colorBar.setBounds(30, 0, 160, 20);
+        colorBar.setLayout(null);
 
-    private void createView() {
-        this.mainFrame = this;
-        this.setTitle(MAIN_FRAME_NAME);
-        this.setSize(6400, 4800);
-        this.setVisible(true);
-        this.setExtendedState(MAXIMIZED_BOTH);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        colorButton = new ColorButton(mainColor, 25);
+        redButton = new  ColorButton(Color.red, true, 15);
+        blackButton = new  ColorButton(Color.black);
+        blueButton = new ColorButton(Color.blue);
+        greenButton = new  ColorButton(new Color(0x12A612));
+        whiteButton = new  ColorButton(Color.white);
+        colorChooser = new  JColorChooser(mainColor);
+    }
 
-        this.setBackground(Color.yellow);
-        this.mainColor = Color.black;
-
-        mainMenu = new JMenuBar();
-        mainMenu.setBackground(CONTROL_PANEL_COLOR);
-//        mainMenu.setBounds(0,0,350,20);
-
-        fileMenu = new JMenu(FILE_MENU_NAME);
-
-        loadMenu = new JMenuItem();
-        saveMenu = new JMenuItem();
-        saveAsMenu = new JMenuItem();
-
-        mainPanel = new MyPanel();
-        mainPanel.setFocusable(true);
-        mainPanel.setBounds(0,0,mainFrame.getWidth(),mainFrame.getHeight());
-        mainPanel.setBackground(Color.white);
-        mainPanel.setOpaque(true);
-        try {
-            mainPanel.setCursor(CursorBuilder.buildCursorByDrawMode(DrawMode.PENCIL));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        toolBar = new JToolBar(JToolBar.HORIZONTAL);
-        toolBar.setBackground(CONTROL_PANEL_COLOR);
-//        toolBar.setBounds(0, 0, 300, 30);
-
+    private void initButtons() {
         undoButton = new  ToolButton(IconBuilder.buildIconByPath(
                 Config.getProperty(Config.UNDO_ICON_PATH)));
         redoButton = new  ToolButton(IconBuilder.buildIconByPath(
@@ -129,31 +139,26 @@ public class SwingViewImpl extends JFrame implements View {
                 Config.getProperty(Config.CALCULATOR_ICON_PATH)
         ));
 
-        colorBar = new  JToolBar(JToolBar.HORIZONTAL);
-        colorBar.setBackground(CONTROL_PANEL_COLOR);
-
-//        colorBar.setBounds(30, 0, 160, 20);
-
-        colorBar.setLayout(null);
-        colorButton = new ColorButton(mainColor, 25);
-        redButton = new  ColorButton(Color.red, true, 15);
-        blackButton = new  ColorButton(Color.black);
-        blueButton = new ColorButton(Color.blue);
-        greenButton = new  ColorButton(new Color(0x12A612));
-        whiteButton = new  ColorButton(Color.white);
-//        whiteButton.setBorderPainted(true);
-
-        colorChooser = new  JColorChooser(mainColor);
-        colorChooser.getSelectionModel().addChangeListener(e -> {
-            mainColor = colorChooser.getColor();
-            colorButton.setBackground(mainColor);
-        });
-
-        fileChooser = new JFileChooser();
-
-        discolorButton = new FunctionButton(TRANSFORM_IMAGE_BUTTON_NAME);
+        discolorButton = new FunctionButton(DISCOLOR_BUTTON_NAME);
         cleanButton = new FunctionButton(CLEAN_BUTTON_NAME);
+    }
 
+    private void initDrawingPanel() {
+        mainPanel = new MyPanel();
+        mainPanel.setFocusable(true);
+        mainPanel.setBounds(0,0,mainFrame.getWidth(),mainFrame.getHeight());
+        mainPanel.setBackground(Color.white);
+        mainPanel.setOpaque(true);
+    }
+
+    private void collectAllElements() {
+        this.setJMenuBar(mainMenu);
+        this.add(mainPanel);
+
+        mainMenu.add(fileMenu);
+        mainMenu.add(toolBar);
+        mainMenu.add(colorBar);
+        mainMenu.add(new JToolBar.Separator());
 
         fileMenu.add(loadMenu);
         fileMenu.add(saveMenu);
@@ -186,10 +191,6 @@ public class SwingViewImpl extends JFrame implements View {
         colorBar.add(greenButton);
         colorBar.add(whiteButton);
 
-        mainMenu.add(fileMenu);
-        mainMenu.add(toolBar);
-        mainMenu.add(colorBar);
-        mainMenu.add(new JToolBar.Separator());
 
         mainMenu.add(discolorButton);
         mainMenu.add(new JToolBar.Separator());
@@ -197,41 +198,7 @@ public class SwingViewImpl extends JFrame implements View {
         mainMenu.add(new JToolBar.Separator());
         mainMenu.add(calculatorButton);
         mainMenu.add(new JToolBar.Separator());
-
-        this.setJMenuBar(mainMenu);
-        this.add(mainPanel);
     }
-
-    @Override
-    public void drawTablet() {
-
-        // если делаем загрузку, то изменение размеров формы отрабатываем в коде загрузки
-        mainFrame.addComponentListener(new  ComponentAdapter() {
-            public void componentResized(ComponentEvent evt) {
-                if(model.isLoading() == false) {
-//
-//                    JOptionPane.showMessageDialog(mainFrame,
-//                            "Такого файла не существует");
-                    mainPanel.setSize(mainImage.getWidth(), mainImage.getHeight());
-                    BufferedImage tempImage = new  BufferedImage(mainPanel.getWidth(), mainPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
-                    Graphics2D d2 = (Graphics2D) tempImage.createGraphics();
-                    d2.setColor(Color.white);
-                    d2.fillRect(0, 0, mainPanel.getWidth(), mainPanel.getHeight());
-                    tempImage.setData(mainImage.getRaster());
-                    mainImage=tempImage;
-                    mainPanel.repaint();
-                }
-                model.setLoading(false);
-            }
-        });
-    }
-
-    public void resetToolButtonBorders() {
-        for (Map.Entry<String, ToolButton> pair : toolButtons.entrySet()) {
-            pair.getValue().setBorderPainted(false);
-        }
-    }
-
 
     public void saveCurrentImage() {
         previousImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -239,11 +206,16 @@ public class SwingViewImpl extends JFrame implements View {
         g.drawImage(mainImage, 0, 0, null);
     }
 
-
     public void loadSavedImage() {
         Graphics g = mainImage.getGraphics();
         if (previousImage != null) {
             g.drawImage(previousImage, 0, 0, null);
+        }
+    }
+
+    public void resetToolButtonBorders() {
+        for (Map.Entry<String, ToolButton> pair : toolButtons.entrySet()) {
+            pair.getValue().setBorderPainted(false);
         }
     }
 
@@ -254,7 +226,6 @@ public class SwingViewImpl extends JFrame implements View {
                 Graphics2D g2 = mainImage.createGraphics();
                 g2.setColor(Color.white);
                 g2.fillRect(0, 0, mainFrame.getWidth(), mainFrame.getHeight());
-
             }
         }
 
@@ -272,10 +243,10 @@ public class SwingViewImpl extends JFrame implements View {
 
     public class ColorDialog extends JDialog {
 
-        public ColorDialog (JFrame owner, String title, int width, int height) {
-            super(owner, title, true);
+        public ColorDialog (JFrame owner) {
+            super(owner, COLOR_DIALOG_TITLE, true);
             add(colorChooser);
-            setSize(width, height);
+            setSize(COLOR_DIALOG_WIDTH, COLOR_DIALOG_HEIGHT);
         }
     }
 
@@ -294,22 +265,6 @@ public class SwingViewImpl extends JFrame implements View {
 
 
 
-
-
-
-
-
-    public static String getFileMenuName() {
-        return FILE_MENU_NAME;
-    }
-
-    public static String getCleanButtonName() {
-        return CLEAN_BUTTON_NAME;
-    }
-
-    public Model getModel() {
-        return model;
-    }
 
     public JFrame getMainFrame() {
         return mainFrame;
@@ -402,14 +357,6 @@ public class SwingViewImpl extends JFrame implements View {
 
     public JButton getDiscolorButton() {
         return discolorButton;
-    }
-
-    public boolean isNotRepainting() {
-        return isNotRepainting;
-    }
-
-    public void setNotRepainting(boolean notRepainting) {
-        isNotRepainting = notRepainting;
     }
 
     public void setMainImage(BufferedImage mainImage) {

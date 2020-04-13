@@ -80,6 +80,14 @@ public class Config {
     public static final String FUNCTION_BUTTON_SIZE = "functionButtons.main.size";
     public static final String FUNCTION_BUTTON_OFFSET = "functionButtons.main.offset";
 
+    public static final String UNDO_ACTIONS_QUANTITY = "undo.actions.quantity";
+
+    public static final String MAIN_FRAME_WIDTH = "main.frame.width";
+    public static final String MAIN_FRAME_HEIGHT = "main.frame.height";
+
+    public static final String COLOR_DIALOG_WIDTH = "color.dialog.width";
+    public static final String COLOR_DIALOG_HEIGHT = "color.dialog.height";
+
 
 
     private static Properties properties = new Properties();
