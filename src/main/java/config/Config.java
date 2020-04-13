@@ -88,6 +88,9 @@ public class Config {
     public static final String COLOR_DIALOG_WIDTH = "color.dialog.width";
     public static final String COLOR_DIALOG_HEIGHT = "color.dialog.height";
 
+    public static final String BASIC_STROKE_LENGHT = "basic.stroke.lenght";
+    public static final String BASIC_STROKE_OFFSET_LENGHT = "basic.stroke.offset.lenght";
+
 
 
     private static Properties properties = new Properties();

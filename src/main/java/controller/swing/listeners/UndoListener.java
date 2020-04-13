@@ -21,7 +21,7 @@ public class UndoListener {
         REDO_BUTTON_LISTENER = new RedoButtonListener();
     }
 
-    private class UndoButtonListener implements ActionListener {
+    private class UndoButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
             view.setMainImage(model.getPreviousAction());
@@ -29,7 +29,7 @@ public class UndoListener {
         }
     }
 
-    private class RedoButtonListener implements ActionListener {
+    private class RedoButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
             view.setMainImage(model.getNextAction());

@@ -28,7 +28,7 @@ public class Model {
     private Point triPrismLeftBottomPoint;
     private Point triPrismRightTopPoint;
     private Point triPrismRightBottomPoint;
-    private Point ovalCenterPoint;
+    private Point circleCenter;
 
     public Model() {
         undoService = new UndoRedoService();
@@ -46,7 +46,16 @@ public class Model {
         triPrismRightTopPoint = new Point(0, 0);
         triPrismRightBottomPoint = new Point(0, 0);
 
-        ovalCenterPoint = new Point(0, 0);
+        circleCenter = new Point(0, 0);
+    }
+
+    public int getPointForCircle(int startPoint, int finalPoint) {
+        int radius = Math.abs(startPoint - finalPoint) / 2;
+        return (int) circleCenter.getX() - radius;
+    }
+
+    public int getSizeForCircle(int finalPoint) {
+        return (int) Math.abs(circleCenter.getX() - finalPoint);
     }
 
     public boolean wasIterated() {
@@ -157,12 +166,12 @@ public class Model {
         return tetraPyramidRightPoint;
     }
 
-    public Point getOvalCenterPoint() {
-        return ovalCenterPoint;
+    public Point getCircleCenter() {
+        return circleCenter;
     }
 
-    public void setOvalCenterPoint(Point ovalCenterPoint) {
-        this.ovalCenterPoint = ovalCenterPoint;
+    public void setCircleCenter(Point circleCenter) {
+        this.circleCenter = circleCenter;
     }
 
     public Point getTriPrismLeftTopPoint() {

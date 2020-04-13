@@ -2,11 +2,12 @@ package controller.swing;
 
 import controller.Controller;
 import controller.swing.listeners.FrameListener;
+import controller.swing.listeners.KeyboardListener;
 import controller.swing.listeners.UndoListener;
 import controller.swing.listeners.buttonListeners.FunctionButtonListener;
 import controller.swing.menuActions.FileAction;
 import controller.swing.listeners.buttonListeners.ColorButtonListener;
-import controller.swing.listeners.DrawListener;
+import controller.swing.listeners.MouseDrawListener;
 import controller.swing.listeners.buttonListeners.ToolButtonListener;
 import model.DrawMode;
 import model.Model;
@@ -81,12 +82,12 @@ public class SwingControllerImpl implements Controller {
     }
 
     private void setDrawListeners() {
-        DrawListener drawListeners = new DrawListener(view, model);
+        MouseDrawListener mouseDrawListeners = new MouseDrawListener(view, model);
 
-        view.getMainPanel().addMouseMotionListener(drawListeners.getMOUSE_MOTION_ADAPTER());
-        view.getMainPanel().addMouseListener(drawListeners.getMOUSE_ADAPTER());
-        view.getMainPanel().addKeyListener(drawListeners.getKEY_ADAPTER());
-        view.addKeyListener(drawListeners.getKEY_ADAPTER());
+        view.getMainPanel().addMouseMotionListener(mouseDrawListeners.getMOUSE_MOTION_ADAPTER());
+        view.getMainPanel().addMouseListener(mouseDrawListeners.getMOUSE_ADAPTER());
+//        view.getMainPanel().addKeyListener(mouseDrawListeners.getKEY_ADAPTER());
+        view.addKeyListener(new KeyboardListener(view, model).getKEY_ADAPTER());
 
     }
 
