@@ -36,6 +36,14 @@ public class KeyboardListener {
         initHotKeys();
     }
 
+    public KeyboardListener(SwingViewImpl view) {
+        this.view = view;
+        mainPanel = view.getMainPanel();
+        KEY_ADAPTER = new KeyAdapter();
+
+        initHotKeys();
+    }
+
     private void initHotKeys() {
         undoListener = new UndoListener(view, model);
         inputMap = mainPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW);

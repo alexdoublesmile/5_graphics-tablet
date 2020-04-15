@@ -86,9 +86,7 @@ public class SwingControllerImpl implements Controller {
 
         view.getMainPanel().addMouseMotionListener(mouseDrawListeners.getMOUSE_MOTION_ADAPTER());
         view.getMainPanel().addMouseListener(mouseDrawListeners.getMOUSE_ADAPTER());
-//        view.getMainPanel().addKeyListener(mouseDrawListeners.getKEY_ADAPTER());
         view.addKeyListener(new KeyboardListener(view, model).getKEY_ADAPTER());
-
     }
 
     private void setFrameListeners() {

@@ -12,6 +12,7 @@ import view.swing.buttons.ToolButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,11 +23,18 @@ public class SwingViewImpl extends JFrame implements View {
     private static final String CLEAN_BUTTON_NAME = "Очистить планшетик";
     private static final Color CONTROL_PANEL_COLOR = new Color(0xE9D6BF);
     private static final String COLOR_DIALOG_TITLE = "Выбор цвета";
+    private static final ArrayList<String> closingElements;
+    static {
+        closingElements = new ArrayList<>();
+        closingElements.add("RAG");
+        closingElements.add("HAND");
+        closingElements.add("PARALLELOGRAM");
+        closingElements.add("SPHERE");
+    }
     private final int MAIN_FRAME_WIDTH = Integer.parseInt(Config.getProperty(Config.MAIN_FRAME_WIDTH));
     private final int MAIN_FRAME_HEIGHT = Integer.parseInt(Config.getProperty(Config.MAIN_FRAME_HEIGHT));
     private final int COLOR_DIALOG_WIDTH = Integer.parseInt(Config.getProperty(Config.COLOR_DIALOG_WIDTH));
     private final int COLOR_DIALOG_HEIGHT = Integer.parseInt(Config.getProperty(Config.COLOR_DIALOG_HEIGHT));
-
     private final Map<String, ToolButton> toolButtons;
     private Model model;
     private JFrame mainFrame;
@@ -106,6 +114,7 @@ public class SwingViewImpl extends JFrame implements View {
     private void initToolBar() {
         toolBar = new JToolBar(JToolBar.HORIZONTAL);
         toolBar.setBackground(CONTROL_PANEL_COLOR);
+        toolBar.setBorderPainted(false);
 //        toolBar.setBounds(0, 0, 300, 30);
 
         for (DrawMode drawMode : DrawMode.values()) {
@@ -118,16 +127,20 @@ public class SwingViewImpl extends JFrame implements View {
     private void initColorBar() {
         colorBar = new  JToolBar(JToolBar.HORIZONTAL);
         colorBar.setBackground(CONTROL_PANEL_COLOR);
+        colorBar.setBorderPainted(false);
+
 //        colorBar.setBounds(30, 0, 160, 20);
         colorBar.setLayout(null);
 
         colorButton = new ColorButton(mainColor, 25);
+        colorButton.setIcon(IconBuilder.buildIconByPath(Config.getProperty(Config.PALETTE_ICON_PATH)));
         redButton = new  ColorButton(Color.red, true, 15);
         blackButton = new  ColorButton(Color.black);
         blueButton = new ColorButton(Color.blue);
         greenButton = new  ColorButton(new Color(0x12A612));
         whiteButton = new  ColorButton(Color.white);
         colorChooser = new  JColorChooser(mainColor);
+
     }
 
     private void initButtons() {
@@ -159,38 +172,28 @@ public class SwingViewImpl extends JFrame implements View {
         mainMenu.add(toolBar);
         mainMenu.add(colorBar);
         mainMenu.add(new JToolBar.Separator());
-
         fileMenu.add(loadMenu);
         fileMenu.add(saveMenu);
         fileMenu.add(saveAsMenu);
 
-        toolBar.add(toolButtons.get(DrawMode.PENCIL.name()));
-        toolBar.add(toolButtons.get(DrawMode.MARKER.name()));
-        toolBar.add(toolButtons.get(DrawMode.BRUSH.name()));
-        toolBar.add(toolButtons.get(DrawMode.ERASER.name()));
-        toolBar.add(toolButtons.get(DrawMode.RAG.name()));
-        toolBar.addSeparator();
-        toolBar.add(toolButtons.get(DrawMode.LINE.name()));
-        toolBar.add(toolButtons.get(DrawMode.DOTTEDLINE.name()));
-        toolBar.add(toolButtons.get(DrawMode.CIRCLE.name()));
-        toolBar.add(toolButtons.get(DrawMode.RECT.name()));
-        toolBar.add(toolButtons.get(DrawMode.PYRAMID.name()));
-        toolBar.add(toolButtons.get(DrawMode.PRISM.name()));
+        for (DrawMode drawMode : DrawMode.values()) {
+            if (closingElements.contains(drawMode.name())) {
+                toolBar.add(toolButtons.get(drawMode.name()));
+                toolBar.addSeparator();
+            } else {
+                toolBar.add(toolButtons.get(drawMode.name()));
+            }
+        }
+
         toolBar.addSeparator();
         toolBar.add(undoButton);
         toolBar.add(redoButton);
-        toolBar.addSeparator();
-//        toolBar.add(toolButtons.get(DrawMode.TEXT.name()));
-        toolBar.add(toolButtons.get(DrawMode.FILL.name()));
-        toolBar.addSeparator();
-
         colorBar.add(colorButton);
-        colorBar.add(redButton);
         colorBar.add(blackButton);
+        colorBar.add(redButton);
         colorBar.add(blueButton);
         colorBar.add(greenButton);
         colorBar.add(whiteButton);
-
 
         mainMenu.add(discolorButton);
         mainMenu.add(new JToolBar.Separator());

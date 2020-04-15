@@ -27,9 +27,6 @@ public class FrameListener {
     private class FrameResizeListener extends ComponentAdapter {
 
         public void componentResized(ComponentEvent evt) {
-
-
-
             if(model.isLoading() == false) {
                 mainPanel.setSize(view.getMainImage().getWidth(), view.getMainImage().getHeight());
 

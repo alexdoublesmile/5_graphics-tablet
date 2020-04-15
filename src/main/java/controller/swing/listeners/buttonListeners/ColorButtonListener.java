@@ -1,12 +1,15 @@
 package controller.swing.listeners.buttonListeners;
 
+import controller.swing.listeners.KeyboardListener;
 import view.swing.SwingViewImpl;
 import view.swing.buttons.ColorButton;
 
+import javax.swing.*;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class ColorButtonListener implements ActionListener{
     private SwingViewImpl view;
@@ -36,6 +39,7 @@ public class ColorButtonListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
             SwingViewImpl.ColorDialog colorDialog = view.new ColorDialog(view);
+            colorDialog.setLocation(170, 40);
             colorDialog.setVisible(true);
         }
     }
