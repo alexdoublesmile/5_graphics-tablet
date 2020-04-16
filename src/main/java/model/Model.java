@@ -79,7 +79,10 @@ public class Model {
     private Point parallelogramRightTop;
     private Point circleCenter;
     private Point ellipseCenter;
+    private Point arrowLeftPoint;
+    private Point arrowRightPoint;
     private ArrayList<Point> pointList;
+    private ArrayList<Point> prismTopPointList;
     private Polygon polygon;
 
     public Model() {
@@ -111,13 +114,26 @@ public class Model {
 
         circleCenter = new Point(0, 0);
         circleCenter = new Point(0, 0);
+        arrowLeftPoint = new Point(0, 0);
+        arrowRightPoint = new Point(0, 0);
 
         pointList = new ArrayList<>();
+        prismTopPointList = new ArrayList<>();
         polygon = new Polygon();
     }
 
     public int getCircleRadius() {
         return Math.abs(startXPoint - finalXPoint) / 2;
+    }
+
+
+    public int getEllipseBigRadius() {
+        return Math.abs(startXPoint - finalXPoint) / 2;
+    }
+
+
+    public int getEllipseSmallRadius() {
+        return Math.abs(startYPoint - finalYPoint) / 2;
     }
 
     public double getPyramidLineLenght() {
@@ -432,8 +448,16 @@ public class Model {
         return pointList;
     }
 
-    public void setPointList(ArrayList<Point> pointList) {
-        this.pointList = pointList;
+    public ArrayList<Point> getPrismTopPointList() {
+        return prismTopPointList;
+    }
+
+    public void resetPrismTopPointList() {
+        this.prismTopPointList = new ArrayList<>();
+    }
+
+    public void resetPointList() {
+        this.pointList = new ArrayList<>();
     }
 
     public Polygon getPolygon() {
@@ -443,6 +467,7 @@ public class Model {
     public void resetPolygon() {
         this.polygon = new Polygon();
         this.pointList = new ArrayList<>();
+
     }
 
     public void fillPolygon() {
@@ -457,5 +482,21 @@ public class Model {
         }
 
         polygon = new Polygon(xPoints, yPoints, xPoints.length);
+    }
+
+    public Point getArrowLeftPoint() {
+        return arrowLeftPoint;
+    }
+
+    public void setArrowLeftPoint(Point arrowLeftPoint) {
+        this.arrowLeftPoint = arrowLeftPoint;
+    }
+
+    public Point getArrowRightPoint() {
+        return arrowRightPoint;
+    }
+
+    public void setArrowRightPoint(Point arrowRightPoint) {
+        this.arrowRightPoint = arrowRightPoint;
     }
 }

@@ -6,6 +6,7 @@ import util.CursorBuilder;
 import view.swing.SwingViewImpl;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -25,7 +26,10 @@ public class ToolButtonListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         view.resetToolButtonBorders();
         view.getToolButtons().get(drawMode.name()).setBorderPainted(true);
-
+        if (drawMode == DrawMode.FILL) {
+            view.setMainColor(Color.white);
+            view.getColorButton().setBackground(view.getMainColor());
+        }
         model.setDrawMode(drawMode);
         try {
             view.getMainPanel().setCursor(CursorBuilder.buildCursorByDrawMode(drawMode));

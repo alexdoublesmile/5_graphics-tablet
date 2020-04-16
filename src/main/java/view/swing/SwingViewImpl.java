@@ -28,7 +28,7 @@ public class SwingViewImpl extends JFrame implements View {
         closingElements = new ArrayList<>();
         closingElements.add("RAG");
         closingElements.add("HAND");
-        closingElements.add("PARALLELOGRAM");
+        closingElements.add("POLYGON");
         closingElements.add("SPHERE");
     }
     private final int MAIN_FRAME_WIDTH = Integer.parseInt(Config.getProperty(Config.MAIN_FRAME_WIDTH));

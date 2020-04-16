@@ -39,7 +39,7 @@ public class ColorButtonListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
             SwingViewImpl.ColorDialog colorDialog = view.new ColorDialog(view);
-            colorDialog.setLocation(170, 40);
+            colorDialog.setLocation(250, 40);
             colorDialog.setVisible(true);
         }
     }
