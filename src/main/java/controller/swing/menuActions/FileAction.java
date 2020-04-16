@@ -71,8 +71,8 @@ public class FileAction {
                     model.setFileName(filePath);
 
                     model.setLoading(true);
-                    frame.setSize(image.getWidth(), image.getHeight());
-                    panel.setSize(image.getWidth(), image.getHeight());
+//                    frame.setSize(image.getWidth(), image.getHeight());
+//                    panel.setSize(image.getWidth(), image.getHeight());
                     view.setTitle(filePath);
 
 

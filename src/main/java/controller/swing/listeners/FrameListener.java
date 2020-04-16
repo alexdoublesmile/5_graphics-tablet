@@ -28,7 +28,7 @@ public class FrameListener {
 
         public void componentResized(ComponentEvent evt) {
             if(model.isLoading() == false) {
-                mainPanel.setSize(view.getMainImage().getWidth(), view.getMainImage().getHeight());
+//                mainPanel.setSize(view.getMainImage().getWidth(), view.getMainImage().getHeight());
 
                 BufferedImage tempImage = new  BufferedImage(
                         mainPanel.getWidth(),
