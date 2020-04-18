@@ -12,7 +12,23 @@ import java.util.ArrayList;
 
 import static config.Config.*;
 import static model.Model.*;
+import static model.Model.CONE_DOTTED_ARC_FINAL_ANGLE;
+import static model.Model.CONE_DOTTED_ARC_START_ANGLE;
+import static model.Model.CONE_GROW_FACTOR;
+import static model.Model.CONE_LEFT_BUG_FACTOR;
+import static model.Model.CONE_LINED_ARC_FINAL_ANGLE;
+import static model.Model.CONE_LINED_ARC_START_ANGLE;
+import static model.Model.CONE_RIGHT_BUG_FACTOR;
+import static model.Model.CYLINDER_DOTTED_ARC_FINAL_ANGLE;
+import static model.Model.CYLINDER_DOTTED_ARC_START_ANGLE;
+import static model.Model.CYLINDER_GROW_FACTOR;
+import static model.Model.CYLINDER_RIGHT_LINE_BUG_CONSTANT;
+import static model.Model.CYLINDER_TOP_LEFT_BUG_FACTOR;
+import static model.Model.CYLINDER_TOP_RIGHT_BUG_FACTOR;
+import static model.Model.PARALLELEPIPED_ANGLE_FACTOR;
+import static model.Model.PARALLELEPIPED_DEPTH_FACTOR;
 import static model.Model.PARALLELOGRAM_FACTOR;
+import static model.Model.POLYGON_ACCURACY_FACTOR;
 import static model.Model.PYRAMID_LEFT_XFACTOR;
 import static model.Model.PYRAMID_LEFT_YFACTOR;
 import static model.Model.PYRAMID_RIGHT_XFACTOR;
@@ -48,17 +64,25 @@ public class MouseDrawListener {
     private int xMax;
     private ArrayList<Point> areaPoints;
     private ArrayList<Point> controlPoints;
+    private Point leftPolygonPoint;
+    private Point rightPolygonPoint;
+    private Point topPolygonPoint;
     private ArrayList<Point> prismTopPoints;
     private boolean pointIsNew;
+    private Point currentPoint;
+    private Point previousPoint;
+    private Point currentTopPoint;
+    private Point previousTopPoint;
+    private int prismHeight;
 
     public MouseDrawListener(SwingViewImpl view, Model model) {
         this.view = view;
         this.model = model;
         mainPanel = view.getMainPanel();
-        this.startX = model.getStartXPoint();
-        this.startY = model.getStartYPoint();
-        this.finalX = model.getFinalXPoint();
-        this.finalY = model.getFinalYPoint();
+        this.startX = model.getStartX();
+        this.startY = model.getStartY();
+        this.finalX = model.getFinalX();
+        this.finalY = model.getFinalY();
         MOUSE_MOTION_ADAPTER = new MouseMotionAdapter();
         MOUSE_ADAPTER = new MouseAdapter();
     }
@@ -68,11 +92,11 @@ public class MouseDrawListener {
         @Override
         public void mouseDragged(MouseEvent mouseEvent) {
             view.loadSavedImage();
-            startDrawing();
+            setGraphicsAndColor();
             g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
-            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            g2.setRenderingHint (RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
-            g2.setRenderingHint (RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR );
+//            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//            g2.setRenderingHint (RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+//            g2.setRenderingHint (RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR );
             switch (model.getDrawMode()) {
                 case PENCIL:
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(PENCIL_BASIC_STROKE))));
@@ -121,7 +145,7 @@ public class MouseDrawListener {
                     g2.setStroke(DEFAULT_LINE);
                     saveCoordsToModel();
                     Point center = model.getCircleCenter();
-                    int radius = model.getCircleRadius();
+                    int radius = model.getEllipseBigRadius();
 
                     g2.drawOval(center.x - radius, center.y - radius,
                             Math.abs(center.x - finalX), Math.abs(center.x - finalX));
@@ -137,17 +161,15 @@ public class MouseDrawListener {
                     g2.drawOval(ellipseCenter.x - bigRadius, ellipseCenter.y - smallRadius,
                             Math.abs(ellipseCenter.x - finalX), Math.abs(ellipseCenter.y - finalY));
                     g2.drawLine(ellipseCenter.x, ellipseCenter.y, ellipseCenter.x, ellipseCenter.y);
-
 //                    g2.drawOval(Math.min(finalX, startX), Math.min(finalY, startY),
 //                            Math.abs(startX - finalX), Math.abs(startY - finalY));
                     break;
                 case RECT:
                     g2.setStroke(DEFAULT_LINE);
+                    saveCoordsToModel();
                     g2.drawRect(Math.min(finalX, startX), Math.min(finalY, startY),
                             Math.abs(startX - finalX), Math.abs(startY - finalY));
-                    Point rectCenter = new Point(
-                            startX + Math.abs(startX - finalX) / 2,
-                            startY + Math.abs(startY - finalY) / 2);
+                    Point rectCenter = model.getRectCenter();
                     setVerticalIndicator(rectCenter,
                             Math.abs(Math.abs(startX - finalX) - Math.abs(startY - finalY)));
                     setHorizontalIndicator(rectCenter,
@@ -247,23 +269,23 @@ public class MouseDrawListener {
                     g2.setStroke(DOTTED_LINE);
                     saveCoordsToModel();
                     model.getParallelepipedFrontLeftTop().setLocation(
-                            startX + drawLine * PARALLELEPIPED_LEFT_TOP_XFACTOR,
-                            finalY + drawLine * PARALLELEPIPED_LEFT_TOP_YFACTOR);
-                    model.getParallelepipedBackRightTop().setLocation(
-                            finalX + drawLine * PARALLELEPIPED_RIGHT_TOP_XFACTOR,
-                            startY);
-                    model.getParallelepipedFrontLeftBottom().setLocation(
-                            startX + drawLine * PARALLELEPIPED_LEFT_BOTTOM_XFACTOR,
-                            finalY);
-                    model.getParallelepipedBackRightBottom().setLocation(
-                            finalX + drawLine * PARALLELEPIPED_RIGHT_BOTTOM_XFACTOR,
-                            finalY + drawLine * PARALLELEPIPED_RIGHT_BOTTOM_YFACTOR);
+                            startX - drawLine * PARALLELEPIPED_DEPTH_FACTOR,
+                            finalY - (finalY - startY) * PARALLELEPIPED_ANGLE_FACTOR);
                     model.getParallelepipedFrontRightTop().setLocation(
                             finalX,
-                            finalY + drawLine * PARALLELEPIPED_FRONT_TOP_YFACTOR);
+                            finalY - (finalY - startY) * PARALLELEPIPED_ANGLE_FACTOR);
+                    model.getParallelepipedBackRightTop().setLocation(
+                            finalX + drawLine * PARALLELEPIPED_DEPTH_FACTOR,
+                            startY);
+                    model.getParallelepipedFrontLeftBottom().setLocation(
+                            startX - drawLine * PARALLELEPIPED_DEPTH_FACTOR,
+                            finalY);
                     model.getParallelepipedBackLeftBottom().setLocation(
                             startX,
-                            finalY + drawLine * PARALLELEPIPED_BACK_BOTTOM_YFACTOR);
+                            startY + (finalY - startY) * PARALLELEPIPED_ANGLE_FACTOR);
+                    model.getParallelepipedBackRightBottom().setLocation(
+                            finalX + drawLine * PARALLELEPIPED_DEPTH_FACTOR,
+                            startY + (finalY - startY) * PARALLELEPIPED_ANGLE_FACTOR);
                     Point frontLeftTop = model.getParallelepipedFrontLeftTop();
                     Point backRightTop = model.getParallelepipedBackRightTop();
                     Point frontLeftBottom = model.getParallelepipedFrontLeftBottom();
@@ -275,44 +297,76 @@ public class MouseDrawListener {
                     g2.drawLine(startX, startY, frontLeftTop.x, frontLeftTop.y);
                     g2.drawLine(backRightTop.x, backRightTop.y, backRightBottom.x, backRightBottom.y);
                     g2.drawLine(frontLeftTop.x, frontLeftTop.y, frontLeftBottom.x, frontLeftBottom.y);
+                    g2.drawLine(frontLeftTop.x, frontLeftTop.y, frontRightTop.x, frontRightTop.y);
+                    g2.drawLine(backRightTop.x, backRightTop.y, frontRightTop.x, frontRightTop.y);
+                    g2.drawLine(frontLeftBottom.x, frontLeftBottom.y, finalX, finalY);
+                    g2.drawLine(backRightBottom.x, backRightBottom.y, finalX, finalY);
+                    g2.drawLine(frontRightTop.x, frontRightTop.y, finalX, finalY);
                     break;
                 case CONE:
                     g2.setStroke(DOTTED_LINE);
                     saveCoordsToModel();
-                    Point coneCenter = new Point(startX, startY);
+                    Point coneCenter = model.getCircleCenter();
                     int coneBigRadius = model.getEllipseBigRadius();
                     int coneSmallRadius = model.getEllipseSmallRadius();
-                    g2.drawOval(coneCenter.x - coneBigRadius, coneCenter.y - coneSmallRadius,
-                            Math.abs(coneCenter.x - finalX), Math.abs(coneCenter.y - finalY));
-                    g2.drawLine(coneCenter.x, coneCenter.y - coneBigRadius * 2,
-                            coneCenter.x - coneBigRadius, coneCenter.y);
-                    g2.drawLine(coneCenter.x, coneCenter.y - coneBigRadius * 2,
-                            coneCenter.x + coneBigRadius, coneCenter.y);
+                    int coneHeight = (int) (coneBigRadius * CONE_GROW_FACTOR);
+                    int coneLeftFix = (int) (coneSmallRadius * CONE_LEFT_BUG_FACTOR);
+                    int coneRightFix = (int) (coneSmallRadius * CONE_RIGHT_BUG_FACTOR);
+                    g2.drawArc(
+                            coneCenter.x - coneBigRadius,
+                            coneCenter.y - coneSmallRadius,
+                            Math.abs(coneCenter.x - finalX), Math.abs(coneCenter.y - finalY),
+                            CONE_LINED_ARC_START_ANGLE, CONE_LINED_ARC_FINAL_ANGLE);
+                    g2.drawArc(
+                            coneCenter.x - coneBigRadius,
+                            coneCenter.y - coneSmallRadius,
+                            Math.abs(coneCenter.x - finalX), Math.abs(coneCenter.y - finalY),
+                            CONE_DOTTED_ARC_START_ANGLE, CONE_DOTTED_ARC_FINAL_ANGLE);
+                    if (finalY < coneCenter.y) {
+                        g2.drawLine(coneCenter.x, coneCenter.y - coneHeight,
+                                coneCenter.x - coneBigRadius, coneCenter.y - coneLeftFix);
+                        g2.drawLine(coneCenter.x, coneCenter.y - coneHeight,
+                                (coneCenter.x + coneBigRadius), coneCenter.y - coneRightFix);
+                    } else {
+                        g2.drawLine(coneCenter.x, coneCenter.y + coneHeight,
+                                coneCenter.x - coneBigRadius, coneCenter.y + coneLeftFix);
+                        g2.drawLine(coneCenter.x, coneCenter.y + coneHeight,
+                                (coneCenter.x + coneBigRadius), coneCenter.y + coneRightFix);
+                    }
                     break;
                 case CYLINDER:
                     g2.setStroke(DOTTED_LINE);
                     saveCoordsToModel();
-                    Point cylinderCenter = new Point(startX, startY);
+                    Point cylinderCenter = model.getCircleCenter();
                     int cylinderBigRadius = model.getEllipseBigRadius();
                     int cylinderSmallRadius = model.getEllipseSmallRadius();
+                    int cylinderHeight = (int) (cylinderBigRadius * CYLINDER_GROW_FACTOR);
+                    int cylinderLeftFix = (int) (cylinderSmallRadius * CYLINDER_TOP_LEFT_BUG_FACTOR);
+                    int cylinderRightFix = (int) (cylinderSmallRadius * CYLINDER_TOP_RIGHT_BUG_FACTOR);
+                    g2.drawOval(
+                            cylinderCenter.x - cylinderBigRadius,
+                            cylinderCenter.y - cylinderSmallRadius - cylinderHeight,
+                            Math.abs(cylinderCenter.x - finalX), Math.abs(cylinderCenter.y - finalY));
+                    g2.drawLine(
+                            cylinderCenter.x - cylinderBigRadius,
+                            cylinderCenter.y,
+                            cylinderCenter.x - cylinderBigRadius + cylinderLeftFix,
+                            cylinderCenter.y - cylinderHeight);
+                    g2.drawLine(
+                            (int) (cylinderCenter.x + cylinderBigRadius + CYLINDER_RIGHT_LINE_BUG_CONSTANT),
+                            cylinderCenter.y,
+                            (int) (cylinderCenter.x + cylinderBigRadius + CYLINDER_RIGHT_LINE_BUG_CONSTANT + cylinderRightFix),
+                            cylinderCenter.y - cylinderHeight);
                     g2.drawOval(cylinderCenter.x - cylinderBigRadius, cylinderCenter.y - cylinderSmallRadius,
                             Math.abs(cylinderCenter.x - finalX), Math.abs(cylinderCenter.y - finalY));
-                    g2.drawLine(cylinderCenter.x - cylinderBigRadius, cylinderCenter.y,
-                            cylinderCenter.x - cylinderBigRadius, cylinderCenter.y + cylinderBigRadius * 3);
-                    g2.drawLine(cylinderCenter.x + cylinderBigRadius, cylinderCenter.y,
-                            cylinderCenter.x + cylinderBigRadius, cylinderCenter.y + cylinderBigRadius * 3);
-
-                    g2.drawOval(cylinderCenter.x - cylinderBigRadius, cylinderCenter.y - cylinderSmallRadius + cylinderBigRadius * 3,
-                            Math.abs(cylinderCenter.x - finalX), Math.abs(cylinderCenter.y - finalY));
-
                     break;
                 case SPHERE:
                     g2.setStroke(DOTTED_LINE);
                     saveCoordsToModel();
 
                     Point sphereCenter = model.getCircleCenter();
-                    int sphereRadius = model.getCircleRadius();
-                    int sphereSmallRadius = Math.abs(startY - finalY) / 2;
+                    int sphereRadius = model.getEllipseBigRadius();
+                    int sphereSmallRadius = model.getEllipseSmallRadius();
 
                     g2.drawOval(sphereCenter.x - sphereRadius, sphereCenter.y - sphereRadius,
                             Math.abs(sphereCenter.x - finalX), Math.abs(sphereCenter.x - finalX));
@@ -359,11 +413,11 @@ public class MouseDrawListener {
         @Override
         public void mouseReleased(MouseEvent mouseEvent) {
             view.loadSavedImage();
-            startDrawing();
+            setGraphicsAndColor();
             g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
-            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            g2.setRenderingHint (RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
-            g2.setRenderingHint (RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR );
+//            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//            g2.setRenderingHint (RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+//            g2.setRenderingHint (RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR );
             switch(model.getDrawMode()) {
                 case PENCIL:
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(PENCIL_BASIC_STROKE))));
@@ -436,7 +490,7 @@ public class MouseDrawListener {
                 case CIRCLE:
                     g2.setStroke(DEFAULT_LINE);
                     Point center = model.getCircleCenter();
-                    int radius = model.getCircleRadius();
+                    int radius = model.getEllipseBigRadius();
 
                     g2.drawOval(center.x - radius, center.y - radius,
                             Math.abs(center.x - finalX), Math.abs(center.x - finalX));
@@ -476,30 +530,16 @@ public class MouseDrawListener {
                     g2.drawLine(pmRightTop.x, pmRightTop.y, finalX, finalY);
                     break;
                 case POLYGON:
+                    if (model.wasIterated()) {
+                        model.resetPolygon();
+                    }
                     g2.setStroke(DEFAULT_LINE);
+                    drawPolygonIfPointRepeats();
 
-                    pointIsNew = true;
-                    areaPoints = new ArrayList<>();
-                    for (int i = -10; i < 10; i++) {
-                        for (int j = -10; j < 10; j++) {
-                            areaPoints.add(new Point(finalX + i, finalY + j));
-                        }
-                    }
-                    for (Point point : areaPoints) {
-                        if (model.getPointList().contains(point)) {
-                            model.fillPolygon();
-                            g2.drawPolygon(model.getPolygon());
-
-                            model.resetPolygon();
-                            pointIsNew = false;
-                            break;
-                        }
-                    }
                     if (pointIsNew) {
                         g2.drawLine(finalX, finalY, finalX, finalY);
                         model.getPointList().add(new Point(finalX, finalY));
                     }
-
                     break;
                 case PYRAMID:
                     g2.setStroke(DEFAULT_LINE);
@@ -539,66 +579,7 @@ public class MouseDrawListener {
                         model.resetPointList();
                     }
                     g2.setStroke(DEFAULT_LINE);
-
-                    pointIsNew = true;
-                    areaPoints = new ArrayList<>();
-                    controlPoints = new ArrayList<>();
-                    Point topPoint = new Point();
-                    Point minXPoint = new Point(Integer.MAX_VALUE, 0);
-                    Point maxXPoint = new Point(0,0);
-                    for (int i = -5; i < 5; i++) {
-                        for (int j = -5; j < 5; j++) {
-                            areaPoints.add(new Point(mouseEvent.getX() + i, mouseEvent.getY() + j));
-                        }
-                    }
-                    for (Point point : areaPoints) {
-                        if (model.getPointList().contains(point)) {
-                            for (Point bottomPoint : model.getPointList()) {
-                                if (bottomPoint.x > maxXPoint.x) {
-                                    maxXPoint = bottomPoint;
-                                }
-                                if (bottomPoint.x < minXPoint.x) {
-                                    minXPoint = bottomPoint;
-                                }
-                            }
-                            topPoint.x = minXPoint.x + (maxXPoint.x - minXPoint.x) / 2;
-                            topPoint.y = (int) (minXPoint.y - (maxXPoint.x - minXPoint.x) * 1.5);
-                            if (topPoint.y < 10) {
-                                topPoint.y = 10;
-                            }
-                            Point lastPoint = null;
-                            Point firstPoint = null;
-                            for (Point bottomPoint : model.getPointList()) {
-                                if (bottomPoint.x < maxXPoint.x
-                                        && bottomPoint.x > minXPoint.x
-                                        && bottomPoint.y < minXPoint.y - (minXPoint.y - maxXPoint.y) / 2) {
-                                    g2.setStroke(DOTTED_LINE);
-                                    controlPoints.add(bottomPoint);
-                                }
-                                g2.drawLine(topPoint.x, topPoint.y, bottomPoint.x, bottomPoint.y);
-                                if (firstPoint == null) {
-                                    firstPoint = bottomPoint;
-                                }
-                                if (lastPoint != null) {
-                                    if (controlPoints.contains(bottomPoint)
-                                    || controlPoints.contains(lastPoint)) {
-                                        g2.setStroke(DOTTED_LINE);
-                                    }
-                                    g2.drawLine(bottomPoint.x, bottomPoint.y, lastPoint.x, lastPoint.y);
-                                }
-                                lastPoint = bottomPoint;
-                                g2.setStroke(DEFAULT_LINE);
-                            }
-                            if (firstPoint.y < minXPoint.y
-                                    || (lastPoint.y < minXPoint.y && lastPoint != maxXPoint)) {
-                                g2.setStroke(DOTTED_LINE);
-                            }
-                            g2.drawLine(firstPoint.x, firstPoint.y, lastPoint.x, lastPoint.y);
-                            pointIsNew = false;
-                            model.resetPointList();
-                            break;
-                        }
-                    }
+                    drawPyramidIfPointRepeats();
 
                     if (pointIsNew) {
                         g2.drawLine(finalX, finalY, finalX, finalY);
@@ -640,91 +621,6 @@ public class MouseDrawListener {
                     if (!isUpDrawing()) { g2.setStroke(DOTTED_LINE); }
                     g2.drawLine(leftBottom.x, leftBottom.y, rightBottom.x, rightBottom.y);
                     break;
-                case PRISM_CUSTOM:
-                    if (model.wasIterated()) {
-                        model.resetPointList();
-                        model.resetPrismTopPointList();
-                    }
-                    g2.setStroke(DEFAULT_LINE);
-
-                    pointIsNew = true;
-                    areaPoints = new ArrayList<>();
-                    controlPoints = new ArrayList<>();
-                    Point prismLeftPoint = new Point(Integer.MAX_VALUE, 0);
-                    Point prismRightPoint = new Point(0,0);
-                    for (int i = -5; i < 5; i++) {
-                        for (int j = -5; j < 5; j++) {
-                            areaPoints.add(new Point(mouseEvent.getX() + i, mouseEvent.getY() + j));
-                        }
-                    }
-                    for (Point point : areaPoints) {
-                        if (model.getPointList().contains(point)) {
-                            for (Point bottomPoint : model.getPointList()) {
-                                if (bottomPoint.x > prismRightPoint.x) {
-                                    prismRightPoint = bottomPoint;
-                                }
-                                if (bottomPoint.x < prismLeftPoint.x) {
-                                    prismLeftPoint = bottomPoint;
-                                }
-                            }
-                            Point lastPoint = null;
-                            Point lastTopPoint = null;
-                            Point firstPoint = null;
-                            Point firstTopPoint = null;
-                            int prismHeightFactor = (int) ((prismRightPoint.x - prismLeftPoint.x) * 0.7);
-                            for (Point bottomPoint : model.getPointList()) {
-//                                int xCoord = bottomPoint.x;
-//                                int yCoord = (bottomPoint.y - prismHeightFactor) > 10 ?
-//                                        bottomPoint.y - prismHeightFactor :
-//                                        bottomPoint.y - prismHeightFactor / 2;
-                                model.getPrismTopPointList().add(new Point(bottomPoint.x, bottomPoint.y - prismHeightFactor));
-                            }
-                            for (int i = 0; i < model.getPointList().size(); i++) {
-                                if (model.getPointList().get(i).x < prismRightPoint.x
-                                        && model.getPointList().get(i).x > prismLeftPoint.x
-                                        && model.getPointList().get(i).y < prismLeftPoint.y - (prismLeftPoint.y - prismRightPoint.y) / 2) {
-                                    g2.setStroke(DOTTED_LINE);
-                                    controlPoints.add(model.getPointList().get(i));
-                                }
-                                g2.drawLine(model.getPrismTopPointList().get(i).x, model.getPrismTopPointList().get(i).y, model.getPointList().get(i).x, model.getPointList().get(i).y);
-                                if (firstPoint == null) {
-                                    firstPoint = model.getPointList().get(i);
-                                }
-                                if (lastPoint != null) {
-                                    if (controlPoints.contains(model.getPointList().get(i))
-                                            || controlPoints.contains(lastPoint)) {
-                                        g2.setStroke(DOTTED_LINE);
-                                    }
-                                    g2.drawLine(model.getPointList().get(i).x, model.getPointList().get(i).y, lastPoint.x, lastPoint.y);
-                                }
-                                lastPoint = model.getPointList().get(i);
-                                g2.setStroke(DEFAULT_LINE);
-
-                                if (firstTopPoint == null) {
-                                    firstTopPoint = model.getPrismTopPointList().get(i);
-                                }
-                                if (lastTopPoint != null) {
-                                    g2.drawLine(model.getPrismTopPointList().get(i).x, model.getPrismTopPointList().get(i).y, lastTopPoint.x, lastTopPoint.y);
-                                }
-                                lastTopPoint = model.getPrismTopPointList().get(i);
-                            }
-                            g2.drawLine(firstTopPoint.x, firstTopPoint.y, lastTopPoint.x, lastTopPoint.y);
-                            if (firstPoint.y < prismLeftPoint.y
-                                    || (lastPoint.y < prismLeftPoint.y && lastPoint != prismRightPoint)) {
-                                g2.setStroke(DOTTED_LINE);
-                            }
-                            g2.drawLine(firstPoint.x, firstPoint.y, lastPoint.x, lastPoint.y);
-                            pointIsNew = false;
-                            model.resetPointList();
-                            model.resetPrismTopPointList();
-                            break;
-                        }
-                    }
-                    if (pointIsNew) {
-                        g2.drawLine(finalX, finalY, finalX, finalY);
-                        model.getPointList().add(new Point(finalX, finalY));
-                    }
-                    break;
                 case PARALLELEPIPED:
                     g2.setStroke(DEFAULT_LINE);
                     Point frontLeftTop = model.getParallelepipedFrontLeftTop();
@@ -749,56 +645,97 @@ public class MouseDrawListener {
                     g2.drawLine(backRightBottom.x, backRightBottom.y, backLeftBottom.x, backLeftBottom.y);
                     g2.drawLine(startX, startY, backLeftBottom.x, backLeftBottom.y);
                     break;
+                case PRISM_CUSTOM:
+                    if (model.wasIterated()) {
+                        model.resetPointList();
+                        model.resetPrismTopPointList();
+                    }
+                    g2.setStroke(DEFAULT_LINE);
+
+                    drawPrismIfPointRepeats();
+                    if (pointIsNew) {
+                        g2.drawLine(finalX, finalY, finalX, finalY);
+                        model.getPointList().add(new Point(finalX, finalY));
+                    }
+                    break;
                 case CONE:
                     g2.setStroke(DEFAULT_LINE);
-                    Point coneCenter = new Point(startX, startY);
+                    Point coneCenter = model.getCircleCenter();
                     int coneBigRadius = model.getEllipseBigRadius();
                     int coneSmallRadius = model.getEllipseSmallRadius();
-                    g2.drawArc(coneCenter.x - coneBigRadius, coneCenter.y - coneSmallRadius,
-                            Math.abs(coneCenter.x - finalX), Math.abs(coneCenter.y - finalY),
-                            0, -180);
+                    int coneHeight = (int) (coneBigRadius * CONE_GROW_FACTOR);
+                    int coneLeftFix = (int) (coneSmallRadius * CONE_LEFT_BUG_FACTOR);
+                    int coneRightFix = (int) (coneSmallRadius * CONE_RIGHT_BUG_FACTOR);
 
-                    g2.drawLine(coneCenter.x, coneCenter.y - coneBigRadius * 2,
-                            coneCenter.x - coneBigRadius, coneCenter.y);
-                    g2.drawLine(coneCenter.x, coneCenter.y - coneBigRadius * 2,
-                            coneCenter.x + coneBigRadius, coneCenter.y);
+                    g2.drawArc(
+                            coneCenter.x - coneBigRadius,
+                            coneCenter.y - coneSmallRadius,
+                            Math.abs(coneCenter.x - finalX), Math.abs(coneCenter.y - finalY),
+                            CONE_LINED_ARC_START_ANGLE, CONE_LINED_ARC_FINAL_ANGLE);
                     g2.drawLine(coneCenter.x, coneCenter.y, coneCenter.x, coneCenter.y);
 
-                    g2.setStroke(DOTTED_LINE);
-                    g2.drawArc(coneCenter.x - coneBigRadius, coneCenter.y - coneSmallRadius,
+                    if (finalY < coneCenter.y) {
+                        g2.drawLine(coneCenter.x, coneCenter.y - coneHeight,
+                                coneCenter.x - coneBigRadius, coneCenter.y - coneLeftFix);
+                        g2.drawLine(coneCenter.x, coneCenter.y - coneHeight,
+                                (coneCenter.x + coneBigRadius), coneCenter.y - coneRightFix);
+                                            g2.setStroke(DOTTED_LINE);
+                    } else {
+                        g2.drawLine(coneCenter.x, coneCenter.y + coneHeight,
+                                coneCenter.x - coneBigRadius, coneCenter.y + coneLeftFix);
+                        g2.drawLine(coneCenter.x, coneCenter.y + coneHeight,
+                                (coneCenter.x + coneBigRadius), coneCenter.y + coneRightFix);
+                    }
+                    g2.drawArc(
+                            coneCenter.x - coneBigRadius,
+                            coneCenter.y - coneSmallRadius,
                             Math.abs(coneCenter.x - finalX), Math.abs(coneCenter.y - finalY),
-                            0, 180);
+                            CONE_DOTTED_ARC_START_ANGLE, CONE_DOTTED_ARC_FINAL_ANGLE);
                     break;
                 case CYLINDER:
                     g2.setStroke(DEFAULT_LINE);
-                    saveCoordsToModel();
-                    Point cylinderCenter = new Point(startX, startY);
+                    Point cylinderCenter = model.getCircleCenter();
                     int cylinderBigRadius = model.getEllipseBigRadius();
                     int cylinderSmallRadius = model.getEllipseSmallRadius();
+                    int cylinderHeight = (int) (cylinderBigRadius * CYLINDER_GROW_FACTOR);
+                    int cylinderLeftFix = (int) (cylinderSmallRadius * CYLINDER_TOP_LEFT_BUG_FACTOR);
+                    int cylinderRightFix = (int) (cylinderSmallRadius * CYLINDER_TOP_RIGHT_BUG_FACTOR);
 
-                    g2.drawOval(cylinderCenter.x - cylinderBigRadius, cylinderCenter.y - cylinderSmallRadius,
+                    g2.drawOval(
+                            cylinderCenter.x - cylinderBigRadius,
+                            cylinderCenter.y - cylinderSmallRadius - cylinderHeight,
                             Math.abs(cylinderCenter.x - finalX), Math.abs(cylinderCenter.y - finalY));
-                    g2.drawLine(cylinderCenter.x - cylinderBigRadius, cylinderCenter.y,
-                            cylinderCenter.x - cylinderBigRadius, cylinderCenter.y + cylinderBigRadius * 3);
-                    g2.drawLine(cylinderCenter.x + cylinderBigRadius, cylinderCenter.y,
-                            cylinderCenter.x + cylinderBigRadius, cylinderCenter.y + cylinderBigRadius * 3);
-
-                    g2.drawArc(cylinderCenter.x - cylinderBigRadius, cylinderCenter.y - cylinderSmallRadius + cylinderBigRadius * 3,
-                            Math.abs(cylinderCenter.x - finalX), Math.abs(cylinderCenter.y - finalY), 0, -180);
-
-                    g2.drawLine(cylinderCenter.x, cylinderCenter.y + cylinderBigRadius * 3, cylinderCenter.x, cylinderCenter.y + cylinderBigRadius * 3);
+                    g2.drawLine(
+                            cylinderCenter.x - cylinderBigRadius,
+                                cylinderCenter.y,
+                            cylinderCenter.x - cylinderBigRadius + cylinderLeftFix,
+                            cylinderCenter.y - cylinderHeight);
+                    g2.drawLine(
+                            (int) (cylinderCenter.x + cylinderBigRadius + CYLINDER_RIGHT_LINE_BUG_CONSTANT),
+                                cylinderCenter.y,
+                            (int) (cylinderCenter.x + cylinderBigRadius + CYLINDER_RIGHT_LINE_BUG_CONSTANT + cylinderRightFix),
+                            cylinderCenter.y - cylinderHeight);
+                    g2.drawArc(
+                            cylinderCenter.x - cylinderBigRadius,
+                            cylinderCenter.y - cylinderSmallRadius,
+                            Math.abs(cylinderCenter.x - finalX), Math.abs(cylinderCenter.y - finalY),
+                            0, -180);
+                    g2.drawLine(cylinderCenter.x, cylinderCenter.y - cylinderHeight,
+                            cylinderCenter.x, cylinderCenter.y - cylinderHeight);
+                    g2.drawLine(cylinderCenter.x, cylinderCenter.y, cylinderCenter.x, cylinderCenter.y);
 
                     g2.setStroke(DOTTED_LINE);
-
-                    g2.drawArc(cylinderCenter.x - cylinderBigRadius, cylinderCenter.y - cylinderSmallRadius + cylinderBigRadius * 3,
-                            Math.abs(cylinderCenter.x - finalX), Math.abs(cylinderCenter.y - finalY), 0, 180);
-
+                    g2.drawArc(
+                            cylinderCenter.x - cylinderBigRadius,
+                            cylinderCenter.y - cylinderSmallRadius,
+                            Math.abs(cylinderCenter.x - finalX), Math.abs(cylinderCenter.y - finalY),
+                            CYLINDER_DOTTED_ARC_START_ANGLE, CYLINDER_DOTTED_ARC_FINAL_ANGLE);
                     break;
                 case SPHERE:
                     g2.setStroke(DEFAULT_LINE);
                     Point sphereCenter = model.getCircleCenter();
-                    int sphereRadius = model.getCircleRadius();
-                    int sphereSmallRadius = Math.abs(startY - finalY) / 2;
+                    int sphereRadius = model.getEllipseBigRadius();
+                    int sphereSmallRadius = model.getEllipseSmallRadius();
 
                     g2.drawOval(sphereCenter.x - sphereRadius, sphereCenter.y - sphereRadius,
                             Math.abs(sphereCenter.x - finalX), Math.abs(sphereCenter.x - finalX));
@@ -823,12 +760,13 @@ public class MouseDrawListener {
             model.saveAction(view.getMainImage());
             mainPanel.repaint();
         }
+
         public void mouseClicked(MouseEvent mouseEvent) { }
         public void mouseEntered(MouseEvent e) { }
         public void mouseExited(MouseEvent e) { }
     }
 
-    private void startDrawing() {
+    private void setGraphicsAndColor() {
         Graphics g = view.getMainImage().getGraphics();
         g2 = (Graphics2D)g;
         g2.setColor(view.getMainColor());
@@ -841,10 +779,10 @@ public class MouseDrawListener {
     }
 
     private  void saveCoordsToModel() {
-        model.setStartXPoint(startX);
-        model.setStartYPoint(startY);
-        model.setFinalXPoint(finalX);
-        model.setFinalYPoint(finalY);
+        model.setStartX(startX);
+        model.setStartY(startY);
+        model.setFinalX(finalX);
+        model.setFinalY(finalY);
 
         drawLine = (int) model.getDrawLine();
     }
@@ -885,6 +823,188 @@ public class MouseDrawListener {
             g2.drawLine(controlPoint.x - Model.INDICATOR_TOP_OFFSET, controlPoint.y,
                     controlPoint.x + Model.INDICATOR_BOTTOM_OFFSET, controlPoint.y);
         }
+    }
+
+    private void drawPolygonIfPointRepeats() {
+        pointIsNew = true;
+        setAccuracyArea();
+
+        for (Point point : areaPoints) {
+            if (model.getPointList().contains(point)) {
+                model.fillPolygon();
+                g2.drawPolygon(model.getPolygon());
+
+                model.resetPolygon();
+                pointIsNew = false;
+                break;
+            }
+        }
+    }
+
+    private void drawPyramidIfPointRepeats() {
+        resetControlAndPeakPoints();
+        setAccuracyArea();
+
+        for (Point areaPoint : areaPoints) {
+            if (model.getPointList().contains(areaPoint)) {
+                setPeakPoints();
+
+                for (Point thisPoint : model.getPointList()) {
+                    if (pointIsBehind(thisPoint)) {
+                        g2.setStroke(DOTTED_LINE);
+                        controlPoints.add(thisPoint);
+                    }
+                    g2.drawLine(topPolygonPoint.x, topPolygonPoint.y, thisPoint.x, thisPoint.y);
+
+                    drawSectorLine(thisPoint);
+                    g2.setStroke(DEFAULT_LINE);
+                }
+                if (oneOfPointsAboveLeftPoint() && previousPoint != rightPolygonPoint) {
+                    g2.setStroke(DOTTED_LINE);
+                }
+                g2.drawLine(currentPoint.x, currentPoint.y, previousPoint.x, previousPoint.y);
+
+                model.resetPointList();
+                pointIsNew = false;
+                break;
+            }
+        }
+    }
+
+    private void drawPrismIfPointRepeats() {
+        resetControlAndPeakPoints();
+        setAccuracyArea();
+
+        for (Point point : areaPoints) {
+            if (model.getPointList().contains(point)) {
+                setPeakPoints();
+
+                for (int i = 0; i < model.getPointList().size(); i++) {
+                    if (pointIsBehind(model.getPointList().get(i))) {
+                        g2.setStroke(DOTTED_LINE);
+                        controlPoints.add(model.getPointList().get(i));
+                    }
+                    g2.drawLine(
+                            model.getPrismTopPointList().get(i).x, model.getPrismTopPointList().get(i).y,
+                            model.getPointList().get(i).x, model.getPointList().get(i).y);
+
+                    drawSectorLine(model.getPointList().get(i));
+                    g2.setStroke(DEFAULT_LINE);
+
+                    drawTopSectorLine(model.getPrismTopPointList().get(i));
+                }
+                g2.drawLine(currentTopPoint.x, currentTopPoint.y, previousTopPoint.x, previousTopPoint.y);
+                if (oneOfPointsAboveLeftPoint() && previousPoint != rightPolygonPoint) {
+                    g2.setStroke(DOTTED_LINE);
+                }
+                g2.drawLine(currentPoint.x, currentPoint.y, previousPoint.x, previousPoint.y);
+
+                pointIsNew = false;
+                model.resetPointList();
+                model.resetPrismTopPointList();
+                break;
+            }
+        }
+    }
+
+    private void resetControlAndPeakPoints() {
+        pointIsNew = true;
+        controlPoints = new ArrayList<>();
+
+        leftPolygonPoint = new Point(Integer.MAX_VALUE, 0);
+        rightPolygonPoint = new Point(0,0);
+        topPolygonPoint = new Point();
+
+        previousPoint = null;
+        currentPoint = null;
+        previousTopPoint = null;
+        currentTopPoint = null;
+    }
+
+    private void setAccuracyArea() {
+        areaPoints = new ArrayList<>();
+        for (int i = (0 - (int) (Math.sqrt(POLYGON_ACCURACY_FACTOR / 4)));
+             i < (int) (Math.sqrt(POLYGON_ACCURACY_FACTOR / 4)) ; i++) {
+            for (int j = (0 - (int) (Math.sqrt(POLYGON_ACCURACY_FACTOR / 4)));
+                 j < (int) (Math.sqrt(POLYGON_ACCURACY_FACTOR / 4)); j++) {
+                areaPoints.add(new Point(finalX + i, finalY + j));
+            }
+        }
+    }
+
+    private void setPeakPoints() {
+        for (Point bottomPoint : model.getPointList()) {
+            if (bottomPoint.x > rightPolygonPoint.x) {
+                rightPolygonPoint = bottomPoint;
+            }
+            if (bottomPoint.x < leftPolygonPoint.x) {
+                leftPolygonPoint = bottomPoint;
+            }
+        }
+        topPolygonPoint.x = leftPolygonPoint.x + (rightPolygonPoint.x - leftPolygonPoint.x) / 2;
+        topPolygonPoint.y = (int) (leftPolygonPoint.y - (rightPolygonPoint.x - leftPolygonPoint.x) * PYRAMID_GROW_FACTOR);
+        if (topPolygonPoint.y < PYRAMID_TOP_PADDING) {
+            topPolygonPoint.y = PYRAMID_TOP_PADDING;
+        }
+
+        prismHeight = (int) ((rightPolygonPoint.x - leftPolygonPoint.x) * PRISM_GROW_FACTOR);
+        for (Point bottomPoint : model.getPointList()) {
+            model.getPrismTopPointList().add(new Point(bottomPoint.x, bottomPoint.y - prismHeight));
+        }
+    }
+
+    private boolean pointIsBehind(Point thisPoint) {
+        return isNotRight(thisPoint) && isNotLeft(thisPoint)
+                && aboveTheCenter(thisPoint);
+    }
+
+    private void drawSectorLine(Point thisPoint) {
+        if (currentPoint == null) {
+            currentPoint = thisPoint;
+        }
+        if (previousPoint != null) {
+            if (oneOfPointIsControl(thisPoint)) {
+                g2.setStroke(DOTTED_LINE);
+            }
+            g2.drawLine(thisPoint.x, thisPoint.y, previousPoint.x, previousPoint.y);
+        }
+        previousPoint = thisPoint;
+    }
+
+    private void drawTopSectorLine(Point thisPoint) {
+        if (currentTopPoint == null) {
+            currentTopPoint = thisPoint;
+        }
+        if (previousTopPoint != null) {
+            if (controlPoints.contains(thisPoint)
+                    || controlPoints.contains(previousTopPoint)) {
+                g2.setStroke(DOTTED_LINE);
+            }
+            g2.drawLine(thisPoint.x, thisPoint.y, previousTopPoint.x, previousTopPoint.y);
+        }
+        previousTopPoint = thisPoint;
+    }
+
+    private boolean oneOfPointIsControl(Point thisPoint) {
+        return controlPoints.contains(thisPoint)
+                || controlPoints.contains(previousPoint);
+    }
+
+    private boolean oneOfPointsAboveLeftPoint() {
+        return currentPoint.y < leftPolygonPoint.y
+                || previousPoint.y < leftPolygonPoint.y;
+    }
+
+    private boolean isNotRight(Point point) {
+        return point.x < rightPolygonPoint.x;
+    }
+
+    private boolean isNotLeft(Point point) {
+        return point.x > leftPolygonPoint.x;
+    }
+
+    private boolean aboveTheCenter(Point point) {
+        return  point.y < leftPolygonPoint.y - (leftPolygonPoint.y - rightPolygonPoint.y) / 2;
     }
 
     private boolean isUpDrawing() {

@@ -1,13 +1,10 @@
 package controller.swing.listeners;
 
-import config.Config;
-import model.DrawMode;
+import controller.swing.listeners.buttonListeners.UndoListener;
 import model.Model;
 import view.swing.SwingViewImpl;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -73,9 +70,9 @@ public class KeyboardListener {
 //                g2.setFont(new  Font(Config.getProperty(Config.TEXT_BASIC_FONT),
 //                        Integer.valueOf(Config.getProperty(Config.TEXT_BASIC_FONT_STYLE)),
 //                        Integer.valueOf(Config.getProperty(Config.TEXT_BASIC_FONT_SIZE))));
-//                g2.drawString(str, model.getFinalXPoint(), model.getFinalYPoint());
+//                g2.drawString(str, model.getFinalX(), model.getFinalY());
 //
-//                model.setFinalXPoint(model.getFinalXPoint() + Integer.valueOf(Config.getProperty(Config.TEXT_BASIC_OFFSET)));
+//                model.setFinalX(model.getFinalX() + Integer.valueOf(Config.getProperty(Config.TEXT_BASIC_OFFSET)));
 //                mainPanel.requestFocus();
 //
 //                model.saveAction(view.getMainImage());

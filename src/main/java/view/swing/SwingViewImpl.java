@@ -27,7 +27,7 @@ public class SwingViewImpl extends JFrame implements View {
     static {
         closingElements = new ArrayList<>();
         closingElements.add("RAG");
-        closingElements.add("HAND");
+        closingElements.add("MINUS");
         closingElements.add("POLYGON");
         closingElements.add("SPHERE");
     }
@@ -38,6 +38,7 @@ public class SwingViewImpl extends JFrame implements View {
     private final Map<String, ToolButton> toolButtons;
     private Model model;
     private JFrame mainFrame;
+    private JScrollPane scroll;
 
     private JMenuBar mainMenu;
     private JMenu fileMenu;
@@ -58,6 +59,8 @@ public class SwingViewImpl extends JFrame implements View {
 
     private JButton undoButton;
     private JButton redoButton;
+    private JButton plusButton;
+    private JButton minusButton;
 
     private JColorChooser colorChooser;
     private JFileChooser fileChooser;
@@ -148,6 +151,10 @@ public class SwingViewImpl extends JFrame implements View {
                 Config.getProperty(Config.UNDO_ICON_PATH)));
         redoButton = new  ToolButton(IconBuilder.buildIconByPath(
                 Config.getProperty(Config.REDO_ICON_PATH)));
+        plusButton = new  ToolButton(IconBuilder.buildIconByPath(
+                Config.getProperty(Config.PLUS_ICON_PATH)));
+        minusButton = new  ToolButton(IconBuilder.buildIconByPath(
+                Config.getProperty(Config.MINUS_ICON_PATH)));
         calculatorButton = new  ToolButton(IconBuilder.buildIconByPath(
                 Config.getProperty(Config.CALCULATOR_ICON_PATH)
         ));
@@ -158,6 +165,10 @@ public class SwingViewImpl extends JFrame implements View {
 
     private void initDrawingPanel() {
         mainPanel = new MyPanel();
+//        scroll = new JScrollPane(mainPanel);
+//        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+//        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
         mainPanel.setFocusable(true);
         mainPanel.setBounds(0,0,mainFrame.getWidth(),mainFrame.getHeight());
         mainPanel.setBackground(Color.white);
@@ -166,6 +177,7 @@ public class SwingViewImpl extends JFrame implements View {
 
     private void collectAllElements() {
         this.setJMenuBar(mainMenu);
+//        this.add(scroll);
         this.add(mainPanel);
 
         mainMenu.add(fileMenu);
@@ -188,6 +200,10 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar.addSeparator();
         toolBar.add(undoButton);
         toolBar.add(redoButton);
+        toolBar.addSeparator();
+
+//        toolBar.add(plusButton);
+//        toolBar.add(minusButton);
         colorBar.add(colorButton);
         colorBar.add(blackButton);
         colorBar.add(redButton);
@@ -235,6 +251,7 @@ public class SwingViewImpl extends JFrame implements View {
         public void paintComponent (Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
+
             g2.drawImage(mainImage, 0, 0,this);
         }
     }
@@ -367,5 +384,13 @@ public class SwingViewImpl extends JFrame implements View {
 
     public JButton getCalculatorButton() {
         return calculatorButton;
+    }
+
+    public JButton getPlusButton() {
+        return plusButton;
+    }
+
+    public JButton getMinusButton() {
+        return minusButton;
     }
 }

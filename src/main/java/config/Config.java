@@ -83,6 +83,8 @@ public class Config {
     public static final String COPY_ICON_PATH = "copy.icon.path";
     public static final String CUT_ICON_PATH = "cut.icon.path";
     public static final String PASTE_ICON_PATH = "paste.icon.path";
+    public static final String PLUS_ICON_PATH = "plus.icon.path";
+    public static final String MINUS_ICON_PATH = "minus.icon.path";
     public static final String UNDO_ICON_PATH = "undo.icon.path";
     public static final String REDO_ICON_PATH = "redo.icon.path";
     public static final String CALCULATOR_ICON_PATH = "calculator.icon.path";
@@ -121,6 +123,8 @@ public class Config {
 
     public static final String PARALLELOGRAM_FACTOR = "parallelogram.factor";
 
+    public static final String POLYGON_ACCURACY_FACTOR = "polygon.accuracy.factor";
+
     public static final String PYRAMID_MAIN_LINE_FACTOR = "tri.pyramid.main.line.factor";
     public static final String PYRAMID_LEFT_XFACTOR = "tri.pyramid.left.x.factor";
     public static final String PYRAMID_LEFT_YFACTOR = "tri.pyramid.left.y.factor";
@@ -134,6 +138,9 @@ public class Config {
     public static final String TETRA_PYRAMID_FRONT_LEFT_XFACTOR = "tetra.pyramid.front.left.x.factor";
     public static final String TETRA_PYRAMID_FRONT_RIGHT_XFACTOR = "tetra.pyramid.front.right.x.factor";
 
+    public static final String CUSTOM_PYRAMID_GROW_FACTOR = "custom.pyramid.grow.factor";
+    public static final String CUSTOM_PYRAMID_TOP_PADDING = "custom.pyramid.top.padding";
+
     public static final String TRI_PRISM_LEFT_TOP_XFACTOR = "tri.prism.left.top.x.factor";
     public static final String TRI_PRISM_LEFT_TOP_YFACTOR = "tri.prism.left.top.y.factor";
     public static final String TRI_PRISM_RIGHT_TOP_XFACTOR = "tri.prism.right.top.x.factor";
@@ -143,14 +150,27 @@ public class Config {
     public static final String TRI_PRISM_RIGHT_BOTTOM_XFACTOR = "tri.prism.right.bottom.x.factor";
     public static final String TRI_PRISM_RIGHT_BOTTOM_YFACTOR = "tri.prism.right.bottom.y.factor";
 
-    public static final String PARALLELEPIPED_FRONT_LEFT_TOP_XFACTOR = "parallelepiped.front.left.top.x.factor";
-    public static final String PARALLELEPIPED_FRONT_LEFT_TOP_YFACTOR = "parallelepiped.front.left.top.y.factor";
-    public static final String PARALLELEPIPED_BACK_RIGHT_TOP_XFACTOR = "parallelepiped.back.right.top.x.factor";
-    public static final String PARALLELEPIPED_FRONT_LEFT_BOTTOM_XFACTOR = "parallelepiped.front.left.bottom.x.factor";
-    public static final String PARALLELEPIPED_BACK_RIGHT_BOTTOM_XFACTOR = "parallelepiped.back.right.bottom.x.factor";
-    public static final String PARALLELEPIPED_BACK_RIGHT_BOTTOM_YFACTOR = "parallelepiped.back.right.bottom.y.factor";
-    public static final String PARALLELEPIPED_FRONT_RIGHT_TOP_YFACTOR = "parallelepiped.front.right.top.y.factor";
-    public static final String PARALLELEPIPED_BACK_LEFT_BOTTOM_YFACTOR = "parallelepiped.back.left.bottom.y.factor";
+    public static final String PARALLELEPIPED_DEPTH_FACTOR = "parallelepiped.depth.factor";
+    public static final String PARALLELEPIPED_ANGLE_FACTOR = "parallelepiped.angle.factor";
+
+    public static final String CUSTOM_PRISM_GROW_FACTOR = "custom.prism.grow.factor";
+
+    public static final String CONE_GROW_FACTOR = "cone.grow.factor";
+    public static final String CONE_DOTTED_ARC_START_ANGLE = "cone.dotted.arc.start.angle";
+    public static final String CONE_DOTTED_ARC_FINAL_ANGLE = "cone.dotted.arc.final.angle";
+    public static final String CONE_LINED_ARC_START_ANGLE = "cone.lined.arc.start.angle";
+    public static final String CONE_LINED_ARC_FINAL_ANGLE = "cone.lined.arc.final.angle";
+    public static final String CONE_LEFT_BUG_FACTOR = "cone.left.bug.factor";
+    public static final String CONE_RIGHT_BUG_FACTOR = "cone.right.bug.factor";
+
+    public static final String CYLINDER_GROW_FACTOR = "cylinder.grow.factor";
+    public static final String CYLINDER_DOTTED_ARC_START_ANGLE = "cylinder.dotted.arc.start.angle";
+    public static final String CYLINDER_DOTTED_ARC_FINAL_ANGLE = "cylinder.dotted.arc.final.angle";
+    public static final String CYLINDER_TOP_LEFT_BUG_FACTOR = "cylinder.top.left.bug.factor";
+    public static final String CYLINDER_TOP_RIGHT_BUG_FACTOR = "cylinder.top.right.bug.factor";
+    public static final String CYLINDER_RIGHT_LINE_BUG_CONSTANT = "cylinder.right.line.bug.constant";
+
+
 
 
 

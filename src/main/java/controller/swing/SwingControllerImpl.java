@@ -1,14 +1,9 @@
 package controller.swing;
 
 import controller.Controller;
-import controller.swing.listeners.FrameListener;
-import controller.swing.listeners.KeyboardListener;
-import controller.swing.listeners.UndoListener;
-import controller.swing.listeners.buttonListeners.FunctionButtonListener;
+import controller.swing.listeners.*;
+import controller.swing.listeners.buttonListeners.*;
 import controller.swing.menuActions.FileAction;
-import controller.swing.listeners.buttonListeners.ColorButtonListener;
-import controller.swing.listeners.MouseDrawListener;
-import controller.swing.listeners.buttonListeners.ToolButtonListener;
 import model.DrawMode;
 import model.Model;
 import util.CursorBuilder;
@@ -49,6 +44,7 @@ public class SwingControllerImpl implements Controller {
 
     private void setToolListeners() {
         UndoListener undoListener = new UndoListener(view, model);
+        ScaleListener scaleListener = new ScaleListener(view, model);
         ColorButtonListener colorListener = new ColorButtonListener(view);
 
         for (DrawMode drawMode : DrawMode.values()) {
@@ -63,6 +59,8 @@ public class SwingControllerImpl implements Controller {
 
         view.getUndoButton().addActionListener(undoListener.getUNDO_BUTTON_LISTENER());
         view.getRedoButton().addActionListener(undoListener.getREDO_BUTTON_LISTENER());
+        view.getPlusButton().addActionListener(scaleListener.getPLUS_BUTTON_LISTENER());
+        view.getMinusButton().addActionListener(scaleListener.getMINUS_BUTTON_LISTENER());
 
         view.getColorButton().addActionListener(colorListener.getColorDysplayButtonListener());
         view.getColorChooser().getSelectionModel().addChangeListener(colorListener.getChooseColorListener());

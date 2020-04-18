@@ -1,4 +1,4 @@
-package controller.swing.listeners;
+package controller.swing.listeners.buttonListeners;
 import model.Model;
 import view.swing.SwingViewImpl;
 import javax.swing.*;

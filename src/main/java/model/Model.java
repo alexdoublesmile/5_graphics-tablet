@@ -23,6 +23,9 @@ public class Model {
     public static final double PYRAMID_FRONT_LEFT_XFACTOR = Float.parseFloat(Config.getProperty(Config.TETRA_PYRAMID_FRONT_LEFT_XFACTOR));
     public static final double PYRAMID_FRONT_RIGHT_XFACTOR = Float.parseFloat(Config.getProperty(Config.TETRA_PYRAMID_FRONT_RIGHT_XFACTOR));
 
+    public static final double PYRAMID_GROW_FACTOR = Float.parseFloat(Config.getProperty(Config.CUSTOM_PYRAMID_GROW_FACTOR));
+    public static final int PYRAMID_TOP_PADDING = (int) Float.parseFloat(Config.getProperty(Config.CUSTOM_PYRAMID_TOP_PADDING));
+
     public static final double PRISM_LEFT_TOP_XFACTOR = Float.parseFloat(Config.getProperty(Config.TRI_PRISM_LEFT_TOP_XFACTOR));
     public static final double PRISM_LEFT_TOP_YFACTOR = Float.parseFloat(Config.getProperty(Config.TRI_PRISM_LEFT_TOP_YFACTOR));
     public static final double PRISM_RIGHT_TOP_XFACTOR = Float.parseFloat(Config.getProperty(Config.TRI_PRISM_RIGHT_TOP_XFACTOR));
@@ -32,14 +35,28 @@ public class Model {
     public static final double PRISM_RIGHT_BOTTOM_XFACTOR = Float.parseFloat(Config.getProperty(Config.TRI_PRISM_RIGHT_BOTTOM_XFACTOR));
     public static final double PRISM_RIGHT_BOTTOM_YFACTOR = Float.parseFloat(Config.getProperty(Config.TRI_PRISM_RIGHT_BOTTOM_YFACTOR));
 
-    public static final double PARALLELEPIPED_LEFT_TOP_XFACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_FRONT_LEFT_TOP_XFACTOR));
-    public static final double PARALLELEPIPED_LEFT_TOP_YFACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_FRONT_LEFT_TOP_YFACTOR));
-    public static final double PARALLELEPIPED_RIGHT_TOP_XFACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_BACK_RIGHT_TOP_XFACTOR));
-    public static final double PARALLELEPIPED_LEFT_BOTTOM_XFACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_FRONT_LEFT_BOTTOM_XFACTOR));
-    public static final double PARALLELEPIPED_RIGHT_BOTTOM_XFACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_BACK_RIGHT_BOTTOM_XFACTOR));
-    public static final double PARALLELEPIPED_RIGHT_BOTTOM_YFACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_BACK_RIGHT_BOTTOM_YFACTOR));
-    public static final double PARALLELEPIPED_FRONT_TOP_YFACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_FRONT_RIGHT_TOP_YFACTOR));
-    public static final double PARALLELEPIPED_BACK_BOTTOM_YFACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_BACK_LEFT_BOTTOM_YFACTOR));
+    public static final double PARALLELEPIPED_DEPTH_FACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_DEPTH_FACTOR));
+    public static final double PARALLELEPIPED_ANGLE_FACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_ANGLE_FACTOR));
+
+    public static final double PRISM_GROW_FACTOR = Float.parseFloat(Config.getProperty(Config.CUSTOM_PRISM_GROW_FACTOR));
+
+    public static final double CONE_GROW_FACTOR = Float.parseFloat(Config.getProperty(Config.CONE_GROW_FACTOR));
+    public static final int CONE_DOTTED_ARC_START_ANGLE = (int) Float.parseFloat(Config.getProperty(Config.CONE_DOTTED_ARC_START_ANGLE));
+    public static final int CONE_DOTTED_ARC_FINAL_ANGLE = (int) Float.parseFloat(Config.getProperty(Config.CONE_DOTTED_ARC_FINAL_ANGLE));
+    public static final int CONE_LINED_ARC_START_ANGLE = (int) Float.parseFloat(Config.getProperty(Config.CONE_LINED_ARC_START_ANGLE));
+    public static final int CONE_LINED_ARC_FINAL_ANGLE = (int) Float.parseFloat(Config.getProperty(Config.CONE_LINED_ARC_FINAL_ANGLE));
+    public static final double CONE_LEFT_BUG_FACTOR = Float.parseFloat(Config.getProperty(Config.CONE_LEFT_BUG_FACTOR));
+    public static final double CONE_RIGHT_BUG_FACTOR = Float.parseFloat(Config.getProperty(Config.CONE_RIGHT_BUG_FACTOR));
+
+    public static final double CYLINDER_GROW_FACTOR = Float.parseFloat(Config.getProperty(Config.CYLINDER_GROW_FACTOR));
+    public static final int CYLINDER_DOTTED_ARC_START_ANGLE = (int) Float.parseFloat(Config.getProperty(Config.CYLINDER_DOTTED_ARC_START_ANGLE));
+    public static final int CYLINDER_DOTTED_ARC_FINAL_ANGLE = (int) Float.parseFloat(Config.getProperty(Config.CYLINDER_DOTTED_ARC_FINAL_ANGLE));
+    public static final double CYLINDER_TOP_LEFT_BUG_FACTOR = Float.parseFloat(Config.getProperty(Config.CYLINDER_TOP_LEFT_BUG_FACTOR));
+    public static final double CYLINDER_TOP_RIGHT_BUG_FACTOR = Float.parseFloat(Config.getProperty(Config.CYLINDER_TOP_RIGHT_BUG_FACTOR));
+    public static final double CYLINDER_RIGHT_LINE_BUG_CONSTANT = Float.parseFloat(Config.getProperty(Config.CYLINDER_RIGHT_LINE_BUG_CONSTANT));
+
+    public static final int POLYGON_ACCURACY_FACTOR = (int) Float.parseFloat(Config.getProperty(Config.POLYGON_ACCURACY_FACTOR));
+
 
     public static final int INDICATOR_WIDTH = Integer.parseInt(Config.getProperty(Config.INDICATOR_WIDTH));
     public static final int INDICATOR_TOP_OFFSET = Integer.parseInt(Config.getProperty(Config.INDICATOR_TOP_OFFSET));
@@ -47,10 +64,10 @@ public class Model {
 
     private UndoRedoService undoService;
     private DrawMode drawMode;
-    private int startXPoint;
-    private int startYPoint;
-    private int finalXPoint;
-    private int finalYPoint;
+    private int startX;
+    private int startY;
+    private int finalX;
+    private int finalY;
 
     private int eraserStroke;
     private int ragStroke;
@@ -122,62 +139,52 @@ public class Model {
         polygon = new Polygon();
     }
 
-    public int getCircleRadius() {
-        return Math.abs(startXPoint - finalXPoint) / 2;
-    }
-
-
     public int getEllipseBigRadius() {
-        return Math.abs(startXPoint - finalXPoint) / 2;
+        return Math.abs(startX - finalX) / 2;
     }
 
 
     public int getEllipseSmallRadius() {
-        return Math.abs(startYPoint - finalYPoint) / 2;
+        return Math.abs(startY - finalY) / 2;
     }
 
-    public double getPyramidLineLenght() {
-        return Math.sqrt(
-                Math.pow(startXPoint - finalXPoint, 2.0) +
-                        Math.pow(startYPoint - finalYPoint, 2.0)
-        );
+    public Point getRectCenter() {
+        return new Point(
+                startX + Math.abs(startX - finalX) / 2,
+                startY + Math.abs(startY - finalY) / 2);
     }
 
     public double getDrawLine() {
         return Math.sqrt(
-                Math.pow(startXPoint - finalXPoint, 2.0) +
-                        Math.pow(startYPoint - finalYPoint, 2.0)
+                Math.pow(startX - finalX, 2.0) +
+                        Math.pow(startY - finalY, 2.0)
         );
     }
 
     public void resetAllPoints() {
-        triPyramidFront = new Point(finalXPoint, finalYPoint);
-        triPyramidLeft = new Point(finalXPoint, finalYPoint);
-        triPyramidRight = new Point(finalXPoint, finalYPoint);
-        tetraPyramidFrontLeft = new Point(finalXPoint, finalYPoint);
-        tetraPyramidBackLeft = new Point(finalXPoint, finalYPoint);
-        tetraPyramidBackRight = new Point(finalXPoint, finalYPoint);
-        tetraPyramidFrontRight = new Point(finalXPoint, finalYPoint);
-        tetraPyramidBottomCenter = new Point(finalXPoint, finalYPoint);
-        triPrismLeftTop = new Point(finalXPoint, finalYPoint);
-        triPrismLeftBottom = new Point(finalXPoint, finalYPoint);
-        triPrismRightTop = new Point(finalXPoint, finalYPoint);
-        triPrismRightBottom = new Point(finalXPoint, finalYPoint);
-        parallelepipedFrontLeftTop = new Point(finalXPoint, finalYPoint);
-        parallelepipedFrontRightTop = new Point(finalXPoint, finalYPoint);
-        parallelepipedFrontLeftBottom = new Point(finalXPoint, finalYPoint);
-        parallelepipedBackLeftBottom = new Point(finalXPoint, finalYPoint);
-        parallelepipedBackRightTop = new Point(finalXPoint, finalYPoint);
-        parallelepipedBackRightBottom = new Point(finalXPoint, finalYPoint);
-        parallelogramLeftBottom = new Point(finalXPoint, finalYPoint);
-        parallelogramRightTop = new Point(finalXPoint, finalYPoint);
+        triPyramidFront = new Point(finalX, finalY);
+        triPyramidLeft = new Point(finalX, finalY);
+        triPyramidRight = new Point(finalX, finalY);
+        tetraPyramidFrontLeft = new Point(finalX, finalY);
+        tetraPyramidBackLeft = new Point(finalX, finalY);
+        tetraPyramidBackRight = new Point(finalX, finalY);
+        tetraPyramidFrontRight = new Point(finalX, finalY);
+        tetraPyramidBottomCenter = new Point(finalX, finalY);
+        triPrismLeftTop = new Point(finalX, finalY);
+        triPrismLeftBottom = new Point(finalX, finalY);
+        triPrismRightTop = new Point(finalX, finalY);
+        triPrismRightBottom = new Point(finalX, finalY);
+        parallelepipedFrontLeftTop = new Point(finalX, finalY);
+        parallelepipedFrontRightTop = new Point(finalX, finalY);
+        parallelepipedFrontLeftBottom = new Point(finalX, finalY);
+        parallelepipedBackLeftBottom = new Point(finalX, finalY);
+        parallelepipedBackRightTop = new Point(finalX, finalY);
+        parallelepipedBackRightBottom = new Point(finalX, finalY);
+        parallelogramLeftBottom = new Point(finalX, finalY);
+        parallelogramRightTop = new Point(finalX, finalY);
 
-        circleCenter = new Point(finalXPoint, finalYPoint);
-        circleCenter = new Point(finalXPoint, finalYPoint);
-    }
-
-    public int getSizeForCircle(int finalPoint) {
-        return (int) Math.abs(circleCenter.getX() - finalPoint);
+        circleCenter = new Point(finalX, finalY);
+        circleCenter = new Point(finalX, finalY);
     }
 
     public boolean wasIterated() {
@@ -212,36 +219,36 @@ public class Model {
         this.drawMode = drawMode;
     }
 
-    public int getFinalXPoint() {
-        return finalXPoint;
+    public int getFinalX() {
+        return finalX;
     }
 
-    public void setFinalXPoint(int finalXPoint) {
-        this.finalXPoint = finalXPoint;
+    public void setFinalX(int finalX) {
+        this.finalX = finalX;
     }
 
-    public int getStartXPoint() {
-        return startXPoint;
+    public int getStartX() {
+        return startX;
     }
 
-    public void setStartXPoint(int startXPoint) {
-        this.startXPoint = startXPoint;
+    public void setStartX(int startX) {
+        this.startX = startX;
     }
 
-    public int getStartYPoint() {
-        return startYPoint;
+    public int getStartY() {
+        return startY;
     }
 
-    public void setStartYPoint(int startYPoint) {
-        this.startYPoint = startYPoint;
+    public void setStartY(int startY) {
+        this.startY = startY;
     }
 
-    public int getFinalYPoint() {
-        return finalYPoint;
+    public int getFinalY() {
+        return finalY;
     }
 
-    public void setFinalYPoint(int finalYPoint) {
-        this.finalYPoint = finalYPoint;
+    public void setFinalY(int finalY) {
+        this.finalY = finalY;
     }
 
     public boolean isLoading() {
