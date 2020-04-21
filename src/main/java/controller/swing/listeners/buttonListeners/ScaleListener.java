@@ -1,8 +1,12 @@
 package controller.swing.listeners.buttonListeners;
+import config.Config;
 import model.Model;
 import view.swing.SwingViewImpl;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+
+import static config.Config.RESIZE_MINUS_FACTOR;
+import static config.Config.RESIZE_PLUS_FACTOR;
 
 public class ScaleListener {
     private final PlusButtonListener PLUS_BUTTON_LISTENER;
@@ -23,7 +27,9 @@ public class ScaleListener {
     private class PlusButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-//            view.setMainImage(model.getPreviousAction());
+            view.resizeImage(
+                    mainPanel.getWidth() * Integer.parseInt(Config.getProperty(RESIZE_PLUS_FACTOR)),
+                    mainPanel.getHeight() * Integer.parseInt(Config.getProperty(RESIZE_PLUS_FACTOR)));
             mainPanel.repaint();
         }
     }
@@ -31,7 +37,9 @@ public class ScaleListener {
     private class MinusButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-//            view.setMainImage(model.getNextAction());
+            view.resizeImage(
+                    mainPanel.getWidth() / Integer.parseInt(Config.getProperty(RESIZE_MINUS_FACTOR)),
+                    mainPanel.getHeight() / Integer.parseInt(Config.getProperty(RESIZE_MINUS_FACTOR)));
             mainPanel.repaint();
         }
     }

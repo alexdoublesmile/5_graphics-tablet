@@ -96,4 +96,13 @@ public class UndoRedoService {
     public void setWasIterated(boolean wasIterated) {
         this.wasIterated = wasIterated;
     }
+
+    public void reSaveAction(BufferedImage action) {
+        actionList.set(actionCounter - 1, getNewImage(action));
+    }
+
+    public void removeLastAction() {
+        actionList.remove(actionCounter - 1);
+        actionCounter--;
+    }
 }

@@ -1,6 +1,8 @@
 package view.swing;
 
 import config.Config;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.WritableImage;
 import model.DrawMode;
 import model.Model;
 import util.IconBuilder;
@@ -11,7 +13,7 @@ import view.swing.buttons.ToolButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.image.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +40,7 @@ public class SwingViewImpl extends JFrame implements View {
     private final Map<String, ToolButton> toolButtons;
     private Model model;
     private JFrame mainFrame;
+    private JLayeredPane layeredPane;
     private JScrollPane scroll;
 
     private JMenuBar mainMenu;
@@ -69,7 +72,10 @@ public class SwingViewImpl extends JFrame implements View {
     private JButton cleanButton;
     private JButton calculatorButton;
 
+    private Image startImage;
     private BufferedImage mainImage;
+    private BufferedImage backImage;
+    private BufferedImage pictureImage;
     private BufferedImage previousImage;
     private Color mainColor;
 
@@ -100,6 +106,7 @@ public class SwingViewImpl extends JFrame implements View {
         this.setExtendedState(MAXIMIZED_BOTH);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setBackground(Color.yellow);
+        layeredPane = getLayeredPane();
     }
 
     private void initMenu() {
@@ -165,9 +172,9 @@ public class SwingViewImpl extends JFrame implements View {
 
     private void initDrawingPanel() {
         mainPanel = new MyPanel();
-//        scroll = new JScrollPane(mainPanel);
-//        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-//        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll = new JScrollPane(mainPanel);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         mainPanel.setFocusable(true);
         mainPanel.setBounds(0,0,mainFrame.getWidth(),mainFrame.getHeight());
@@ -177,7 +184,7 @@ public class SwingViewImpl extends JFrame implements View {
 
     private void collectAllElements() {
         this.setJMenuBar(mainMenu);
-//        this.add(scroll);
+//        layeredPane.add(scroll);
         this.add(mainPanel);
 
         mainMenu.add(fileMenu);
@@ -232,10 +239,29 @@ public class SwingViewImpl extends JFrame implements View {
         }
     }
 
+    public void resizeImage(int width, int height) {
+        loadSavedImage();
+        mainPanel.setSize(width, height);
+        mainPanel.setPreferredSize(new Dimension (width, height));
+        Image resizing = mainImage.getScaledInstance(width, height, BufferedImage.SCALE_DEFAULT);
+        mainImage = new  BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics g = mainImage.getGraphics();
+        g.drawImage(resizing, 0, 0, null);
+        mainPanel.repaint();
+    }
+
     public void resetToolButtonBorders() {
         for (Map.Entry<String, ToolButton> pair : toolButtons.entrySet()) {
             pair.getValue().setBorderPainted(false);
         }
+    }
+
+    public BufferedImage getPictureImage() {
+        return pictureImage;
+    }
+
+    public void setPictureImage(BufferedImage pictureImage) {
+        this.pictureImage = pictureImage;
     }
 
     class MyPanel extends JPanel {
@@ -251,8 +277,11 @@ public class SwingViewImpl extends JFrame implements View {
         public void paintComponent (Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
+            g2.drawImage(mainImage, 0, 0,null);
+            if (pictureImage != null) {
+                g2.drawImage(pictureImage, 0, 0,null);
 
-            g2.drawImage(mainImage, 0, 0,this);
+            }
         }
     }
 
@@ -393,4 +422,6 @@ public class SwingViewImpl extends JFrame implements View {
     public JButton getMinusButton() {
         return minusButton;
     }
+
+
 }

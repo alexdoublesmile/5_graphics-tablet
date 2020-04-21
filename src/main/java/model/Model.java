@@ -51,6 +51,8 @@ public class Model {
     public static final double CYLINDER_GROW_FACTOR = Float.parseFloat(Config.getProperty(Config.CYLINDER_GROW_FACTOR));
     public static final int CYLINDER_DOTTED_ARC_START_ANGLE = (int) Float.parseFloat(Config.getProperty(Config.CYLINDER_DOTTED_ARC_START_ANGLE));
     public static final int CYLINDER_DOTTED_ARC_FINAL_ANGLE = (int) Float.parseFloat(Config.getProperty(Config.CYLINDER_DOTTED_ARC_FINAL_ANGLE));
+    public static final int CYLINDER_LINED_ARC_START_ANGLE = (int) Float.parseFloat(Config.getProperty(Config.CYLINDER_LINED_ARC_START_ANGLE));
+    public static final int CYLINDER_LINED_ARC_FINAL_ANGLE = (int) Float.parseFloat(Config.getProperty(Config.CYLINDER_LINED_ARC_FINAL_ANGLE));
     public static final double CYLINDER_TOP_LEFT_BUG_FACTOR = Float.parseFloat(Config.getProperty(Config.CYLINDER_TOP_LEFT_BUG_FACTOR));
     public static final double CYLINDER_TOP_RIGHT_BUG_FACTOR = Float.parseFloat(Config.getProperty(Config.CYLINDER_TOP_RIGHT_BUG_FACTOR));
     public static final double CYLINDER_RIGHT_LINE_BUG_CONSTANT = Float.parseFloat(Config.getProperty(Config.CYLINDER_RIGHT_LINE_BUG_CONSTANT));
@@ -61,6 +63,35 @@ public class Model {
     public static final int INDICATOR_WIDTH = Integer.parseInt(Config.getProperty(Config.INDICATOR_WIDTH));
     public static final int INDICATOR_TOP_OFFSET = Integer.parseInt(Config.getProperty(Config.INDICATOR_TOP_OFFSET));
     public static final int INDICATOR_BOTTOM_OFFSET = Integer.parseInt(Config.getProperty(Config.INDICATOR_BOTTOM_OFFSET));
+
+
+    private ArrayList<DrawMode> figureModeList;
+    private ArrayList<DrawMode> customModeList;
+
+    {
+        figureModeList = new ArrayList<>();
+        figureModeList.add(DrawMode.LINE);
+        figureModeList.add(DrawMode.DOTTEDLINE);
+        figureModeList.add(DrawMode.CIRCLE);
+        figureModeList.add(DrawMode.ELLIPSE);
+        figureModeList.add(DrawMode.RECT);
+        figureModeList.add(DrawMode.PARALLELOGRAM);
+        figureModeList.add(DrawMode.POLYGON);
+        figureModeList.add(DrawMode.PYRAMID);
+        figureModeList.add(DrawMode.PYRAMID_TETRA);
+        figureModeList.add(DrawMode.PYRAMID_CUSTOM);
+        figureModeList.add(DrawMode.PRISM);
+        figureModeList.add(DrawMode.PARALLELEPIPED);
+        figureModeList.add(DrawMode.PRISM_CUSTOM);
+        figureModeList.add(DrawMode.CONE);
+        figureModeList.add(DrawMode.CYLINDER);
+        figureModeList.add(DrawMode.SPHERE);
+
+        customModeList = new ArrayList<>();
+        customModeList.add(DrawMode.POLYGON);
+        customModeList.add(DrawMode.PYRAMID_CUSTOM);
+        customModeList.add(DrawMode.PRISM_CUSTOM);
+    }
 
     private UndoRedoService undoService;
     private DrawMode drawMode;
@@ -101,6 +132,9 @@ public class Model {
     private ArrayList<Point> pointList;
     private ArrayList<Point> prismTopPointList;
     private Polygon polygon;
+    private boolean figureMode;
+    private boolean customMode;
+    private boolean polygonInWork;
 
     public Model() {
         undoService = new UndoRedoService();
@@ -194,8 +228,15 @@ public class Model {
     public  void saveAction(BufferedImage action) {
         undoService.saveAction(action);
     }
+    public  void reSaveAction(BufferedImage action) {
+        undoService.reSaveAction(action);
+    }
+    public  void removeLastAction() {
+        undoService.removeLastAction();
+    }
 
     public BufferedImage getPreviousAction() {
+        resetAllCustomPoints();
         return undoService.getPreviousAction();
     }
 
@@ -459,21 +500,14 @@ public class Model {
         return prismTopPointList;
     }
 
-    public void resetPrismTopPointList() {
-        this.prismTopPointList = new ArrayList<>();
-    }
-
-    public void resetPointList() {
-        this.pointList = new ArrayList<>();
-    }
-
     public Polygon getPolygon() {
         return polygon;
     }
 
-    public void resetPolygon() {
+    public void resetAllCustomPoints() {
         this.polygon = new Polygon();
         this.pointList = new ArrayList<>();
+        this.prismTopPointList = new ArrayList<>();
 
     }
 
@@ -505,5 +539,37 @@ public class Model {
 
     public void setArrowRightPoint(Point arrowRightPoint) {
         this.arrowRightPoint = arrowRightPoint;
+    }
+
+    public boolean isFigureMode() {
+        return figureMode;
+    }
+
+    public void setFigureMode(boolean figureMode) {
+        this.figureMode = figureMode;
+    }
+
+    public ArrayList<DrawMode> getFigureModeList() {
+        return figureModeList;
+    }
+
+    public ArrayList<DrawMode> getCustomModeList() {
+        return customModeList;
+    }
+
+    public boolean isCustomMode() {
+        return customMode;
+    }
+
+    public void setCustomMode(boolean customMode) {
+        this.customMode = customMode;
+    }
+
+    public boolean isPolygonInWork() {
+        return polygonInWork;
+    }
+
+    public void setPolygonInWork(boolean polygonInWork) {
+        this.polygonInWork = polygonInWork;
     }
 }

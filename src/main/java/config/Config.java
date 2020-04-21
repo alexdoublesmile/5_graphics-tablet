@@ -107,6 +107,9 @@ public class Config {
 
     public static final String UNDO_ACTIONS_QUANTITY = "undo.actions.quantity";
 
+    public static final String RESIZE_PLUS_FACTOR = "resize.plus.factor";
+    public static final String RESIZE_MINUS_FACTOR = "resize.minus.factor";
+
     public static final String MAIN_FRAME_WIDTH = "main.frame.width";
     public static final String MAIN_FRAME_HEIGHT = "main.frame.height";
 
@@ -166,6 +169,8 @@ public class Config {
     public static final String CYLINDER_GROW_FACTOR = "cylinder.grow.factor";
     public static final String CYLINDER_DOTTED_ARC_START_ANGLE = "cylinder.dotted.arc.start.angle";
     public static final String CYLINDER_DOTTED_ARC_FINAL_ANGLE = "cylinder.dotted.arc.final.angle";
+    public static final String CYLINDER_LINED_ARC_START_ANGLE = "cylinder.lined.arc.start.angle";
+    public static final String CYLINDER_LINED_ARC_FINAL_ANGLE = "cylinder.lined.arc.final.angle";
     public static final String CYLINDER_TOP_LEFT_BUG_FACTOR = "cylinder.top.left.bug.factor";
     public static final String CYLINDER_TOP_RIGHT_BUG_FACTOR = "cylinder.top.right.bug.factor";
     public static final String CYLINDER_RIGHT_LINE_BUG_CONSTANT = "cylinder.right.line.bug.constant";

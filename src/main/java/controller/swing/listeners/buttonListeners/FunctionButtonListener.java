@@ -68,10 +68,18 @@ public class FunctionButtonListener {
     private class CleanButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+
+            if (model.isPolygonInWork()) {
+                view.setMainImage(model.getPreviousAction());
+                view.getMainPanel().repaint();
+                model.setPolygonInWork(false);
+
+            }
             Graphics g = view.getMainImage().getGraphics();
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(Color.white);
             g2.fillRect(0, 0, mainPanel.getSize().width, mainPanel.getSize().height);
+            model.resetAllCustomPoints();
             g2.setColor(Color.black);
 
             model.saveAction(view.getMainImage());
