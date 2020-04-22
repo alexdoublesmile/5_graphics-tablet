@@ -758,21 +758,21 @@ public class MouseDrawListener {
                     int cylinderRightFix = (int) (cylinderSmallRadius * CYLINDER_TOP_RIGHT_BUG_FACTOR);
 
                     g2.drawOval(
-                            cylinderCenter.x - cylinderBigRadius,
+                            cylinderCenter.x - abs(cylinderCenter.x - finalX) / 2,
                             cylinderCenter.y - cylinderSmallRadius - cylinderHeight,
                             abs(cylinderCenter.x - finalX), abs(cylinderCenter.y - finalY));
                     g2.drawLine(
-                            cylinderCenter.x - cylinderBigRadius,
+                            cylinderCenter.x - abs(cylinderCenter.x - finalX) / 2,
                                 cylinderCenter.y,
-                            cylinderCenter.x - cylinderBigRadius + cylinderLeftFix,
+                            cylinderCenter.x - abs(cylinderCenter.x - finalX) / 2 + cylinderLeftFix,
                             cylinderCenter.y - cylinderHeight);
                     g2.drawLine(
-                            cylinderCenter.x + cylinderBigRadius,
+                            cylinderCenter.x + abs(cylinderCenter.x - finalX) / 2 + cylinderRightFix,
                                 cylinderCenter.y,
-                            cylinderCenter.x + cylinderBigRadius + cylinderRightFix,
+                            cylinderCenter.x + abs(cylinderCenter.x - finalX) / 2 + cylinderRightFix,
                             cylinderCenter.y - cylinderHeight);
                     g2.drawArc(
-                            cylinderCenter.x - cylinderBigRadius,
+                            cylinderCenter.x - abs(cylinderCenter.x - finalX) / 2,
                             cylinderCenter.y - cylinderSmallRadius,
                             abs(cylinderCenter.x - finalX), abs(cylinderCenter.y - finalY),
                             CYLINDER_LINED_ARC_START_ANGLE, CYLINDER_LINED_ARC_FINAL_ANGLE);
@@ -782,7 +782,7 @@ public class MouseDrawListener {
 
                     g2.setStroke(DOTTED_LINE);
                     g2.drawArc(
-                            cylinderCenter.x - cylinderBigRadius,
+                            cylinderCenter.x - abs(cylinderCenter.x - finalX) / 2,
                             cylinderCenter.y - cylinderSmallRadius,
                             abs(cylinderCenter.x - finalX), abs(cylinderCenter.y - finalY),
                             CYLINDER_DOTTED_ARC_START_ANGLE, CYLINDER_DOTTED_ARC_FINAL_ANGLE);
