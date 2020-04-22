@@ -35,8 +35,9 @@ public class Model {
     public static final double PRISM_RIGHT_BOTTOM_XFACTOR = Float.parseFloat(Config.getProperty(Config.TRI_PRISM_RIGHT_BOTTOM_XFACTOR));
     public static final double PRISM_RIGHT_BOTTOM_YFACTOR = Float.parseFloat(Config.getProperty(Config.TRI_PRISM_RIGHT_BOTTOM_YFACTOR));
 
-    public static final double PARALLELEPIPED_DEPTH_FACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_DEPTH_FACTOR));
-    public static final double PARALLELEPIPED_ANGLE_FACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_ANGLE_FACTOR));
+    public static final double PARALLELEPIPED_SIDE_ANGLE_FACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_SIDE_ANGLE_FACTOR));
+    public static final double PARALLELEPIPED_FRONT_ANGLE_FACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_FRONT_ANGLE_FACTOR));
+    public static final double PARALLELEPIPED_CURVE_FACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELEPIPED_CURVE_FACTOR));
 
     public static final double PRISM_GROW_FACTOR = Float.parseFloat(Config.getProperty(Config.CUSTOM_PRISM_GROW_FACTOR));
 
@@ -91,6 +92,8 @@ public class Model {
         customModeList.add(DrawMode.POLYGON);
         customModeList.add(DrawMode.PYRAMID_CUSTOM);
         customModeList.add(DrawMode.PRISM_CUSTOM);
+
+        allPoints = new ArrayList<>();
     }
 
     private UndoRedoService undoService;
@@ -120,8 +123,10 @@ public class Model {
     private Point parallelepipedFrontLeftTop;
     private Point parallelepipedFrontRightTop;
     private Point parallelepipedFrontLeftBottom;
-    private Point parallelepipedBackLeftBottom;
+    private Point parallelepipedFrontRightBottom;
+    private Point parallelepipedBackLeftTop;
     private Point parallelepipedBackRightTop;
+    private Point parallelepipedBackLeftBottom;
     private Point parallelepipedBackRightBottom;
     private Point parallelogramLeftBottom;
     private Point parallelogramRightTop;
@@ -129,6 +134,7 @@ public class Model {
     private Point ellipseCenter;
     private Point arrowLeftPoint;
     private Point arrowRightPoint;
+    private ArrayList<Point> allPoints;
     private ArrayList<Point> pointList;
     private ArrayList<Point> prismTopPointList;
     private Polygon polygon;
@@ -157,8 +163,10 @@ public class Model {
         parallelepipedFrontLeftTop = new Point(0, 0);
         parallelepipedFrontRightTop = new Point(0, 0);
         parallelepipedFrontLeftBottom = new Point(0, 0);
-        parallelepipedBackLeftBottom = new Point(0, 0);
+        parallelepipedFrontRightBottom = new Point(0, 0);
+        parallelepipedBackLeftTop = new Point(0, 0);
         parallelepipedBackRightTop = new Point(0, 0);
+        parallelepipedBackLeftBottom = new Point(0, 0);
         parallelepipedBackRightBottom = new Point(0, 0);
         parallelogramLeftBottom = new Point(0, 0);
         parallelogramRightTop = new Point(0, 0);
@@ -211,7 +219,9 @@ public class Model {
         parallelepipedFrontLeftTop = new Point(finalX, finalY);
         parallelepipedFrontRightTop = new Point(finalX, finalY);
         parallelepipedFrontLeftBottom = new Point(finalX, finalY);
+        parallelepipedFrontRightBottom = new Point(finalX, finalY);
         parallelepipedBackLeftBottom = new Point(finalX, finalY);
+        parallelepipedBackLeftTop = new Point(finalX, finalY);
         parallelepipedBackRightTop = new Point(finalX, finalY);
         parallelepipedBackRightBottom = new Point(finalX, finalY);
         parallelogramLeftBottom = new Point(finalX, finalY);
@@ -571,5 +581,13 @@ public class Model {
 
     public void setPolygonInWork(boolean polygonInWork) {
         this.polygonInWork = polygonInWork;
+    }
+
+    public Point getParallelepipedFrontRightBottom() {
+        return parallelepipedFrontRightBottom;
+    }
+
+    public Point getParallelepipedBackLeftTop() {
+        return parallelepipedBackLeftTop;
     }
 }

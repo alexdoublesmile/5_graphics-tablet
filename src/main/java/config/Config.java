@@ -153,8 +153,9 @@ public class Config {
     public static final String TRI_PRISM_RIGHT_BOTTOM_XFACTOR = "tri.prism.right.bottom.x.factor";
     public static final String TRI_PRISM_RIGHT_BOTTOM_YFACTOR = "tri.prism.right.bottom.y.factor";
 
-    public static final String PARALLELEPIPED_DEPTH_FACTOR = "parallelepiped.depth.factor";
-    public static final String PARALLELEPIPED_ANGLE_FACTOR = "parallelepiped.angle.factor";
+    public static final String PARALLELEPIPED_SIDE_ANGLE_FACTOR = "parallelepiped.side.angle.factor";
+    public static final String PARALLELEPIPED_FRONT_ANGLE_FACTOR = "parallelepiped.front.angle.factor";
+    public static final String PARALLELEPIPED_CURVE_FACTOR = "parallelepiped.curve.factor";
 
     public static final String CUSTOM_PRISM_GROW_FACTOR = "custom.prism.grow.factor";
 

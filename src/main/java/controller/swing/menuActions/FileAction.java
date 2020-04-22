@@ -68,7 +68,7 @@ public class FileAction {
                     filePath = fileChooser.getSelectedFile().getAbsolutePath();
                     image = ImageIO.read(new File(filePath));
 
-                    view.setPictureImage(image);
+                    view.setMainImage(image);
                     model.setFileName(filePath);
 
                     model.setLoading(true);

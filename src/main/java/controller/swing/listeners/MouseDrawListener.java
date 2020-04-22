@@ -26,8 +26,9 @@ import static model.Model.CYLINDER_LINED_ARC_FINAL_ANGLE;
 import static model.Model.CYLINDER_LINED_ARC_START_ANGLE;
 import static model.Model.CYLINDER_TOP_LEFT_BUG_FACTOR;
 import static model.Model.CYLINDER_TOP_RIGHT_BUG_FACTOR;
-import static model.Model.PARALLELEPIPED_ANGLE_FACTOR;
-import static model.Model.PARALLELEPIPED_DEPTH_FACTOR;
+import static model.Model.PARALLELEPIPED_CURVE_FACTOR;
+import static model.Model.PARALLELEPIPED_FRONT_ANGLE_FACTOR;
+import static model.Model.PARALLELEPIPED_SIDE_ANGLE_FACTOR;
 import static model.Model.PARALLELOGRAM_FACTOR;
 import static model.Model.POLYGON_ACCURACY_FACTOR;
 import static model.Model.PYRAMID_LEFT_XFACTOR;
@@ -92,278 +93,311 @@ public class MouseDrawListener {
 
         @Override
         public void mouseDragged(MouseEvent mouseEvent) {
-            setGraphicsAndColor();
-            g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+            if (!model.isCustomMode()) {
+                setGraphicsAndColor();
+                g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 
-            if (model.isFigureMode()) {
-                view.loadSavedImage();
-                saveCoordsToModel();
-            }
-            switch (model.getDrawMode()) {
-                case PENCIL:
-                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(PENCIL_BASIC_STROKE))));
-                    g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
-                    break;
-                case MARKER:
-                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(MARKER_BASIC_STROKE))));
-                    g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
-                    break;
-                case BRUSH:
-                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(BRUSH_BASIC_STROKE))));
-                    g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
+                if (model.isFigureMode()) {
+                    view.loadSavedImage();
+                    saveCoordsToModel();
+                }
+                switch (model.getDrawMode()) {
+                    case PENCIL:
+                        g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(PENCIL_BASIC_STROKE))));
+                        g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
+                        break;
+                    case MARKER:
+                        g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(MARKER_BASIC_STROKE))));
+                        g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
+                        break;
+                    case BRUSH:
+                        g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(BRUSH_BASIC_STROKE))));
+                        g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
 //                    saveCoordsAndView(mouseEvent);
-                    break;
-                case ERASER:
-                    g2.setStroke(new  BasicStroke(model.getEraserStroke()));
-                    g2.setColor(Color.WHITE);
-                    g2.fillOval(mouseEvent.getX() - Integer.parseInt(Config.getProperty(ERASER_XPOINT_OFFSET)),
-                            mouseEvent.getY() + Integer.parseInt(Config.getProperty(ERASER_YPOINT_OFFSET)),
-                            model.getEraserStroke(),
-                            model.getEraserStroke());
-                    break;
-                case RAG:
-                    g2.setStroke(new  BasicStroke(model.getRagStroke()));
-                    g2.setColor(Color.WHITE);
-                    g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
-                    break;
-                case LINE:
-                    g2.setStroke(DEFAULT_LINE);
-                    g2.drawLine(startX, startY, finalX, finalY);
-                    break;
-                case DOTTEDLINE:
-                    g2.setStroke(DOTTED_LINE);
-                    g2.drawLine(startX, startY, finalX, finalY);
-                    break;
+                        break;
+                    case ERASER:
+                        g2.setStroke(new  BasicStroke(model.getEraserStroke()));
+                        g2.setColor(Color.WHITE);
+                        g2.fillOval(mouseEvent.getX() - Integer.parseInt(Config.getProperty(ERASER_XPOINT_OFFSET)),
+                                mouseEvent.getY() + Integer.parseInt(Config.getProperty(ERASER_YPOINT_OFFSET)),
+                                model.getEraserStroke(),
+                                model.getEraserStroke());
+                        break;
+                    case RAG:
+                        g2.setStroke(new  BasicStroke(model.getRagStroke()));
+                        g2.setColor(Color.WHITE);
+                        g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
+                        break;
+                    case LINE:
+                        g2.setStroke(DEFAULT_LINE);
+                        g2.drawLine(startX, startY, finalX, finalY);
+                        break;
+                    case DOTTEDLINE:
+                        g2.setStroke(DOTTED_LINE);
+                        g2.drawLine(startX, startY, finalX, finalY);
+                        break;
 //                case ARROW:
 //                    g2.setStroke(DEFAULT_LINE);
 //                    g2.drawLine(startX, startY, finalX, finalY);
 //                    break;
-                case CIRCLE:
-                    g2.setStroke(DEFAULT_LINE);
-                    Point center = model.getCircleCenter();
-                    int radius = model.getEllipseBigRadius();
+                    case CIRCLE:
+                        g2.setStroke(DEFAULT_LINE);
+                        Point center = model.getCircleCenter();
+                        int radius = model.getEllipseBigRadius();
 
-                    g2.drawOval(center.x - radius, center.y - radius,
-                            Math.abs(center.x - finalX), Math.abs(center.x - finalX));
-                    g2.drawLine(center.x, center.y, center.x, center.y);
-                    break;
-                case ELLIPSE:
-                    g2.setStroke(DEFAULT_LINE);
-                    Point ellipseCenter = model.getCircleCenter();
-                    int bigRadius = model.getEllipseBigRadius();
-                    int smallRadius = model.getEllipseSmallRadius();
+                        g2.drawOval(center.x - radius, center.y - radius,
+                                Math.abs(center.x - finalX), Math.abs(center.x - finalX));
+                        g2.drawLine(center.x, center.y, center.x, center.y);
+                        break;
+                    case ELLIPSE:
+                        g2.setStroke(DEFAULT_LINE);
+                        Point ellipseCenter = model.getCircleCenter();
+                        int bigRadius = model.getEllipseBigRadius();
+                        int smallRadius = model.getEllipseSmallRadius();
 
-                    g2.drawOval(ellipseCenter.x - bigRadius, ellipseCenter.y - smallRadius,
-                            Math.abs(ellipseCenter.x - finalX), Math.abs(ellipseCenter.y - finalY));
-                    g2.drawLine(ellipseCenter.x, ellipseCenter.y, ellipseCenter.x, ellipseCenter.y);
+                        g2.drawOval(ellipseCenter.x - bigRadius, ellipseCenter.y - smallRadius,
+                                Math.abs(ellipseCenter.x - finalX), Math.abs(ellipseCenter.y - finalY));
+                        g2.drawLine(ellipseCenter.x, ellipseCenter.y, ellipseCenter.x, ellipseCenter.y);
 //                    g2.drawOval(Math.min(finalX, startX), Math.min(finalY, startY),
 //                            Math.abs(startX - finalX), Math.abs(startY - finalY));
-                    break;
-                case RECT:
-                    g2.setStroke(DEFAULT_LINE);
-                    g2.drawRect(Math.min(finalX, startX), Math.min(finalY, startY),
-                            Math.abs(startX - finalX), Math.abs(startY - finalY));
-                    Point rectCenter = model.getRectCenter();
-                    setVerticalIndicator(rectCenter,
-                            Math.abs(Math.abs(startX - finalX) - Math.abs(startY - finalY)));
-                    setHorizontalIndicator(rectCenter,
-                            Math.abs(Math.abs(startX - finalX) - Math.abs(startY - finalY)));
-                    break;
-                case PARALLELOGRAM:
-                    g2.setStroke(DEFAULT_LINE);
+                        break;
+                    case RECT:
+                        g2.setStroke(DEFAULT_LINE);
+                        g2.drawRect(Math.min(finalX, startX), Math.min(finalY, startY),
+                                Math.abs(startX - finalX), Math.abs(startY - finalY));
+                        Point rectCenter = model.getRectCenter();
+                        setVerticalIndicator(rectCenter,
+                                Math.abs(Math.abs(startX - finalX) - Math.abs(startY - finalY)));
+                        setHorizontalIndicator(rectCenter,
+                                Math.abs(Math.abs(startX - finalX) - Math.abs(startY - finalY)));
+                        break;
+                    case PARALLELOGRAM:
+                        g2.setStroke(DEFAULT_LINE);
 
-                    model.getParallelogramRightTop().setLocation(
-                            finalX + drawLine * PARALLELOGRAM_FACTOR,
-                            startY);
-                    model.getParallelogramLeftBottom().setLocation(
-                            startX - drawLine * PARALLELOGRAM_FACTOR,
-                            finalY);
-                    Point pmLeftBottom = model.getParallelogramLeftBottom();
-                    Point pmRightTop = model.getParallelogramRightTop();
+                        model.getParallelogramRightTop().setLocation(
+                                finalX + drawLine * PARALLELOGRAM_FACTOR,
+                                startY);
+                        model.getParallelogramLeftBottom().setLocation(
+                                startX - drawLine * PARALLELOGRAM_FACTOR,
+                                finalY);
+                        Point pmLeftBottom = model.getParallelogramLeftBottom();
+                        Point pmRightTop = model.getParallelogramRightTop();
 
-                    g2.drawLine(startX, startY, pmRightTop.x, pmRightTop.y);
-                    g2.drawLine(startX, startY, pmLeftBottom.x, pmLeftBottom.y);
-                    g2.drawLine(pmLeftBottom.x, pmLeftBottom.y, finalX, finalY);
-                    g2.drawLine(pmRightTop.x, pmRightTop.y, finalX, finalY);
-                    break;
-                case PYRAMID:
-                    g2.setStroke(DOTTED_LINE);
-                    model.getTriPyramidFront().setLocation(
-                            startX + drawLine * PYRAMID_MAIN_FACTOR, finalY);
-                    model.getTriPyramidLeft().setLocation(
-                            finalX + drawLine * PYRAMID_LEFT_XFACTOR,
-                            finalY + drawLine * PYRAMID_LEFT_YFACTOR);
-                    model.getTriPyramidRight().setLocation(
-                            finalX + drawLine * PYRAMID_RIGHT_XFACTOR,
-                            finalY + drawLine * PYRAMID_RIGHT_YFACTOR);
-                    Point frontPoint = model.getTriPyramidFront();
-                    Point leftPoint = model.getTriPyramidLeft();
-                    Point rightPoint = model.getTriPyramidRight();
+                        g2.drawLine(startX, startY, pmRightTop.x, pmRightTop.y);
+                        g2.drawLine(startX, startY, pmLeftBottom.x, pmLeftBottom.y);
+                        g2.drawLine(pmLeftBottom.x, pmLeftBottom.y, finalX, finalY);
+                        g2.drawLine(pmRightTop.x, pmRightTop.y, finalX, finalY);
+                        break;
+                    case PYRAMID:
+                        g2.setStroke(DOTTED_LINE);
+                        model.getTriPyramidFront().setLocation(
+                                startX + drawLine * PYRAMID_MAIN_FACTOR, finalY);
+                        model.getTriPyramidLeft().setLocation(
+                                finalX + drawLine * PYRAMID_LEFT_XFACTOR,
+                                finalY + drawLine * PYRAMID_LEFT_YFACTOR);
+                        model.getTriPyramidRight().setLocation(
+                                finalX + drawLine * PYRAMID_RIGHT_XFACTOR,
+                                finalY + drawLine * PYRAMID_RIGHT_YFACTOR);
+                        Point frontPoint = model.getTriPyramidFront();
+                        Point leftPoint = model.getTriPyramidLeft();
+                        Point rightPoint = model.getTriPyramidRight();
 
-                    g2.drawLine(startX, startY, frontPoint.x, frontPoint.y);
-                    g2.drawLine(startX, startY, leftPoint.x, leftPoint.y);
-                    g2.drawLine(startX, startY, rightPoint.x, rightPoint.y);
-                    break;
-                case PYRAMID_TETRA:
-                    g2.setStroke(DOTTED_LINE);
-                    model.getTetraPyramidBackLeft().setLocation(
-                            finalX + drawLine * PYRAMID_BACK_LEFT_XFACTOR,
-                            finalY + drawLine * PYRAMID_BACK_LEFT_YFACTOR);
-                    model.getTetraPyramidBackRight().setLocation(
-                            finalX + drawLine * PYRAMID_BACK_RIGHT_XFACTOR,
-                            finalY + drawLine * PYRAMID_BACK_RIGHT_YFACTOR);
-                    model.getTetraPyramidFrontLeft().setLocation(
-                            finalX + drawLine * PYRAMID_FRONT_LEFT_XFACTOR,
-                            finalY);
-                    model.getTetraPyramidFrontRight().setLocation(
-                            finalX + drawLine * PYRAMID_FRONT_RIGHT_XFACTOR,
-                            finalY);
-                    Point backRight = model.getTetraPyramidBackRight();
-                    Point frontLeft = model.getTetraPyramidFrontLeft();
-                    Point frontRight= model.getTetraPyramidFrontRight();
-                    setPyramidCenter();
+                        g2.drawLine(startX, startY, frontPoint.x, frontPoint.y);
+                        g2.drawLine(startX, startY, leftPoint.x, leftPoint.y);
+                        g2.drawLine(startX, startY, rightPoint.x, rightPoint.y);
+                        break;
+                    case PYRAMID_TETRA:
+                        g2.setStroke(DOTTED_LINE);
+                        model.getTetraPyramidBackLeft().setLocation(
+                                finalX + drawLine * PYRAMID_BACK_LEFT_XFACTOR,
+                                finalY + drawLine * PYRAMID_BACK_LEFT_YFACTOR);
+                        model.getTetraPyramidBackRight().setLocation(
+                                finalX + drawLine * PYRAMID_BACK_RIGHT_XFACTOR,
+                                finalY + drawLine * PYRAMID_BACK_RIGHT_YFACTOR);
+                        model.getTetraPyramidFrontLeft().setLocation(
+                                finalX + drawLine * PYRAMID_FRONT_LEFT_XFACTOR,
+                                finalY);
+                        model.getTetraPyramidFrontRight().setLocation(
+                                finalX + drawLine * PYRAMID_FRONT_RIGHT_XFACTOR,
+                                finalY);
+                        Point backRight = model.getTetraPyramidBackRight();
+                        Point frontLeft = model.getTetraPyramidFrontLeft();
+                        Point frontRight= model.getTetraPyramidFrontRight();
+                        setPyramidCenter();
 
-                    g2.drawLine(startX, startY, frontRight.x, finalY);
-                    g2.drawLine(startX, startY, frontLeft.x, frontLeft.y);
-                    g2.drawLine(startX, startY, backRight.x, backRight.y);
-                    setVerticalIndicator(model.getTetraPyramidBottomCenter(),
-                            Math.abs(startX - model.getTetraPyramidBottomCenter().x));
-                    break;
-                case PRISM:
-                    g2.setStroke(DOTTED_LINE);
-                    model.getTriPrismLeftTop().setLocation(
-                            (startX + drawLine * PRISM_LEFT_TOP_XFACTOR),
-                            (startY + drawLine * PRISM_LEFT_TOP_YFACTOR));
-                    model.getTriPrismRightTop().setLocation(
-                            (startX + drawLine * PRISM_RIGHT_TOP_XFACTOR),
-                            (startY + drawLine * PRISM_RIGHT_TOP_YFACTOR));
-                    model.getTriPrismLeftBottom().setLocation(
-                            (startX + drawLine * PRISM_LEFT_BOTTOM_XFACTOR),
-                            (finalY + drawLine * PRISM_LEFT_BOTTOM_YFACTOR));
-                    model.getTriPrismRightBottom().setLocation(
-                            (startX + drawLine * PRISM_RIGHT_BOTTOM_XFACTOR),
-                            (finalY + drawLine * PRISM_RIGHT_BOTTOM_YFACTOR));
-                    Point leftTop = model.getTriPrismLeftTop();
-                    Point rightTop = model.getTriPrismRightTop();
-                    Point leftBottom = model.getTriPrismLeftBottom();
-                    Point rightBottom = model.getTriPrismRightBottom();
+                        g2.drawLine(startX, startY, frontRight.x, finalY);
+                        g2.drawLine(startX, startY, frontLeft.x, frontLeft.y);
+                        g2.drawLine(startX, startY, backRight.x, backRight.y);
+                        setVerticalIndicator(model.getTetraPyramidBottomCenter(),
+                                Math.abs(startX - model.getTetraPyramidBottomCenter().x));
+                        break;
+                    case PRISM:
+                        g2.setStroke(DOTTED_LINE);
+                        model.getTriPrismLeftTop().setLocation(
+                                (startX + drawLine * PRISM_LEFT_TOP_XFACTOR),
+                                (startY + drawLine * PRISM_LEFT_TOP_YFACTOR));
+                        model.getTriPrismRightTop().setLocation(
+                                (startX + drawLine * PRISM_RIGHT_TOP_XFACTOR),
+                                (startY + drawLine * PRISM_RIGHT_TOP_YFACTOR));
+                        model.getTriPrismLeftBottom().setLocation(
+                                (startX + drawLine * PRISM_LEFT_BOTTOM_XFACTOR),
+                                (finalY + drawLine * PRISM_LEFT_BOTTOM_YFACTOR));
+                        model.getTriPrismRightBottom().setLocation(
+                                (startX + drawLine * PRISM_RIGHT_BOTTOM_XFACTOR),
+                                (finalY + drawLine * PRISM_RIGHT_BOTTOM_YFACTOR));
+                        Point leftTop = model.getTriPrismLeftTop();
+                        Point rightTop = model.getTriPrismRightTop();
+                        Point leftBottom = model.getTriPrismLeftBottom();
+                        Point rightBottom = model.getTriPrismRightBottom();
 
-                    g2.drawLine(finalX, startY, finalX, finalY);
-                    g2.drawLine(leftTop.x, leftTop.y, rightTop.x, rightTop.y);
-                    g2.drawLine(leftTop.x, leftTop.y, leftBottom.x, leftBottom.y);
-                    g2.drawLine(rightTop.x, rightTop.y, rightBottom.x, rightBottom.y);
-                    g2.drawLine(finalX, finalY, leftBottom.x, leftBottom.y);
-                    g2.drawLine(finalX, finalY, rightBottom.x, rightBottom.y);
-                    break;
-                case PARALLELEPIPED:
-                    g2.setStroke(DOTTED_LINE);
-                    model.getParallelepipedFrontLeftTop().setLocation(
-                            startX - drawLine * PARALLELEPIPED_DEPTH_FACTOR,
-                            finalY - (finalY - startY) * PARALLELEPIPED_ANGLE_FACTOR);
-                    model.getParallelepipedFrontRightTop().setLocation(
-                            finalX,
-                            finalY - (finalY - startY) * PARALLELEPIPED_ANGLE_FACTOR);
-                    model.getParallelepipedBackRightTop().setLocation(
-                            finalX + drawLine * PARALLELEPIPED_DEPTH_FACTOR,
-                            startY);
-                    model.getParallelepipedFrontLeftBottom().setLocation(
-                            startX - drawLine * PARALLELEPIPED_DEPTH_FACTOR,
-                            finalY);
-                    model.getParallelepipedBackLeftBottom().setLocation(
-                            startX,
-                            startY + (finalY - startY) * PARALLELEPIPED_ANGLE_FACTOR);
-                    model.getParallelepipedBackRightBottom().setLocation(
-                            finalX + drawLine * PARALLELEPIPED_DEPTH_FACTOR,
-                            startY + (finalY - startY) * PARALLELEPIPED_ANGLE_FACTOR);
-                    Point frontLeftTop = model.getParallelepipedFrontLeftTop();
-                    Point backRightTop = model.getParallelepipedBackRightTop();
-                    Point frontLeftBottom = model.getParallelepipedFrontLeftBottom();
-                    Point backRightBottom = model.getParallelepipedBackRightBottom();
-                    Point frontRightTop = model.getParallelepipedFrontRightTop();
-                    Point backLeftBottom = model.getParallelepipedBackLeftBottom();
+                        g2.drawLine(finalX, startY, finalX, finalY);
+                        g2.drawLine(leftTop.x, leftTop.y, rightTop.x, rightTop.y);
+                        g2.drawLine(leftTop.x, leftTop.y, leftBottom.x, leftBottom.y);
+                        g2.drawLine(rightTop.x, rightTop.y, rightBottom.x, rightBottom.y);
+                        g2.drawLine(finalX, finalY, leftBottom.x, leftBottom.y);
+                        g2.drawLine(finalX, finalY, rightBottom.x, rightBottom.y);
+                        break;
+                    case PARALLELEPIPED:
+                        g2.setStroke(DOTTED_LINE);
+                        if (isUpDrawing()) {
+                            model.getParallelepipedFrontLeftBottom().setLocation(startX, startY);
+                            model.getParallelepipedFrontRightBottom().setLocation(
+                                    finalX - Math.abs(finalY - startY) * PARALLELEPIPED_SIDE_ANGLE_FACTOR,
+                                    startY);
+                            model.getParallelepipedFrontLeftTop().setLocation(
+                                    startX + Math.abs(finalY - startY) * PARALLELEPIPED_CURVE_FACTOR,
+                                    finalY + Math.abs(finalY - startY) * PARALLELEPIPED_SIDE_ANGLE_FACTOR);
+                            model.getParallelepipedFrontRightTop().setLocation(
+                                    finalX + Math.abs(finalY - startY) * (PARALLELEPIPED_CURVE_FACTOR - PARALLELEPIPED_SIDE_ANGLE_FACTOR),
+                                    finalY + Math.abs(finalY - startY) * PARALLELEPIPED_SIDE_ANGLE_FACTOR);
 
-                    g2.drawLine(startX, startY, backRightTop.x, backRightTop.y);
-                    g2.drawLine(startX, startY, frontLeftTop.x, frontLeftTop.y);
-                    g2.drawLine(backRightTop.x, backRightTop.y, backRightBottom.x, backRightBottom.y);
-                    g2.drawLine(frontLeftTop.x, frontLeftTop.y, frontLeftBottom.x, frontLeftBottom.y);
-                    g2.drawLine(frontLeftTop.x, frontLeftTop.y, frontRightTop.x, frontRightTop.y);
-                    g2.drawLine(backRightTop.x, backRightTop.y, frontRightTop.x, frontRightTop.y);
-                    g2.drawLine(frontLeftBottom.x, frontLeftBottom.y, finalX, finalY);
-                    g2.drawLine(backRightBottom.x, backRightBottom.y, finalX, finalY);
-                    g2.drawLine(frontRightTop.x, frontRightTop.y, finalX, finalY);
-                    break;
-                case CONE:
-                    g2.setStroke(DOTTED_LINE);
-                    Point coneCenter = model.getCircleCenter();
-                    int coneBigRadius = model.getEllipseBigRadius();
-                    int coneSmallRadius = model.getEllipseSmallRadius();
-                    int coneHeight = (int) (coneBigRadius * CONE_GROW_FACTOR);
-                    int coneLeftFix = (int) (coneSmallRadius * CONE_LEFT_BUG_FACTOR);
-                    int coneRightFix = (int) (coneSmallRadius * CONE_RIGHT_BUG_FACTOR);
-                    g2.drawArc(
-                            coneCenter.x - coneBigRadius,
-                            coneCenter.y - coneSmallRadius,
-                            Math.abs(coneCenter.x - finalX), Math.abs(coneCenter.y - finalY),
-                            CONE_LINED_ARC_START_ANGLE, CONE_LINED_ARC_FINAL_ANGLE);
-                    g2.drawArc(
-                            coneCenter.x - coneBigRadius,
-                            coneCenter.y - coneSmallRadius,
-                            Math.abs(coneCenter.x - finalX), Math.abs(coneCenter.y - finalY),
-                            CONE_DOTTED_ARC_START_ANGLE, CONE_DOTTED_ARC_FINAL_ANGLE);
-                    if (finalY < coneCenter.y) {
-                        g2.drawLine(coneCenter.x, coneCenter.y - coneHeight,
-                                coneCenter.x - coneBigRadius, coneCenter.y - coneLeftFix);
-                        g2.drawLine(coneCenter.x, coneCenter.y - coneHeight,
-                                (coneCenter.x + coneBigRadius), coneCenter.y - coneRightFix);
-                    } else {
-                        g2.drawLine(coneCenter.x, coneCenter.y + coneHeight,
-                                coneCenter.x - coneBigRadius, coneCenter.y + coneLeftFix);
-                        g2.drawLine(coneCenter.x, coneCenter.y + coneHeight,
-                                (coneCenter.x + coneBigRadius), coneCenter.y + coneRightFix);
-                    }
-                    break;
-                case CYLINDER:
-                    g2.setStroke(DOTTED_LINE);
-                    Point cylinderCenter = model.getCircleCenter();
-                    int cylinderBigRadius = model.getEllipseBigRadius();
-                    int cylinderSmallRadius = model.getEllipseSmallRadius();
-                    int cylinderHeight = (int) (cylinderBigRadius * CYLINDER_GROW_FACTOR);
-                    int cylinderLeftFix = (int) (cylinderSmallRadius * CYLINDER_TOP_LEFT_BUG_FACTOR);
-                    int cylinderRightFix = (int) (cylinderSmallRadius * CYLINDER_TOP_RIGHT_BUG_FACTOR);
-                    g2.drawOval(
-                            cylinderCenter.x - cylinderBigRadius,
-                            cylinderCenter.y - cylinderSmallRadius - cylinderHeight,
-                            Math.abs(cylinderCenter.x - finalX), Math.abs(cylinderCenter.y - finalY));
-                    g2.drawLine(
-                            cylinderCenter.x - cylinderBigRadius,
-                            cylinderCenter.y,
-                            cylinderCenter.x - cylinderBigRadius + cylinderLeftFix,
-                            cylinderCenter.y - cylinderHeight);
-                    g2.drawLine(
-                            cylinderCenter.x + cylinderBigRadius,
-                            cylinderCenter.y,
-                            cylinderCenter.x + cylinderBigRadius + cylinderRightFix,
-                            cylinderCenter.y - cylinderHeight);
-                    g2.drawOval(cylinderCenter.x - cylinderBigRadius, cylinderCenter.y - cylinderSmallRadius,
-                            Math.abs(cylinderCenter.x - finalX), Math.abs(cylinderCenter.y - finalY));
-                    break;
-                case SPHERE:
-                    g2.setStroke(DOTTED_LINE);
+                            model.getParallelepipedBackLeftBottom().setLocation(
+                                    startX + Math.abs(finalY - startY) * PARALLELEPIPED_SIDE_ANGLE_FACTOR,
+                                    finalY + Math.abs(finalY - startY) * PARALLELEPIPED_FRONT_ANGLE_FACTOR);
+                            model.getParallelepipedBackRightBottom().setLocation(
+                                    finalX,
+                                    finalY + Math.abs(finalY - startY) * PARALLELEPIPED_FRONT_ANGLE_FACTOR);
+                            model.getParallelepipedBackLeftTop().setLocation(
+                                    startX + Math.abs(finalY - startY) * (PARALLELEPIPED_CURVE_FACTOR + PARALLELEPIPED_SIDE_ANGLE_FACTOR),
+                                    finalY);
+                            model.getParallelepipedBackRightTop().setLocation(
+                                    finalX + PARALLELEPIPED_CURVE_FACTOR * Math.abs(finalY - startY),
+                                    finalY);
+                        } else {
+                            model.getParallelepipedFrontLeftTop().setLocation(
+                                    startX - drawLine * PARALLELEPIPED_SIDE_ANGLE_FACTOR,
+                                    finalY - (finalY - startY) * PARALLELEPIPED_FRONT_ANGLE_FACTOR);
+                            model.getParallelepipedFrontRightTop().setLocation(
+                                    finalX,
+                                    finalY - (finalY - startY) * PARALLELEPIPED_FRONT_ANGLE_FACTOR);
+                            model.getParallelepipedFrontLeftBottom().setLocation(
+                                    startX - drawLine * PARALLELEPIPED_SIDE_ANGLE_FACTOR,
+                                    finalY);
+                            model.getParallelepipedFrontRightBottom().setLocation(finalX, finalY);
+                            model.getParallelepipedBackLeftTop().setLocation(startX, startY);
+                            model.getParallelepipedBackRightTop().setLocation(
+                                    finalX + drawLine * PARALLELEPIPED_SIDE_ANGLE_FACTOR,
+                                    startY);
+                            model.getParallelepipedBackLeftBottom().setLocation(
+                                    startX,
+                                    startY + (finalY - startY) * PARALLELEPIPED_FRONT_ANGLE_FACTOR);
+                            model.getParallelepipedBackRightBottom().setLocation(
+                                    finalX + drawLine * PARALLELEPIPED_SIDE_ANGLE_FACTOR,
+                                    startY + (finalY - startY) * PARALLELEPIPED_FRONT_ANGLE_FACTOR);
+                        }
+                        Point frontLeftTop = model.getParallelepipedFrontLeftTop();
+                        Point frontRightTop = model.getParallelepipedFrontRightTop();
+                        Point frontLeftBottom = model.getParallelepipedFrontLeftBottom();
+                        Point frontRightBottom = model.getParallelepipedFrontRightBottom();
 
-                    Point sphereCenter = model.getCircleCenter();
-                    int sphereRadius = model.getEllipseBigRadius();
-                    int sphereSmallRadius = model.getEllipseSmallRadius();
+                        Point backLeftTop = model.getParallelepipedBackLeftTop();
+                        Point backRightTop = model.getParallelepipedBackRightTop();
+                        Point backLeftBottom = model.getParallelepipedBackLeftBottom();
+                        Point backRightBottom = model.getParallelepipedBackRightBottom();
 
-                    g2.drawOval(sphereCenter.x - sphereRadius, sphereCenter.y - sphereRadius,
-                            Math.abs(sphereCenter.x - finalX), Math.abs(sphereCenter.x - finalX));
-                    g2.drawLine(sphereCenter.x, sphereCenter.y, sphereCenter.x, sphereCenter.y);
-                    g2.drawOval(sphereCenter.x - sphereRadius, sphereCenter.y - sphereSmallRadius,
-                            Math.abs(sphereCenter.x - finalX), Math.abs(sphereCenter.y - finalY));
-                    break;
+                        g2.drawLine(backLeftTop.x, backLeftTop.y, backRightTop.x, backRightTop.y);
+                        g2.drawLine(backLeftTop.x, backLeftTop.y, frontLeftTop.x, frontLeftTop.y);
+                        g2.drawLine(backRightTop.x, backRightTop.y, backRightBottom.x, backRightBottom.y);
+                        g2.drawLine(frontLeftTop.x, frontLeftTop.y, frontLeftBottom.x, frontLeftBottom.y);
+                        g2.drawLine(frontLeftTop.x, frontLeftTop.y, frontRightTop.x, frontRightTop.y);
+                        g2.drawLine(backRightTop.x, backRightTop.y, frontRightTop.x, frontRightTop.y);
+                        g2.drawLine(frontLeftBottom.x, frontLeftBottom.y, frontRightBottom.x, frontRightBottom.y);
+                        g2.drawLine(backRightBottom.x, backRightBottom.y, frontRightBottom.x, frontRightBottom.y);
+                        g2.drawLine(frontRightTop.x, frontRightTop.y, frontRightBottom.x, frontRightBottom.y);
+                        break;
+                    case CONE:
+                        g2.setStroke(DOTTED_LINE);
+                        Point coneCenter = model.getCircleCenter();
+                        int coneBigRadius = model.getEllipseBigRadius();
+                        int coneSmallRadius = model.getEllipseSmallRadius();
+                        int coneHeight = (int) (coneBigRadius * CONE_GROW_FACTOR);
+                        int coneLeftFix = (int) (coneSmallRadius * CONE_LEFT_BUG_FACTOR);
+                        int coneRightFix = (int) (coneSmallRadius * CONE_RIGHT_BUG_FACTOR);
+                        g2.drawArc(
+                                coneCenter.x - coneBigRadius,
+                                coneCenter.y - coneSmallRadius,
+                                Math.abs(coneCenter.x - finalX), Math.abs(coneCenter.y - finalY),
+                                CONE_LINED_ARC_START_ANGLE, CONE_LINED_ARC_FINAL_ANGLE);
+                        g2.drawArc(
+                                coneCenter.x - coneBigRadius,
+                                coneCenter.y - coneSmallRadius,
+                                Math.abs(coneCenter.x - finalX), Math.abs(coneCenter.y - finalY),
+                                CONE_DOTTED_ARC_START_ANGLE, CONE_DOTTED_ARC_FINAL_ANGLE);
+                        if (finalY < coneCenter.y) {
+                            g2.drawLine(coneCenter.x, coneCenter.y - coneHeight,
+                                    coneCenter.x - coneBigRadius, coneCenter.y - coneLeftFix);
+                            g2.drawLine(coneCenter.x, coneCenter.y - coneHeight,
+                                    (coneCenter.x + coneBigRadius), coneCenter.y - coneRightFix);
+                        } else {
+                            g2.drawLine(coneCenter.x, coneCenter.y + coneHeight,
+                                    coneCenter.x - coneBigRadius, coneCenter.y + coneLeftFix);
+                            g2.drawLine(coneCenter.x, coneCenter.y + coneHeight,
+                                    (coneCenter.x + coneBigRadius), coneCenter.y + coneRightFix);
+                        }
+                        break;
+                    case CYLINDER:
+                        g2.setStroke(DOTTED_LINE);
+                        Point cylinderCenter = model.getCircleCenter();
+                        int cylinderBigRadius = model.getEllipseBigRadius();
+                        int cylinderSmallRadius = model.getEllipseSmallRadius();
+                        int cylinderHeight = (int) (cylinderBigRadius * CYLINDER_GROW_FACTOR);
+                        int cylinderLeftFix = (int) (cylinderSmallRadius * CYLINDER_TOP_LEFT_BUG_FACTOR);
+                        int cylinderRightFix = (int) (cylinderSmallRadius * CYLINDER_TOP_RIGHT_BUG_FACTOR);
+                        g2.drawOval(
+                                cylinderCenter.x - cylinderBigRadius,
+                                cylinderCenter.y - cylinderSmallRadius - cylinderHeight,
+                                Math.abs(cylinderCenter.x - finalX), Math.abs(cylinderCenter.y - finalY));
+                        g2.drawLine(
+                                cylinderCenter.x - cylinderBigRadius,
+                                cylinderCenter.y,
+                                cylinderCenter.x - cylinderBigRadius + cylinderLeftFix,
+                                cylinderCenter.y - cylinderHeight);
+                        g2.drawLine(
+                                cylinderCenter.x + cylinderBigRadius,
+                                cylinderCenter.y,
+                                cylinderCenter.x + cylinderBigRadius + cylinderRightFix,
+                                cylinderCenter.y - cylinderHeight);
+                        g2.drawOval(cylinderCenter.x - cylinderBigRadius, cylinderCenter.y - cylinderSmallRadius,
+                                Math.abs(cylinderCenter.x - finalX), Math.abs(cylinderCenter.y - finalY));
+                        break;
+                    case SPHERE:
+                        g2.setStroke(DOTTED_LINE);
+
+                        Point sphereCenter = model.getCircleCenter();
+                        int sphereRadius = model.getEllipseBigRadius();
+                        int sphereSmallRadius = model.getEllipseSmallRadius();
+
+                        g2.drawOval(sphereCenter.x - sphereRadius, sphereCenter.y - sphereRadius,
+                                Math.abs(sphereCenter.x - finalX), Math.abs(sphereCenter.x - finalX));
+                        g2.drawLine(sphereCenter.x, sphereCenter.y, sphereCenter.x, sphereCenter.y);
+                        g2.drawOval(sphereCenter.x - sphereRadius, sphereCenter.y - sphereSmallRadius,
+                                Math.abs(sphereCenter.x - finalX), Math.abs(sphereCenter.y - finalY));
+                        break;
                 }
                 finalX = mouseEvent.getX();
                 finalY = mouseEvent.getY();
-            mainPanel.repaint();
+                mainPanel.repaint();
+            }
         }
 
         public void mouseMoved(MouseEvent e) { }
@@ -607,26 +641,29 @@ public class MouseDrawListener {
                 case PARALLELEPIPED:
                     g2.setStroke(DEFAULT_LINE);
                     Point frontLeftTop = model.getParallelepipedFrontLeftTop();
-                    Point backRightTop = model.getParallelepipedBackRightTop();
-                    Point frontLeftBottom = model.getParallelepipedFrontLeftBottom();
-                    Point backRightBottom = model.getParallelepipedBackRightBottom();
                     Point frontRightTop = model.getParallelepipedFrontRightTop();
-                    Point backLeftBottom = model.getParallelepipedBackLeftBottom();
+                    Point frontLeftBottom = model.getParallelepipedFrontLeftBottom();
+                    Point frontRightBottom = model.getParallelepipedFrontRightBottom();
 
-                    g2.drawLine(startX, startY, backRightTop.x, backRightTop.y);
-                    g2.drawLine(startX, startY, frontLeftTop.x, frontLeftTop.y);
+                    Point backLeftTop = model.getParallelepipedBackLeftTop();
+                    Point backRightTop = model.getParallelepipedBackRightTop();
+                    Point backLeftBottom = model.getParallelepipedBackLeftBottom();
+                    Point backRightBottom = model.getParallelepipedBackRightBottom();
+
+                    g2.drawLine(backLeftTop.x, backLeftTop.y, backRightTop.x, backRightTop.y);
+                    g2.drawLine(backLeftTop.x, backLeftTop.y, frontLeftTop.x, frontLeftTop.y);
                     g2.drawLine(backRightTop.x, backRightTop.y, backRightBottom.x, backRightBottom.y);
                     g2.drawLine(frontLeftTop.x, frontLeftTop.y, frontLeftBottom.x, frontLeftBottom.y);
                     g2.drawLine(frontLeftTop.x, frontLeftTop.y, frontRightTop.x, frontRightTop.y);
                     g2.drawLine(backRightTop.x, backRightTop.y, frontRightTop.x, frontRightTop.y);
-                    g2.drawLine(frontLeftBottom.x, frontLeftBottom.y, finalX, finalY);
-                    g2.drawLine(backRightBottom.x, backRightBottom.y, finalX, finalY);
-                    g2.drawLine(frontRightTop.x, frontRightTop.y, finalX, finalY);
+                    g2.drawLine(frontLeftBottom.x, frontLeftBottom.y, frontRightBottom.x, frontRightBottom.y);
+                    g2.drawLine(backRightBottom.x, backRightBottom.y, frontRightBottom.x, frontRightBottom.y);
+                    g2.drawLine(frontRightTop.x, frontRightTop.y, frontRightBottom.x, frontRightBottom.y);
 
                     g2.setStroke(DOTTED_LINE);
                     g2.drawLine(frontLeftBottom.x, frontLeftBottom.y, backLeftBottom.x, backLeftBottom.y);
                     g2.drawLine(backRightBottom.x, backRightBottom.y, backLeftBottom.x, backLeftBottom.y);
-                    g2.drawLine(startX, startY, backLeftBottom.x, backLeftBottom.y);
+                    g2.drawLine(backLeftTop.x, backLeftTop.y, backLeftBottom.x, backLeftBottom.y);
                     break;
                 case PRISM_CUSTOM:
                     g2.setStroke(DEFAULT_LINE);
@@ -737,6 +774,7 @@ public class MouseDrawListener {
 //                    mainPanel.requestFocus();
 //                    break;
             }
+
 
             finalX = 0;
             finalY = 0;
