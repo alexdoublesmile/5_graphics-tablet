@@ -124,6 +124,8 @@ public class Config {
     public static final String INDICATOR_TOP_OFFSET = "indicator.top.offset";
     public static final String INDICATOR_BOTTOM_OFFSET = "indicator.bottom.offset";
 
+    public static final String AUTO_ACCURACY_FACTOR = "auto.accuracy.factor";
+
     public static final String PARALLELOGRAM_FACTOR = "parallelogram.factor";
 
     public static final String POLYGON_ACCURACY_FACTOR = "polygon.accuracy.factor";

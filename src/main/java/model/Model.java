@@ -60,6 +60,8 @@ public class Model {
 
     public static final int POLYGON_ACCURACY_FACTOR = (int) Float.parseFloat(Config.getProperty(Config.POLYGON_ACCURACY_FACTOR));
 
+    public static final int AUTO_ACCURACY_FACTOR = (int) Float.parseFloat(Config.getProperty(Config.AUTO_ACCURACY_FACTOR));
+
 
     public static final int INDICATOR_WIDTH = Integer.parseInt(Config.getProperty(Config.INDICATOR_WIDTH));
     public static final int INDICATOR_TOP_OFFSET = Integer.parseInt(Config.getProperty(Config.INDICATOR_TOP_OFFSET));
@@ -190,10 +192,27 @@ public class Model {
         return Math.abs(startY - finalY) / 2;
     }
 
-    public Point getRectCenter() {
-        return new Point(
-                startX + Math.abs(startX - finalX) / 2,
-                startY + Math.abs(startY - finalY) / 2);
+    public Point getRectCenter(boolean downDrawing, boolean rightDrawing) {
+        Point rectCenter = new Point(0, 0);
+        if (downDrawing && rightDrawing) {
+            rectCenter.setLocation(
+                    startX + Math.abs(startX - finalX) / 2,
+                    startY + Math.abs(startY - finalY) / 2);
+        } else if (downDrawing && !rightDrawing) {
+            rectCenter.setLocation(
+                    startX - Math.abs(startX - finalX) / 2,
+                    startY + Math.abs(startY - finalY) / 2);
+        } else if (!downDrawing && rightDrawing) {
+            rectCenter.setLocation(
+                    startX + Math.abs(startX - finalX) / 2,
+                    startY - Math.abs(startY - finalY) / 2);
+        } else {
+            rectCenter.setLocation(
+                    startX - Math.abs(startX - finalX) / 2,
+                    startY - Math.abs(startY - finalY) / 2);
+        }
+
+        return rectCenter;
     }
 
     public double getDrawLine() {
