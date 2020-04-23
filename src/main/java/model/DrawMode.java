@@ -13,7 +13,7 @@ public enum DrawMode {
 //    HAND,
     LINE,
     DOTTEDLINE,
-//    ARROW,
+    ARROW,
     CIRCLE,
     ELLIPSE,
     RECT,

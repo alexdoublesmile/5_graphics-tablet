@@ -30,7 +30,6 @@ public class SwingControllerImpl implements Controller {
         setDrawListeners();
         setFrameListeners();
 
-        view.setLayout(null);
         view.setVisible(true);
     }
 
@@ -44,7 +43,7 @@ public class SwingControllerImpl implements Controller {
 
     private void setToolListeners() {
         UndoListener undoListener = new UndoListener(view, model);
-        ScaleListener scaleListener = new ScaleListener(view, model);
+//        ScaleListener scaleListener = new ScaleListener(view, model);
         ColorButtonListener colorListener = new ColorButtonListener(view);
 
         for (DrawMode drawMode : DrawMode.values()) {
@@ -59,8 +58,8 @@ public class SwingControllerImpl implements Controller {
 
         view.getUndoButton().addActionListener(undoListener.getUNDO_BUTTON_LISTENER());
         view.getRedoButton().addActionListener(undoListener.getREDO_BUTTON_LISTENER());
-        view.getPlusButton().addActionListener(scaleListener.getPLUS_BUTTON_LISTENER());
-        view.getMinusButton().addActionListener(scaleListener.getMINUS_BUTTON_LISTENER());
+//        view.getPlusButton().addActionListener(scaleListener.getPLUS_BUTTON_LISTENER());
+//        view.getMinusButton().addActionListener(scaleListener.getMINUS_BUTTON_LISTENER());
 
         view.getColorButton().addActionListener(colorListener.getColorDysplayButtonListener());
         view.getColorChooser().getSelectionModel().addChangeListener(colorListener.getChooseColorListener());

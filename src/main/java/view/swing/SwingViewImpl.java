@@ -102,11 +102,10 @@ public class SwingViewImpl extends JFrame implements View {
         this.mainFrame = this;
         this.setTitle(MAIN_FRAME_NAME);
         this.setSize(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
-//        this.setVisible(true);
         this.setExtendedState(MAXIMIZED_BOTH);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setBackground(Color.yellow);
-        layeredPane = getLayeredPane();
+//        this.setBackground(Color.yellow);
+//        layeredPane = getLayeredPane();
     }
 
     private void initMenu() {
@@ -172,20 +171,28 @@ public class SwingViewImpl extends JFrame implements View {
 
     private void initDrawingPanel() {
         mainPanel = new MyPanel();
-        scroll = new JScrollPane(mainPanel);
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        mainPanel.setFocusable(true);
+//        mainPanel.setFocusable(true);
         mainPanel.setBounds(0,0,mainFrame.getWidth(),mainFrame.getHeight());
         mainPanel.setBackground(Color.white);
-        mainPanel.setOpaque(true);
+        mainPanel.setOpaque(false);
+        mainPanel.setLayout(null);
+
+        scroll = new JScrollPane();
+        scroll.setBounds(0,0, 1920, 1013);
+        scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setViewportView(mainPanel);
+
+//        mainPanel.add(scroll);
     }
 
     private void collectAllElements() {
         this.setJMenuBar(mainMenu);
 //        layeredPane.add(scroll);
         this.add(mainPanel);
+//        this.add(scroll);
 
         mainMenu.add(fileMenu);
         mainMenu.add(toolBar);
@@ -224,6 +231,10 @@ public class SwingViewImpl extends JFrame implements View {
         mainMenu.add(new JToolBar.Separator());
         mainMenu.add(calculatorButton);
         mainMenu.add(new JToolBar.Separator());
+
+        this.setLayout(null);
+        this.pack();
+        this.revalidate();
     }
 
     public void saveCurrentImage() {

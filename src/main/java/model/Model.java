@@ -62,6 +62,11 @@ public class Model {
 
     public static final int AUTO_ACCURACY_FACTOR = (int) Float.parseFloat(Config.getProperty(Config.AUTO_ACCURACY_FACTOR));
 
+    public static final double ARROW_PEAK_FACTOR = Float.parseFloat(Config.getProperty(Config.ARROW_PEAK_FACTOR));
+    public static final double ARROW_WIDTH_FACTOR = Float.parseFloat(Config.getProperty(Config.ARROW_WIDTH_FACTOR));
+    public static final double ARROW_MIN_LENGTH = Float.parseFloat(Config.getProperty(Config.ARROW_MIN_LENGTH));
+    public static final double ARROW_MAX_LENGTH = Float.parseFloat(Config.getProperty(Config.ARROW_MAX_LENGTH));
+
 
     public static final int INDICATOR_WIDTH = Integer.parseInt(Config.getProperty(Config.INDICATOR_WIDTH));
     public static final int INDICATOR_TOP_OFFSET = Integer.parseInt(Config.getProperty(Config.INDICATOR_TOP_OFFSET));
@@ -75,6 +80,7 @@ public class Model {
         figureModeList = new ArrayList<>();
         figureModeList.add(DrawMode.LINE);
         figureModeList.add(DrawMode.DOTTEDLINE);
+        figureModeList.add(DrawMode.ARROW);
         figureModeList.add(DrawMode.CIRCLE);
         figureModeList.add(DrawMode.ELLIPSE);
         figureModeList.add(DrawMode.RECT);

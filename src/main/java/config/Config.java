@@ -117,12 +117,17 @@ public class Config {
     public static final String COLOR_DIALOG_HEIGHT = "color.dialog.height";
 
     public static final String BASIC_STROKE_WIDTH = "basic.stroke.width";
-    public static final String BASIC_STROKE_LENGHT = "basic.stroke.lenght";
-    public static final String BASIC_STROKE_OFFSET_LENGHT = "basic.stroke.offset.lenght";
+    public static final String BASIC_STROKE_LENGTH = "basic.stroke.length";
+    public static final String BASIC_STROKE_OFFSET_LENGTH = "basic.stroke.offset.length";
 
     public static final String INDICATOR_WIDTH = "indicator.width";
     public static final String INDICATOR_TOP_OFFSET = "indicator.top.offset";
     public static final String INDICATOR_BOTTOM_OFFSET = "indicator.bottom.offset";
+
+    public static final String ARROW_PEAK_FACTOR = "arrow.peak.factor";
+    public static final String ARROW_WIDTH_FACTOR = "arrow.width.factor";
+    public static final String ARROW_MIN_LENGTH = "arrow.min.length";
+    public static final String ARROW_MAX_LENGTH = "arrow.max.length";
 
     public static final String AUTO_ACCURACY_FACTOR = "auto.accuracy.factor";
 
