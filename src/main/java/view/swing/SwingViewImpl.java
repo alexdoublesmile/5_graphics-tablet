@@ -59,6 +59,7 @@ public class SwingViewImpl extends JFrame implements View {
     private ColorButton blueButton;
     private ColorButton greenButton;
     private ColorButton whiteButton;
+    private ColorButton orangeButton;
 
     private JButton undoButton;
     private JButton redoButton;
@@ -78,13 +79,13 @@ public class SwingViewImpl extends JFrame implements View {
     private BufferedImage pictureImage;
     private BufferedImage previousImage;
     private Color mainColor;
+    private double imageScale;
 
     public SwingViewImpl(Model model) {
         this.model = model;
         toolButtons = new HashMap<>();
         mainColor = Color.black;
-
-        compareCanvas();
+        imageScale = 1;
     }
 
     @Override
@@ -147,6 +148,7 @@ public class SwingViewImpl extends JFrame implements View {
         blackButton = new  ColorButton(Color.black);
         blueButton = new ColorButton(Color.blue);
         greenButton = new  ColorButton(new Color(0x12A612));
+        orangeButton = new  ColorButton(new Color(250, 125, 0));
         whiteButton = new  ColorButton(Color.white);
         colorChooser = new  JColorChooser(mainColor);
 
@@ -216,14 +218,15 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar.add(redoButton);
         toolBar.addSeparator();
 
-//        toolBar.add(plusButton);
-//        toolBar.add(minusButton);
+        toolBar.add(plusButton);
+        toolBar.add(minusButton);
         colorBar.add(colorButton);
         colorBar.add(blackButton);
         colorBar.add(redButton);
         colorBar.add(blueButton);
         colorBar.add(greenButton);
         colorBar.add(whiteButton);
+        colorBar.add(orangeButton);
 
         mainMenu.add(discolorButton);
         mainMenu.add(new JToolBar.Separator());
@@ -288,11 +291,14 @@ public class SwingViewImpl extends JFrame implements View {
         public void paintComponent (Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
+            g2.scale(imageScale, imageScale);
+
             g2.drawImage(mainImage, 0, 0,null);
             if (pictureImage != null) {
                 g2.drawImage(pictureImage, 0, 0,null);
 
             }
+
         }
     }
 
@@ -434,5 +440,15 @@ public class SwingViewImpl extends JFrame implements View {
         return minusButton;
     }
 
+    public double getImageScale() {
+        return imageScale;
+    }
 
+    public void setImageScale(double imageScale) {
+        this.imageScale = imageScale;
+    }
+
+    public ColorButton getOrangeButton() {
+        return orangeButton;
+    }
 }

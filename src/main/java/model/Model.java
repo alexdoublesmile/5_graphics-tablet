@@ -62,6 +62,8 @@ public class Model {
 
     public static final int AUTO_ACCURACY_FACTOR = (int) Float.parseFloat(Config.getProperty(Config.AUTO_ACCURACY_FACTOR));
 
+    public static final int STICKY_LINE_FACTOR = Integer.parseInt(Config.getProperty(Config.STICKY_LINE_FACTOR));
+
     public static final double ARROW_PEAK_FACTOR = Float.parseFloat(Config.getProperty(Config.ARROW_PEAK_FACTOR));
     public static final double ARROW_WIDTH_FACTOR = Float.parseFloat(Config.getProperty(Config.ARROW_WIDTH_FACTOR));
     public static final double ARROW_MIN_LENGTH = Float.parseFloat(Config.getProperty(Config.ARROW_MIN_LENGTH));

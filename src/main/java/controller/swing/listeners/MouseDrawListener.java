@@ -42,8 +42,11 @@ import static model.Model.PYRAMID_LEFT_XFACTOR;
 import static model.Model.PYRAMID_LEFT_YFACTOR;
 import static model.Model.PYRAMID_RIGHT_XFACTOR;
 import static model.Model.PYRAMID_RIGHT_YFACTOR;
+import static model.Model.STICKY_LINE_FACTOR;
 
 public class MouseDrawListener {
+    private static float CUSTOM_FACTOR = 1f;
+
     private static final BasicStroke DOTTED_LINE = new BasicStroke(
             Float.valueOf(Config.getProperty(Config.BASIC_STROKE_WIDTH)),
             BasicStroke.CAP_ROUND,
@@ -54,8 +57,9 @@ public class MouseDrawListener {
                     Float.valueOf(Config.getProperty(Config.BASIC_STROKE_OFFSET_LENGTH))
             },
             0.0f);
-    private static final BasicStroke DEFAULT_LINE = new  BasicStroke(
+    private static BasicStroke DEFAULT_LINE = new  BasicStroke(
             Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+
     private final MouseMotionAdapter MOUSE_MOTION_ADAPTER;
     private final MouseAdapter MOUSE_ADAPTER;
 
@@ -999,15 +1003,15 @@ public class MouseDrawListener {
     }
 
     private void drawStickyLine() {
-        if (lineIsHorizontal()) {
+        if (lineIsHorizontal() && drawLine > STICKY_LINE_FACTOR) {
             g2.drawLine(startX, startY, finalX, startY);
             saveCoordsToModel();
             model.setFinalY(startY);
-        } else if (lineIsVertical()) {
+        } else if (lineIsVertical() && drawLine > STICKY_LINE_FACTOR) {
             g2.drawLine(startX, startY, startX, finalY);
             saveCoordsToModel();
             model.setFinalX(startX);
-        } else if (lineIsDiagonal()) {
+        } else if (lineIsDiagonal() && drawLine > STICKY_LINE_FACTOR) {
             int diagonalFactor =
                     abs(finalX - startX) - abs(finalY - startY) > 0 ?
                     abs(abs(finalX - startX) - abs(finalY - startY)) :
@@ -1121,4 +1125,17 @@ public class MouseDrawListener {
         return MOUSE_ADAPTER;
     }
 
+    public static void decreaseCustomFactor() {
+        if (CUSTOM_FACTOR > 0.5)
+        CUSTOM_FACTOR -= 0.5;
+    }
+
+    public static void increaseCustomFactor() {
+        CUSTOM_FACTOR += 0.5;
+    }
+
+    public static void rebaseDefaultStroke() {
+        DEFAULT_LINE = new  BasicStroke(
+                Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)) * CUSTOM_FACTOR);
+    }
 }

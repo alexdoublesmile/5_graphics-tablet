@@ -45,10 +45,10 @@ public class ToolButtonListener implements ActionListener {
         } else {
             model.setCustomMode(false);
         }
-
         if (model.isPolygonInWork()) {
             view.setMainImage(model.getPreviousAction());
             view.getMainPanel().repaint();
+            model.setPolygonInWork(false);
         }
 
         model.setDrawMode(drawMode);

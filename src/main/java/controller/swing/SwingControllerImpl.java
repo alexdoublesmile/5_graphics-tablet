@@ -10,6 +10,8 @@ import util.CursorBuilder;
 import view.swing.SwingViewImpl;
 import view.View;
 
+import javax.swing.*;
+
 public class SwingControllerImpl implements Controller {
 
     private SwingViewImpl view;
@@ -22,15 +24,19 @@ public class SwingControllerImpl implements Controller {
 
     @Override
     public void load() {
-        model.saveAction(view.getMainImage());
+        SwingUtilities.invokeLater(() -> initAndShowGUI());
+    }
 
+    private void initAndShowGUI() {
+        view.compareCanvas();
         setMenuActions();
         setToolListeners();
         setFunctionListeners();
         setDrawListeners();
         setFrameListeners();
-
         view.setVisible(true);
+
+        model.saveAction(view.getMainImage());
     }
 
     public void setMenuActions() {
@@ -43,7 +49,7 @@ public class SwingControllerImpl implements Controller {
 
     private void setToolListeners() {
         UndoListener undoListener = new UndoListener(view, model);
-//        ScaleListener scaleListener = new ScaleListener(view, model);
+        ScaleListener scaleListener = new ScaleListener(view, model);
         ColorButtonListener colorListener = new ColorButtonListener(view);
 
         for (DrawMode drawMode : DrawMode.values()) {
@@ -58,8 +64,8 @@ public class SwingControllerImpl implements Controller {
 
         view.getUndoButton().addActionListener(undoListener.getUNDO_BUTTON_LISTENER());
         view.getRedoButton().addActionListener(undoListener.getREDO_BUTTON_LISTENER());
-//        view.getPlusButton().addActionListener(scaleListener.getPLUS_BUTTON_LISTENER());
-//        view.getMinusButton().addActionListener(scaleListener.getMINUS_BUTTON_LISTENER());
+        view.getPlusButton().addActionListener(scaleListener.getPLUS_BUTTON_LISTENER());
+        view.getMinusButton().addActionListener(scaleListener.getMINUS_BUTTON_LISTENER());
 
         view.getColorButton().addActionListener(colorListener.getColorDysplayButtonListener());
         view.getColorChooser().getSelectionModel().addChangeListener(colorListener.getChooseColorListener());
@@ -67,6 +73,7 @@ public class SwingControllerImpl implements Controller {
         view.getBlackButton().addActionListener(new ColorButtonListener(view, view.getBlackButton()));
         view.getBlueButton().addActionListener(new ColorButtonListener(view, view.getBlueButton()));
         view.getGreenButton().addActionListener(new ColorButtonListener(view, view.getGreenButton()));
+        view.getOrangeButton().addActionListener(new ColorButtonListener(view, view.getOrangeButton()));
         view.getWhiteButton().addActionListener(new ColorButtonListener(view, view.getWhiteButton()));
     }
 

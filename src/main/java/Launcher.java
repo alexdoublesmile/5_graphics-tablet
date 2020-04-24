@@ -17,6 +17,7 @@ public class Launcher {
         theModel = new Model();
         theView = new SwingViewImpl(theModel);
         theController = new SwingControllerImpl(theView, theModel);
+
         theController.load();
     }
 }

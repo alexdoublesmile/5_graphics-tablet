@@ -124,6 +124,8 @@ public class Config {
     public static final String INDICATOR_TOP_OFFSET = "indicator.top.offset";
     public static final String INDICATOR_BOTTOM_OFFSET = "indicator.bottom.offset";
 
+    public static final String STICKY_LINE_FACTOR = "sticky.line.factor";
+
     public static final String ARROW_PEAK_FACTOR = "arrow.peak.factor";
     public static final String ARROW_WIDTH_FACTOR = "arrow.width.factor";
     public static final String ARROW_MIN_LENGTH = "arrow.min.length";
