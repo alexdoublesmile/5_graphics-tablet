@@ -3,19 +3,16 @@ import model.Model;
 import view.swing.SwingViewImpl;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class UndoListener {
     private final UndoButtonListener UNDO_BUTTON_LISTENER;
     private final RedoButtonListener REDO_BUTTON_LISTENER;
     private SwingViewImpl view;
     private Model model;
-    private JPanel mainPanel;
 
     public UndoListener(SwingViewImpl view, Model model) {
         this.view = view;
         this.model = model;
-        mainPanel = view.getMainPanel();
 
         UNDO_BUTTON_LISTENER = new UndoButtonListener();
         REDO_BUTTON_LISTENER = new RedoButtonListener();
@@ -24,16 +21,18 @@ public class UndoListener {
     private class UndoButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            view.setMainImage(model.getPreviousAction());
-            mainPanel.repaint();
+            view.setMainImage(model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
+//            view.setMainPanel((JPanel) model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
+            view.getMainPanel().repaint();
         }
     }
 
     private class RedoButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            view.setMainImage(model.getNextAction());
-            mainPanel.repaint();
+            view.setMainImage(model.getNextAction(view.getTabbedPane().getSelectedIndex()));
+//            view.setMainPanel((JPanel) model.getNextAction(view.getTabbedPane().getSelectedIndex()));
+            view.getMainPanel().repaint();
         }
     }
 

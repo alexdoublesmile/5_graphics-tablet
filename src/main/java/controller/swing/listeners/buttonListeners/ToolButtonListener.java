@@ -5,6 +5,7 @@ import model.Model;
 import util.CursorBuilder;
 import view.swing.SwingViewImpl;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,6 +27,12 @@ public class ToolButtonListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        model.setSpecialMode(false);
+        if (model.isScaleMode()) {
+//            view.loadSavedImage();
+//            view.getMainPanel().repaint();
+            model.setScaleMode(false);
+        }
 
         view.resetToolButtonBorders();
         model.resetAllCustomPoints();
@@ -46,17 +53,14 @@ public class ToolButtonListener implements ActionListener {
             model.setCustomMode(false);
         }
         if (model.isPolygonInWork()) {
-            view.setMainImage(model.getPreviousAction());
+            view.setMainImage(model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
+//            view.setMainPanel((JPanel) model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
             view.getMainPanel().repaint();
             model.setPolygonInWork(false);
         }
 
         model.setDrawMode(drawMode);
         previousDrawMode = drawMode;
-        try {
-            view.getMainPanel().setCursor(CursorBuilder.buildCursorByDrawMode(drawMode));
-        } catch (IllegalAccessException e1) {
-            e1.printStackTrace();
-        }
+        view.getTabbedPane().setCursor(CursorBuilder.buildCursorByDrawMode(drawMode));
     }
 }

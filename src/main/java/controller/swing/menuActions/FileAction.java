@@ -32,7 +32,7 @@ public class FileAction {
     private Model model;
 
     private JFrame frame;
-    private JPanel panel;
+//    private JPanel panel;
     private BufferedImage image;
     private JFileChooser fileChooser;
     private int chooseValue;
@@ -46,7 +46,7 @@ public class FileAction {
         JPG_FILTER = new TextFileFilter(TextFileFilter.getJpgFormat());
 
         frame = view.getMainFrame();
-        panel = view.getMainPanel();
+//        panel = view.getMainPanel();
         fileChooser = view.getFileChooser();
         fileChooser.addChoosableFileFilter(PNG_FILTER);
         fileChooser.addChoosableFileFilter(JPG_FILTER);
@@ -66,7 +66,8 @@ public class FileAction {
             if (chooseValue == JFileChooser.APPROVE_OPTION) {
                 try {
                     filePath = fileChooser.getSelectedFile().getAbsolutePath();
-                    image = ImageIO.read(new File(filePath));
+                    File file = new File(filePath);
+                    image = ImageIO.read(file);
 
                     view.setMainImage(image);
                     model.setFileName(filePath);
@@ -74,12 +75,12 @@ public class FileAction {
                     model.setLoading(true);
 //                    frame.setSize(image.getWidth(), image.getHeight());
 //                    panel.setSize(image.getWidth(), image.getHeight());
-                    view.setTitle(filePath);
+                    view.getTabbedPane().setTitleAt(view.getTabbedPane().getSelectedIndex(), file.getName());
 
 
-                    model.saveAction(view.getMainImage());
+                    model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
                     view.saveCurrentImage();
-                    panel.repaint();
+                    view.getMainPanel().repaint();
 
                 } catch (FileNotFoundException ex) {
                     JOptionPane.showMessageDialog(view.getMainFrame(),

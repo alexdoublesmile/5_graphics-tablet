@@ -40,6 +40,11 @@ public class Config {
     public static final String FILL_CURSOR_YPOINT = "fill.cursor.y.point";
     public static final String FILL_BASIC_STROKE = "fill.basic.stroke";
 
+    public static final String SCALE_CURSOR_PATH = "scale.cursor.path";
+    public static final String SCALE_CURSOR_XPOINT = "scale.cursor.x.point";
+    public static final String SCALE_CURSOR_YPOINT = "scale.cursor.y.point";
+    public static final String SCALE_BASIC_STROKE = "scale.basic.stroke";
+
     public static final String HAND_CURSOR_PATH = "hand.cursor.path";
     public static final String GRAB_CURSOR_PATH = "grab.cursor.path";
     public static final String POINTER_CURSOR_PATH = "pointer.cursor.path";
@@ -85,6 +90,8 @@ public class Config {
     public static final String PASTE_ICON_PATH = "paste.icon.path";
     public static final String PLUS_ICON_PATH = "plus.icon.path";
     public static final String MINUS_ICON_PATH = "minus.icon.path";
+    public static final String REFRESH_ICON_PATH = "refresh.icon.path";
+    public static final String EXPAND_ICON_PATH = "expand.icon.path";
     public static final String UNDO_ICON_PATH = "undo.icon.path";
     public static final String REDO_ICON_PATH = "redo.icon.path";
     public static final String CALCULATOR_ICON_PATH = "calculator.icon.path";

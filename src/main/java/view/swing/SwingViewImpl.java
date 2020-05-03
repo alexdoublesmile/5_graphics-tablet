@@ -1,8 +1,6 @@
 package view.swing;
 
 import config.Config;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.WritableImage;
 import model.DrawMode;
 import model.Model;
 import util.IconBuilder;
@@ -20,12 +18,13 @@ import java.util.Map;
 
 public class SwingViewImpl extends JFrame implements View {
     private String MAIN_FRAME_NAME = "Графический планшетик";
-    private static final String FILE_MENU_NAME = "Файл";
-    private static final String DISCOLOR_BUTTON_NAME = "Обесцветить";
-    private static final String CLEAN_BUTTON_NAME = "Очистить планшетик";
+    private static final String FILE_MENU_NAME = "File";
+    private static final String DISCOLOR_BUTTON_NAME = "Discolor";
+    private static final String CLEAN_BUTTON_NAME = "Clean";
     private static final Color CONTROL_PANEL_COLOR = new Color(0xE9D6BF);
-    private static final String COLOR_DIALOG_TITLE = "Выбор цвета";
+    private static final String COLOR_DIALOG_TITLE = "Choose color";
     private static final ArrayList<String> closingElements;
+
     static {
         closingElements = new ArrayList<>();
         closingElements.add("RAG");
@@ -40,8 +39,8 @@ public class SwingViewImpl extends JFrame implements View {
     private final Map<String, ToolButton> toolButtons;
     private Model model;
     private JFrame mainFrame;
+    private JTabbedPane tabbedPane;
     private JLayeredPane layeredPane;
-    private JScrollPane scroll;
 
     private JMenuBar mainMenu;
     private JMenu fileMenu;
@@ -56,6 +55,7 @@ public class SwingViewImpl extends JFrame implements View {
     private JButton colorButton;
     private ColorButton redButton;
     private ColorButton blackButton;
+    private ColorButton greyButton;
     private ColorButton blueButton;
     private ColorButton greenButton;
     private ColorButton whiteButton;
@@ -65,6 +65,8 @@ public class SwingViewImpl extends JFrame implements View {
     private JButton redoButton;
     private JButton plusButton;
     private JButton minusButton;
+    private JButton refreshButton;
+    private JButton expandButton;
 
     private JColorChooser colorChooser;
     private JFileChooser fileChooser;
@@ -73,18 +75,21 @@ public class SwingViewImpl extends JFrame implements View {
     private JButton cleanButton;
     private JButton calculatorButton;
 
-    private Image startImage;
+    private ArrayList<JPanel> panelList;
+    private ArrayList<BufferedImage> imageList;
     private BufferedImage mainImage;
-    private BufferedImage backImage;
     private BufferedImage pictureImage;
     private BufferedImage previousImage;
     private Color mainColor;
     private double imageScale;
+    private int scaledX;
+    private int scaledY;
+    private boolean extended;
 
     public SwingViewImpl(Model model) {
         this.model = model;
         toolButtons = new HashMap<>();
-        mainColor = Color.black;
+        mainColor = new Color(100, 100, 100);
         imageScale = 1;
     }
 
@@ -100,19 +105,19 @@ public class SwingViewImpl extends JFrame implements View {
     }
 
     private void initMainWindow() {
-        this.mainFrame = this;
-        this.setTitle(MAIN_FRAME_NAME);
-        this.setSize(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
-        this.setExtendedState(MAXIMIZED_BOTH);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        this.setBackground(Color.yellow);
-//        layeredPane = getLayeredPane();
+        mainFrame = this;
+        setTitle(MAIN_FRAME_NAME);
+        setSize(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
+        setExtendedState(MAXIMIZED_BOTH);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
+        tabbedPane.addChangeListener(e -> previousImage = null);
     }
 
     private void initMenu() {
         mainMenu = new JMenuBar();
         mainMenu.setBackground(CONTROL_PANEL_COLOR);
-//        mainMenu.setBounds(0,0,350,20);
         fileMenu = new JMenu(FILE_MENU_NAME);
         loadMenu = new JMenuItem();
         saveMenu = new JMenuItem();
@@ -125,12 +130,14 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar = new JToolBar(JToolBar.HORIZONTAL);
         toolBar.setBackground(CONTROL_PANEL_COLOR);
         toolBar.setBorderPainted(false);
-//        toolBar.setBounds(0, 0, 300, 30);
 
         for (DrawMode drawMode : DrawMode.values()) {
-            toolButtons.put(
-                    drawMode.name(),
-                    new ToolButton(IconBuilder.buildIconByDrawMode(drawMode)));
+            if (!model.getSpecialModeList().contains(drawMode)) {
+                ToolButton toolButton = new ToolButton(IconBuilder.buildIconByDrawMode(drawMode));
+                toolButtons.put(drawMode.name(), toolButton);
+                toolButton.setToolTipText(new StringBuilder(drawMode.name())
+                        .toString().toLowerCase());
+            }
         }
     }
 
@@ -138,14 +145,13 @@ public class SwingViewImpl extends JFrame implements View {
         colorBar = new  JToolBar(JToolBar.HORIZONTAL);
         colorBar.setBackground(CONTROL_PANEL_COLOR);
         colorBar.setBorderPainted(false);
-
-//        colorBar.setBounds(30, 0, 160, 20);
         colorBar.setLayout(null);
 
         colorButton = new ColorButton(mainColor, 25);
         colorButton.setIcon(IconBuilder.buildIconByPath(Config.getProperty(Config.PALETTE_ICON_PATH)));
         redButton = new  ColorButton(Color.red, true, 15);
         blackButton = new  ColorButton(Color.black);
+        greyButton = new  ColorButton(new Color(100, 100, 100));
         blueButton = new ColorButton(Color.blue);
         greenButton = new  ColorButton(new Color(0x12A612));
         orangeButton = new  ColorButton(new Color(250, 125, 0));
@@ -163,6 +169,10 @@ public class SwingViewImpl extends JFrame implements View {
                 Config.getProperty(Config.PLUS_ICON_PATH)));
         minusButton = new  ToolButton(IconBuilder.buildIconByPath(
                 Config.getProperty(Config.MINUS_ICON_PATH)));
+        refreshButton = new  ToolButton(IconBuilder.buildIconByPath(
+                Config.getProperty(Config.REFRESH_ICON_PATH)));
+        expandButton = new  ToolButton(IconBuilder.buildIconByPath(
+                Config.getProperty(Config.EXPAND_ICON_PATH)));
         calculatorButton = new  ToolButton(IconBuilder.buildIconByPath(
                 Config.getProperty(Config.CALCULATOR_ICON_PATH)
         ));
@@ -172,29 +182,20 @@ public class SwingViewImpl extends JFrame implements View {
     }
 
     private void initDrawingPanel() {
-        mainPanel = new MyPanel();
-//        mainPanel.setFocusable(true);
+        panelList = new ArrayList<>();
+        imageList = new ArrayList<>();
+        mainPanel = new MyPanel(true);
         mainPanel.setBounds(0,0,mainFrame.getWidth(),mainFrame.getHeight());
-        mainPanel.setBackground(Color.white);
-        mainPanel.setOpaque(false);
-        mainPanel.setLayout(null);
 
-        scroll = new JScrollPane();
-        scroll.setBounds(0,0, 1920, 1013);
-        scroll.setOpaque(false);
-        scroll.getViewport().setOpaque(false);
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setViewportView(mainPanel);
-
-//        mainPanel.add(scroll);
+        panelList.add(mainPanel);
     }
 
     private void collectAllElements() {
-        this.setJMenuBar(mainMenu);
-//        layeredPane.add(scroll);
-        this.add(mainPanel);
-//        this.add(scroll);
+        setJMenuBar(mainMenu);
+        rebaseTabbedPane();
+        add(tabbedPane);
+//        setContentPane(mainPanel);
+//        add(mainPanel);
 
         mainMenu.add(fileMenu);
         mainMenu.add(toolBar);
@@ -205,11 +206,13 @@ public class SwingViewImpl extends JFrame implements View {
         fileMenu.add(saveAsMenu);
 
         for (DrawMode drawMode : DrawMode.values()) {
-            if (closingElements.contains(drawMode.name())) {
-                toolBar.add(toolButtons.get(drawMode.name()));
-                toolBar.addSeparator();
-            } else {
-                toolBar.add(toolButtons.get(drawMode.name()));
+            if (!model.getSpecialModeList().contains(drawMode)) {
+                if (closingElements.contains(drawMode.name())) {
+                    toolBar.add(toolButtons.get(drawMode.name()));
+                    toolBar.addSeparator();
+                } else {
+                    toolBar.add(toolButtons.get(drawMode.name()));
+                }
             }
         }
 
@@ -220,8 +223,11 @@ public class SwingViewImpl extends JFrame implements View {
 
         toolBar.add(plusButton);
         toolBar.add(minusButton);
+        toolBar.add(refreshButton);
+//        toolBar.add(expandButton);
         colorBar.add(colorButton);
         colorBar.add(blackButton);
+        colorBar.add(greyButton);
         colorBar.add(redButton);
         colorBar.add(blueButton);
         colorBar.add(greenButton);
@@ -229,39 +235,33 @@ public class SwingViewImpl extends JFrame implements View {
         colorBar.add(orangeButton);
 
         mainMenu.add(discolorButton);
+        discolorButton.setMnemonic('d');
         mainMenu.add(new JToolBar.Separator());
         mainMenu.add(cleanButton);
+        cleanButton.setMnemonic('c');
         mainMenu.add(new JToolBar.Separator());
         mainMenu.add(calculatorButton);
         mainMenu.add(new JToolBar.Separator());
 
-        this.setLayout(null);
-        this.pack();
-        this.revalidate();
+        setUndecorated(true);
     }
 
     public void saveCurrentImage() {
         previousImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics g = previousImage.getGraphics();
-        g.drawImage(mainImage, 0, 0, null);
+        g.drawImage(imageList.get(tabbedPane.getSelectedIndex()), 0, 0, null);
+//        if (previousImageList.size() > 0) {
+//            previousImageList.set(0, previousImage);
+//        } else {
+//            previousImageList.add(previousImage);
+//        }
     }
 
     public void loadSavedImage() {
-        Graphics g = mainImage.getGraphics();
+        Graphics g = imageList.get(tabbedPane.getSelectedIndex()).getGraphics();
         if (previousImage != null) {
             g.drawImage(previousImage, 0, 0, null);
         }
-    }
-
-    public void resizeImage(int width, int height) {
-        loadSavedImage();
-        mainPanel.setSize(width, height);
-        mainPanel.setPreferredSize(new Dimension (width, height));
-        Image resizing = mainImage.getScaledInstance(width, height, BufferedImage.SCALE_DEFAULT);
-        mainImage = new  BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics g = mainImage.getGraphics();
-        g.drawImage(resizing, 0, 0, null);
-        mainPanel.repaint();
     }
 
     public void resetToolButtonBorders() {
@@ -278,36 +278,67 @@ public class SwingViewImpl extends JFrame implements View {
         this.pictureImage = pictureImage;
     }
 
-    class MyPanel extends JPanel {
-        public MyPanel() {
-            if (mainImage == null) {
-                mainImage = new BufferedImage(mainFrame.getWidth(), mainFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
-                Graphics2D g2 = mainImage.createGraphics();
-                g2.setColor(Color.white);
-                g2.fillRect(0, 0, mainFrame.getWidth(), mainFrame.getHeight());
-            }
+    public class MyPanel extends JPanel {
+
+        public MyPanel(boolean buffer) {
+            super(buffer);
+
+            mainImage = new BufferedImage(mainFrame.getWidth(), mainFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2 = (Graphics2D) mainImage.getGraphics();
+            g2.setColor(Color.white);
+            g2.fillRect(0, 0, mainFrame.getWidth(), mainFrame.getHeight());
+
+            imageList.add(mainImage);
         }
 
         public void paintComponent (Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
-            g2.scale(imageScale, imageScale);
-
-            g2.drawImage(mainImage, 0, 0,null);
-            if (pictureImage != null) {
-                g2.drawImage(pictureImage, 0, 0,null);
-
-            }
+//            g2.translate(scaledX, scaledY);
+//            g2.scale(imageScale, imageScale);
+            g2.drawImage(imageList.get(tabbedPane.getSelectedIndex()), 0, 0,null);
+//            if (pictureImage != null) {
+//                g2.drawImage(pictureImage, 0, 0,null);
+//
+//            }
 
         }
     }
 
     public class ColorDialog extends JDialog {
 
+        private ColorDialog window;
+
         public ColorDialog (JFrame owner) {
             super(owner, COLOR_DIALOG_TITLE, true);
-            add(colorChooser);
+            window = this;
+            setLayout(new BorderLayout());
+//            JPanel panel = new JPanel();
+//            panel.setLayout(new GridLayout(3, 1));
+//            JSlider slider = new JSlider();
+//            JLabel label = new JLabel("Touch the Slider! ;)");
+//            slider.setMajorTickSpacing(10);
+//            slider.setMinorTickSpacing(1);
+//            slider.setLabelTable(slider.createStandardLabels(10));
+//            slider.setPaintTicks(true);
+//            slider.setPaintLabels(true);
+//            slider.setSnapToTicks(true);
+//
+//            slider.addChangeListener(e -> {
+//                label.setText(String.format("Slider value is %d", slider.getValue()));
+//            });
+            JButton closeButton = new JButton("Close");
+            closeButton.setMnemonic('c');
+            closeButton.addActionListener((e) -> window.setVisible(false));
+            add(colorChooser, BorderLayout.NORTH);
+            add(closeButton, BorderLayout.SOUTH);
+//            add(panel, BorderLayout.EAST);
+//            panel.add(label);
+//            panel.add(slider);
+//            panel.add(closeButton);
+
             setSize(COLOR_DIALOG_WIDTH, COLOR_DIALOG_HEIGHT);
+            pack();
         }
     }
 
@@ -323,8 +354,6 @@ public class SwingViewImpl extends JFrame implements View {
     public Map<String, ToolButton> getToolButtons() {
         return toolButtons;
     }
-
-
 
 
     public JFrame getMainFrame() {
@@ -352,8 +381,17 @@ public class SwingViewImpl extends JFrame implements View {
     }
 
     public JPanel getMainPanel() {
-        return mainPanel;
+        return panelList.get(tabbedPane.getSelectedIndex());
     }
+
+    public BufferedImage getMainImage() {
+        return imageList.get(tabbedPane.getSelectedIndex());
+    }
+
+    public void setMainImage(BufferedImage mainImage) {
+        imageList.set(tabbedPane.getSelectedIndex(), mainImage);
+    }
+
 
     public JToolBar getToolBar() {
         return toolBar;
@@ -407,10 +445,6 @@ public class SwingViewImpl extends JFrame implements View {
         return cleanButton;
     }
 
-    public BufferedImage getMainImage() {
-        return mainImage;
-    }
-
     public Color getMainColor() {
 
         return mainColor;
@@ -420,9 +454,6 @@ public class SwingViewImpl extends JFrame implements View {
         return discolorButton;
     }
 
-    public void setMainImage(BufferedImage mainImage) {
-        this.mainImage = mainImage;
-    }
 
     public void setMainColor(Color mainColor) {
         this.mainColor = mainColor;
@@ -440,6 +471,10 @@ public class SwingViewImpl extends JFrame implements View {
         return minusButton;
     }
 
+    public JButton getRefreshButton() {
+        return refreshButton;
+    }
+
     public double getImageScale() {
         return imageScale;
     }
@@ -450,5 +485,65 @@ public class SwingViewImpl extends JFrame implements View {
 
     public ColorButton getOrangeButton() {
         return orangeButton;
+    }
+
+    public int getScaledX() {
+        return scaledX;
+    }
+
+    public void setScaledX(int scaledX) {
+        this.scaledX = scaledX;
+    }
+
+    public int getScaledY() {
+        return scaledY;
+    }
+
+    public void setScaledY(int scaledY) {
+        this.scaledY = scaledY;
+    }
+
+    public void setTranslateImage(int x, int y) {
+        this.scaledX = x;
+        this.scaledY = y;
+    }
+
+    public JButton getExpandButton() {
+        return expandButton;
+    }
+
+    public boolean isExtended() {
+        return extended;
+    }
+
+    public void setExtended(boolean extended) {
+        this.extended = extended;
+    }
+
+    public ColorButton getGreyButton() {
+        return greyButton;
+    }
+
+    public JTabbedPane getTabbedPane() {
+        return tabbedPane;
+    }
+
+    public void rebaseTabbedPane() {
+        tabbedPane.add(
+                String.format("panel №%d", panelList.size()),
+                panelList.get(panelList.size() - 1));
+    }
+
+    public ArrayList<JPanel> getPanelList() {
+        return panelList;
+    }
+
+    public ArrayList<BufferedImage> getImageList() {
+        return imageList;
+    }
+
+    public void setMainPanel(JPanel mainPanel) {
+
+        panelList.set(tabbedPane.getSelectedIndex(), mainPanel);
     }
 }

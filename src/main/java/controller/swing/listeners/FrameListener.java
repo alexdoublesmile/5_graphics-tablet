@@ -10,18 +10,19 @@ import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 
 public class FrameListener {
-    private final FrameResizeListener frameResizeListener;
+    private final FrameResizeListener FRAME_RESIZE_LISTENER;
+
 
     private SwingViewImpl view;
     private Model model;
-    private JPanel mainPanel;
+//    private JPanel mainPanel;
 
     public FrameListener(SwingViewImpl view, Model model) {
         this.view = view;
         this.model = model;
-        mainPanel = view.getMainPanel();
+//        mainPanel = view.getMainPanel();
 
-        frameResizeListener = new FrameResizeListener();
+        FRAME_RESIZE_LISTENER = new FrameResizeListener();
     }
 
     private class FrameResizeListener extends ComponentAdapter {
@@ -31,22 +32,22 @@ public class FrameListener {
 //                mainPanel.setSize(view.getMainImage().getWidth(), view.getMainImage().getHeight());
 
                 BufferedImage tempImage = new  BufferedImage(
-                        mainPanel.getWidth(),
-                        mainPanel.getHeight(),
+                        view.getMainPanel().getWidth(),
+                        view.getMainPanel().getHeight(),
                         BufferedImage.TYPE_INT_RGB);
                 Graphics2D d2 = tempImage.createGraphics();
                 d2.setColor(Color.white);
-                d2.fillRect(0, 0, mainPanel.getWidth(), mainPanel.getHeight());
+                d2.fillRect(0, 0, view.getMainPanel().getWidth(), view.getMainPanel().getHeight());
 
                 tempImage.setData(view.getMainImage().getRaster());
                 view.setMainImage(tempImage);
-                mainPanel.repaint();
+                view.getMainPanel().repaint();
             }
             model.setLoading(false);
         }
     }
 
-    public FrameResizeListener getFrameResizeListener() {
-        return frameResizeListener;
+    public FrameResizeListener getFRAME_RESIZE_LISTENER() {
+        return FRAME_RESIZE_LISTENER;
     }
 }

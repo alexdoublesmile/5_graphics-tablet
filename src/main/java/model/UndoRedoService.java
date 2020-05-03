@@ -2,7 +2,9 @@ package model;
 
 import config.Config;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,12 +15,10 @@ public class UndoRedoService {
     private static final String BACK_DIRECTION = "Back";
     private static final int UNDO_QUANTITY = Integer.parseInt(Config.getProperty(Config.UNDO_ACTIONS_QUANTITY));
 
-    private List<BufferedImage> actionList;
+    private ArrayList<BufferedImage> actionList;
     private int actionCounter;
     private boolean wasIterated;
     private BufferedImage selectedAction;
-
-
 
     public UndoRedoService() {
         actionList = new ArrayList<>(UNDO_QUANTITY);
@@ -66,24 +66,32 @@ public class UndoRedoService {
                 break;
         }
         wasIterated = true;
+
         selectedAction = getNewImage(actionList.get(actionCounter - 1));
         return selectedAction;
     }
 
     private BufferedImage getNewImage(BufferedImage oldImage) {
-        BufferedImage newImage = new BufferedImage(
-                oldImage.getColorModel(),
-                oldImage.copyData(null),
-                oldImage.isAlphaPremultiplied(),
-                null
-        );
-        return newImage;
+        return oldImage;
+
+//        BufferedImage newImage = new BufferedImage(
+//                oldImage.getColorModel(),
+//                oldImage.copyData(oldImage.getRaster().createCompatibleWritableRaster()),
+//                oldImage.isAlphaPremultiplied(),
+//                null
+//        );
+//        return newImage;
+
+//        BufferedImage newImage = new BufferedImage(oldImage.getWidth(), oldImage.getHeight(), oldImage.getType());
+//        Graphics2D g2 = (Graphics2D) newImage.getGraphics();
+//        g2.drawImage(oldImage, 0, 0, null);
+//        return newImage;
     }
 
     private void cropList() {
-        List<BufferedImage> newList = actionList.stream()
+        ArrayList<BufferedImage> newList = actionList.stream()
                 .limit(actionCounter)
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(ArrayList::new));
         actionList = newList;
 
         wasIterated = false;

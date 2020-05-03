@@ -17,12 +17,12 @@ public class FunctionButtonListener {
 
     private SwingViewImpl view;
     private Model model;
-    private JPanel mainPanel;
+//    private JPanel mainPanel;
 
     public FunctionButtonListener(SwingViewImpl view, Model model) {
         this.view = view;
         this.model = model;
-        mainPanel = view.getMainPanel();
+//        mainPanel = view.getMainPanel();
 
         DISCOLOR_BUTTON_LISTENER = new DiscolorButtonListener();
         CLEAN_BUTTON_LISTENER = new CleanButtonListener();
@@ -58,10 +58,11 @@ public class FunctionButtonListener {
 
             view.setMainImage(result);
 
-            model.saveAction(view.getMainImage());
+            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
+//            model.saveAction(view.getMainPanel(), view.getTabbedPane().getSelectedIndex());
             view.saveCurrentImage();
 
-            mainPanel.repaint();
+            view.getMainPanel().repaint();
         }
     }
 
@@ -70,7 +71,8 @@ public class FunctionButtonListener {
         public void actionPerformed(ActionEvent e) {
 
             if (model.isPolygonInWork()) {
-                view.setMainImage(model.getPreviousAction());
+                view.setMainImage(model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
+//                view.setMainPanel((JPanel) model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
                 view.getMainPanel().repaint();
                 model.setPolygonInWork(false);
 
@@ -78,14 +80,15 @@ public class FunctionButtonListener {
             Graphics g = view.getMainImage().getGraphics();
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(Color.white);
-            g2.fillRect(0, 0, mainPanel.getSize().width, mainPanel.getSize().height);
+            g2.fillRect(0, 0, view.getMainPanel().getSize().width, view.getMainPanel().getSize().height);
             model.resetAllCustomPoints();
             g2.setColor(Color.black);
 
-            model.saveAction(view.getMainImage());
+            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
+//            model.saveAction(view.getMainPanel(), view.getTabbedPane().getSelectedIndex());
             view.saveCurrentImage();
 
-            mainPanel.repaint();
+            view.getMainPanel().repaint();
         }
     }
 

@@ -31,4 +31,5 @@ public enum DrawMode {
 //    FRUSTUM,
     FILL,
 //    TEXT
+    SCALE
 }

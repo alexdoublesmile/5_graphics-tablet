@@ -1,12 +1,8 @@
 package controller.swing.listeners.buttonListeners;
 
-import controller.swing.listeners.KeyboardListener;
 import view.swing.SwingViewImpl;
 import view.swing.buttons.ColorButton;
 
-import javax.swing.*;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.*;
@@ -14,7 +10,7 @@ import java.awt.event.*;
 public class ColorButtonListener implements ActionListener{
     private SwingViewImpl view;
     private ColorButton button;
-    private ColorDysplayButtonListener colorDysplayButtonListener;
+    private ColorDisplayButtonListener colorDisplayButtonListener;
     private ChooseColorListener chooseColorListener;
 
     public ColorButtonListener (SwingViewImpl view, ColorButton button) {
@@ -24,7 +20,7 @@ public class ColorButtonListener implements ActionListener{
 
     public ColorButtonListener (SwingViewImpl view) {
         this.view = view;
-        colorDysplayButtonListener = new ColorDysplayButtonListener();
+        colorDisplayButtonListener = new ColorDisplayButtonListener();
         chooseColorListener = new ChooseColorListener();
 
     }
@@ -32,14 +28,14 @@ public class ColorButtonListener implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         view.setMainColor(button.getColor());
-        view.getColorButton().setBackground(button.getColor());
+        view.getColorButton().setBackground(view.getMainColor());
     }
 
-    private class ColorDysplayButtonListener implements ActionListener {
+    private class ColorDisplayButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             SwingViewImpl.ColorDialog colorDialog = view.new ColorDialog(view);
-            colorDialog.setLocation(250, 40);
+            colorDialog.setLocation(350, 40);
             colorDialog.setVisible(true);
         }
     }
@@ -52,8 +48,8 @@ public class ColorButtonListener implements ActionListener{
         }
     }
 
-    public ColorDysplayButtonListener getColorDysplayButtonListener() {
-        return colorDysplayButtonListener;
+    public ColorDisplayButtonListener getColorDisplayButtonListener() {
+        return colorDisplayButtonListener;
     }
 
     public ChooseColorListener getChooseColorListener() {

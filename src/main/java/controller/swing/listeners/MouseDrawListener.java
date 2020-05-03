@@ -66,7 +66,7 @@ public class MouseDrawListener {
 
     private SwingViewImpl view;
     private Model model;
-    private JPanel mainPanel;
+//    private JPanel view.getMainPanel();
     private Graphics2D g2;
     private int startX;
     private int startY;
@@ -91,7 +91,7 @@ public class MouseDrawListener {
     public MouseDrawListener(SwingViewImpl view, Model model) {
         this.view = view;
         this.model = model;
-        mainPanel = view.getMainPanel();
+//        view.getMainPanel() = view.getview.getMainPanel()();
         this.startX = model.getStartX();
         this.startY = model.getStartY();
         this.finalX = model.getFinalX();
@@ -103,10 +103,42 @@ public class MouseDrawListener {
     private class MouseMotionAdapter implements MouseMotionListener {
 
         @Override
+        public void mouseMoved(MouseEvent mouseEvent) {
+
+            switch (model.getDrawMode()) {
+                case SCALE:
+                    saveCoordsToModel();
+
+//                    view.loadSavedImage();
+//                    setGraphicsAndColor();
+//                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+//                    int scaleStartX = model.getScaleRectX();
+//                    int scaleStartY = model.getScaleRectY();
+//                    int scaleWidth = model.getScaleRectWidth();
+//                    int scaleHeight = model.getScaleRectHeight();
+
+//                    g2.drawRect(scaleStartX, scaleStartY, scaleWidth, scaleHeight);
+//                    finalX = mouseEvent.getX() < 0 + scaleWidth / 2 ? 0 + scaleWidth / 2 :
+//                            mouseEvent.getX() > model.getDrawWidth() - scaleWidth / 2 ?
+//                                    model.getDrawWidth() - scaleWidth / 2 : mouseEvent.getX();
+//                    finalY = mouseEvent.getY() < 0 + scaleHeight / 2 ? 0 + scaleHeight / 2 :
+//                            mouseEvent.getY() > model.getDrawHeight() - scaleHeight / 2 ?
+//                                    model.getDrawHeight() - scaleHeight / 2 : mouseEvent.getY();
+                    finalX = mouseEvent.getX();
+                    finalY = mouseEvent.getY();
+                    view.getMainPanel().repaint();
+                    break;
+            }
+        }
+
+        @Override
         public void mouseDragged(MouseEvent mouseEvent) {
             if (!model.isCustomMode()) {
                 setGraphicsAndColor();
-                g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
                 if (model.isFigureMode()) {
                     view.loadSavedImage();
@@ -116,19 +148,19 @@ public class MouseDrawListener {
                 g2.setStroke(DOTTED_LINE);
                 switch (model.getDrawMode()) {
                     case PENCIL:
-                        g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(PENCIL_BASIC_STROKE))));
+                        g2.setStroke(new BasicStroke(Float.valueOf(Config.getProperty(PENCIL_BASIC_STROKE))));
                         g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
                         break;
                     case MARKER:
-                        g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(MARKER_BASIC_STROKE))));
+                        g2.setStroke(new BasicStroke(Float.valueOf(Config.getProperty(MARKER_BASIC_STROKE))));
                         g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
                         break;
                     case BRUSH:
-                        g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(BRUSH_BASIC_STROKE))));
+                        g2.setStroke(new BasicStroke(Float.valueOf(Config.getProperty(BRUSH_BASIC_STROKE))));
                         g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
                         break;
                     case ERASER:
-                        g2.setStroke(new  BasicStroke(model.getEraserStroke()));
+                        g2.setStroke(new BasicStroke(model.getEraserStroke()));
                         g2.setColor(Color.WHITE);
                         g2.fillOval(mouseEvent.getX() - Integer.parseInt(Config.getProperty(ERASER_XPOINT_OFFSET)),
                                 mouseEvent.getY() + Integer.parseInt(Config.getProperty(ERASER_YPOINT_OFFSET)),
@@ -136,7 +168,7 @@ public class MouseDrawListener {
                                 model.getEraserStroke());
                         break;
                     case RAG:
-                        g2.setStroke(new  BasicStroke(model.getRagStroke()));
+                        g2.setStroke(new BasicStroke(model.getRagStroke()));
                         g2.setColor(Color.WHITE);
                         g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
                         break;
@@ -202,7 +234,7 @@ public class MouseDrawListener {
                         if (leftPoint.x > frontPoint.x) {
                             leftPoint.x = frontPoint.x - 10;
                         }
-                        if (rightPoint.x <  startX) {
+                        if (rightPoint.x < startX) {
                             rightPoint.x = startX;
                         }
                         if (leftPoint.y < startY) {
@@ -233,7 +265,7 @@ public class MouseDrawListener {
                         Point backRight = model.getTetraPyramidBackRight();
                         Point backLeft = model.getTetraPyramidBackLeft();
                         Point frontLeft = model.getTetraPyramidFrontLeft();
-                        Point frontRight= model.getTetraPyramidFrontRight();
+                        Point frontRight = model.getTetraPyramidFrontRight();
 
                         if (frontLeft.x > startX) {
                             frontLeft.x = startX;
@@ -242,8 +274,6 @@ public class MouseDrawListener {
                             backLeft.y = startY + (frontRight.y - startY) / 2;
                         }
                         setPyramidCenter();
-
-
 
 
                         g2.drawLine(startX, startY, frontRight.x, finalY);
@@ -411,11 +441,11 @@ public class MouseDrawListener {
                 }
                 finalX = mouseEvent.getX();
                 finalY = mouseEvent.getY();
-                mainPanel.repaint();
+                view.getMainPanel().repaint();
+                g2.dispose();
+
             }
         }
-
-        public void mouseMoved(MouseEvent e) { }
     }
 
     private class MouseAdapter implements MouseListener {
@@ -423,7 +453,7 @@ public class MouseDrawListener {
         public void mousePressed(MouseEvent mouseEvent) {
             listenMouseRightButton(mouseEvent);
 
-            if (model.wasIterated()) {
+            if (model.wasIterated(view.getTabbedPane().getSelectedIndex())) {
                 view.setPreviousImage(null);
                 if (model.isPolygonInWork()) {
                     model.setPolygonInWork(false);
@@ -451,7 +481,8 @@ public class MouseDrawListener {
         public void mouseReleased(MouseEvent mouseEvent) {
             setGraphicsAndColor();
             g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
-
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             if (model.isFigureMode() && !model.isCustomMode()) {
                 view.loadSavedImage();
             }
@@ -534,7 +565,7 @@ public class MouseDrawListener {
 
                     if (pointIsNew) {
                         if (!model.isPolygonInWork()) {
-                            model.saveAction(view.getMainImage());
+                            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
                             model.setPolygonInWork(true);
                         }
                         g2.drawLine(finalX, finalY, finalX, finalY);
@@ -580,7 +611,7 @@ public class MouseDrawListener {
 
                     if (pointIsNew) {
                         if (!model.isPolygonInWork()) {
-                            model.saveAction(view.getMainImage());
+                            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
                             model.setPolygonInWork(true);
                         }
                         g2.drawLine(finalX, finalY, finalX, finalY);
@@ -655,7 +686,7 @@ public class MouseDrawListener {
 
                     if (pointIsNew) {
                         if (!model.isPolygonInWork()) {
-                            model.saveAction(view.getMainImage());
+                            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
                             model.setPolygonInWork(true);
                         }
                         g2.drawLine(finalX, finalY, finalX, finalY);
@@ -752,21 +783,34 @@ public class MouseDrawListener {
                 case FILL:
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FILL_BASIC_STROKE))));
                     g2.setColor(view.getMainColor());
-                    g2.fillRect(0, 0, mainPanel.getSize().width, mainPanel.getSize().height);
+                    g2.fillRect(0, 0, view.getMainPanel().getSize().width, view.getMainPanel().getSize().height);
                     break;
 //                case TEXT:
-//                    mainPanel.requestFocus();
+//                    view.getMainPanel().requestFocus();
 //                    break;
+                case SCALE:
+                    view.setImageScale(view.getImageScale() * Model.RESIZE_PLUS_FACTOR);
+                    model.setCurrentScale(model.getCurrentScale() * Model.RESIZE_PLUS_FACTOR);
+
+                    int scaledX = model.getScaleRectX();
+                    int scaledY = model.getScaleRectY();
+//                    view.loadSavedImage();
+//                    g2.drawRect(model.getScaleRectX(), model.getScaleRectY(), model.getScaleRectWidth(), model.getScaleRectHeight());
+                    view.setTranslateImage(0 - scaledX, 0 - scaledY);
+                    break;
             }
             finalX = 0;
             finalY = 0;
             if (model.isFigureMode() && !model.isCustomMode()) {
                 view.saveCurrentImage();
             }
-            if (!model.isCustomMode()) {
-                model.saveAction(view.getMainImage());
+            if (!model.isCustomMode() && !model.isScaleMode()) {
+                model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
+//                model.saveAction(view.getMainPanel(), view.getTabbedPane().getSelectedIndex());
             }
-            mainPanel.repaint();
+
+            view.getMainPanel().repaint();
+            g2.dispose();
         }
 
         public void mouseClicked(MouseEvent mouseEvent) { }
@@ -775,8 +819,8 @@ public class MouseDrawListener {
     }
 
     private void setGraphicsAndColor() {
-        Graphics g = view.getMainImage().getGraphics();
-        g2 = (Graphics2D)g;
+//        Graphics g = view.getMainImage().createGraphics();
+        g2 = view.getMainImage().createGraphics();
         g2.setColor(view.getMainColor());
     }
 
@@ -838,7 +882,7 @@ public class MouseDrawListener {
 
                 model.setPolygonInWork(false);
                 view.saveCurrentImage();
-                model.reSaveAction(view.getMainImage());
+                model.reSaveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
 
                 model.resetAllCustomPoints();
                 pointIsNew = false;
@@ -986,7 +1030,7 @@ public class MouseDrawListener {
 
         model.setPolygonInWork(false);
         view.saveCurrentImage();
-        model.reSaveAction(view.getMainImage());
+        model.reSaveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
 
         pointIsNew = false;
         model.resetAllCustomPoints();
@@ -1132,6 +1176,10 @@ public class MouseDrawListener {
 
     public static void increaseCustomFactor() {
         CUSTOM_FACTOR += 0.5;
+    }
+
+    public static void resetCustomFactor() {
+        CUSTOM_FACTOR = 1f;
     }
 
     public static void rebaseDefaultStroke() {

@@ -6,6 +6,7 @@ import controller.swing.listeners.buttonListeners.*;
 import controller.swing.menuActions.FileAction;
 import model.DrawMode;
 import model.Model;
+import model.UndoRedoService;
 import util.CursorBuilder;
 import view.swing.SwingViewImpl;
 import view.View;
@@ -36,7 +37,10 @@ public class SwingControllerImpl implements Controller {
         setFrameListeners();
         view.setVisible(true);
 
-        model.saveAction(view.getMainImage());
+        model.getUndoList().add(new UndoRedoService());
+        model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
+//        model.saveAction(view.getMainPanel(), view.getTabbedPane().getSelectedIndex());
+
     }
 
     public void setMenuActions() {
@@ -49,28 +53,30 @@ public class SwingControllerImpl implements Controller {
 
     private void setToolListeners() {
         UndoListener undoListener = new UndoListener(view, model);
-        ScaleListener scaleListener = new ScaleListener(view, model);
+        ScaleListener scaleListener = new ScaleListener(view, model, this);
         ColorButtonListener colorListener = new ColorButtonListener(view);
 
         for (DrawMode drawMode : DrawMode.values()) {
-            view.getToolButtons().get(drawMode.name())
-                    .addActionListener(new ToolButtonListener(view, model, drawMode));
+            if (!model.getSpecialModeList().contains(drawMode)) {
+                view.getToolButtons().get(drawMode.name())
+                        .addActionListener(new ToolButtonListener(view, model, drawMode));
+            }
         }
-        try {
-            view.getMainPanel().setCursor(CursorBuilder.buildCursorByDrawMode(DrawMode.PENCIL));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+
+        view.getTabbedPane().setCursor(CursorBuilder.buildCursorByDrawMode(DrawMode.PENCIL));
 
         view.getUndoButton().addActionListener(undoListener.getUNDO_BUTTON_LISTENER());
         view.getRedoButton().addActionListener(undoListener.getREDO_BUTTON_LISTENER());
         view.getPlusButton().addActionListener(scaleListener.getPLUS_BUTTON_LISTENER());
         view.getMinusButton().addActionListener(scaleListener.getMINUS_BUTTON_LISTENER());
+        view.getRefreshButton().addActionListener(scaleListener.getREFRESH_BUTTON_LISTENER());
+        view.getExpandButton().addActionListener(scaleListener.getEXPAND_BUTTON_LISTENER());
 
-        view.getColorButton().addActionListener(colorListener.getColorDysplayButtonListener());
+        view.getColorButton().addActionListener(colorListener.getColorDisplayButtonListener());
         view.getColorChooser().getSelectionModel().addChangeListener(colorListener.getChooseColorListener());
         view.getRedButton().addActionListener(new ColorButtonListener(view, view.getRedButton()));
         view.getBlackButton().addActionListener(new ColorButtonListener(view, view.getBlackButton()));
+        view.getGreyButton().addActionListener(new ColorButtonListener(view, view.getGreyButton()));
         view.getBlueButton().addActionListener(new ColorButtonListener(view, view.getBlueButton()));
         view.getGreenButton().addActionListener(new ColorButtonListener(view, view.getGreenButton()));
         view.getOrangeButton().addActionListener(new ColorButtonListener(view, view.getOrangeButton()));
@@ -85,19 +91,20 @@ public class SwingControllerImpl implements Controller {
         view.getCalculatorButton().addActionListener(buttonListener.getCALCULATOR_BUTTON_LISTENER());
     }
 
-    private void setDrawListeners() {
+    public void setDrawListeners() {
         MouseDrawListener mouseDrawListeners = new MouseDrawListener(view, model);
 
         view.getMainPanel().addMouseMotionListener(mouseDrawListeners.getMOUSE_MOTION_ADAPTER());
         view.getMainPanel().addMouseListener(mouseDrawListeners.getMOUSE_ADAPTER());
-        view.addKeyListener(new KeyboardListener(view, model).getKEY_ADAPTER());
+        view.getMainPanel().addKeyListener(new KeyboardListener(view, model).getKEY_ADAPTER());
     }
 
     private void setFrameListeners() {
-        view.addComponentListener(new FrameListener(view, model).getFrameResizeListener());
+        view.addComponentListener(new FrameListener(view, model).getFRAME_RESIZE_LISTENER());
     }
 
     public View getView() {
         return view;
     }
+
 }

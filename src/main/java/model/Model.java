@@ -1,6 +1,7 @@
 package model;
 
 import config.Config;
+import view.swing.SwingViewImpl;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -64,6 +65,8 @@ public class Model {
 
     public static final int STICKY_LINE_FACTOR = Integer.parseInt(Config.getProperty(Config.STICKY_LINE_FACTOR));
 
+    public static final double RESIZE_PLUS_FACTOR = Double.parseDouble(Config.getProperty(Config.RESIZE_PLUS_FACTOR));
+
     public static final double ARROW_PEAK_FACTOR = Float.parseFloat(Config.getProperty(Config.ARROW_PEAK_FACTOR));
     public static final double ARROW_WIDTH_FACTOR = Float.parseFloat(Config.getProperty(Config.ARROW_WIDTH_FACTOR));
     public static final double ARROW_MIN_LENGTH = Float.parseFloat(Config.getProperty(Config.ARROW_MIN_LENGTH));
@@ -77,6 +80,7 @@ public class Model {
 
     private ArrayList<DrawMode> figureModeList;
     private ArrayList<DrawMode> customModeList;
+    private ArrayList<DrawMode> specialModeList;
 
     {
         figureModeList = new ArrayList<>();
@@ -103,15 +107,20 @@ public class Model {
         customModeList.add(DrawMode.PYRAMID_CUSTOM);
         customModeList.add(DrawMode.PRISM_CUSTOM);
 
+        specialModeList = new ArrayList<>();
+        specialModeList.add(DrawMode.SCALE);
+
         allPoints = new ArrayList<>();
     }
 
-    private UndoRedoService undoService;
+    private ArrayList<UndoRedoService> undoList;
     private DrawMode drawMode;
     private int startX;
     private int startY;
     private int finalX;
     private int finalY;
+    private int drawWidth;
+    private int drawHeight;
 
     private int eraserStroke;
     private int ragStroke;
@@ -150,10 +159,13 @@ public class Model {
     private Polygon polygon;
     private boolean figureMode;
     private boolean customMode;
+    private boolean specialMode;
+    private boolean scaleMode;
     private boolean polygonInWork;
+    private double currentScale;
 
     public Model() {
-        undoService = new UndoRedoService();
+        undoList = new ArrayList<>();
 
         drawMode = DrawMode.PENCIL;
         eraserStroke = Integer.valueOf(Config.getProperty(Config.ERASER_BASIC_STROKE));
@@ -189,6 +201,9 @@ public class Model {
         pointList = new ArrayList<>();
         prismTopPointList = new ArrayList<>();
         polygon = new Polygon();
+        currentScale = 1;
+        drawWidth = 0;
+        drawHeight = 0;
     }
 
     public int getEllipseBigRadius() {
@@ -258,27 +273,33 @@ public class Model {
         circleCenter = new Point(finalX, finalY);
     }
 
-    public boolean wasIterated() {
-        return undoService.isWasIterated();
+    public boolean wasIterated(int undoIndex) {
+        return undoList.get(undoIndex).isWasIterated();
     }
 
-    public  void saveAction(BufferedImage action) {
-        undoService.saveAction(action);
+    public  void saveAction(BufferedImage action, int undoIndex) {
+
+        undoList.get(undoIndex).saveAction(action);
     }
-    public  void reSaveAction(BufferedImage action) {
-        undoService.reSaveAction(action);
+    public  void reSaveAction(BufferedImage action, int undoIndex) {
+
+        undoList.get(undoIndex).reSaveAction(action);
     }
-    public  void removeLastAction() {
-        undoService.removeLastAction();
+    public  void removeLastAction(int undoIndex) {
+        undoList.get(undoIndex).removeLastAction();
     }
 
-    public BufferedImage getPreviousAction() {
+    public BufferedImage getPreviousAction(int undoIndex) {
         resetAllCustomPoints();
-        return undoService.getPreviousAction();
+        return undoList.get(undoIndex).getPreviousAction();
+
+//        return null;
     }
 
-    public BufferedImage getNextAction() {
-        return undoService.getNextAction();
+    public BufferedImage getNextAction(int undoIndex) {
+
+        return undoList.get(undoIndex).getNextAction();
+//        return null;
     }
 
     public String getFileName() {
@@ -598,6 +619,14 @@ public class Model {
         return customMode;
     }
 
+    public boolean isSpecialMode() {
+        return specialMode;
+    }
+
+    public void setSpecialMode(boolean specialMode) {
+        this.specialMode = specialMode;
+    }
+
     public void setCustomMode(boolean customMode) {
         this.customMode = customMode;
     }
@@ -616,5 +645,72 @@ public class Model {
 
     public Point getParallelepipedBackLeftTop() {
         return parallelepipedBackLeftTop;
+    }
+
+    public ArrayList<DrawMode> getSpecialModeList() {
+        return specialModeList;
+    }
+
+
+    public int getScaleRectX() {
+        int scaleRectX =
+                finalX - getScaleRectWidth() / 2 < 0 ? 0 :
+                        finalX + getScaleRectWidth() / 2 > getDrawWidth() ?
+                                getDrawWidth() - getScaleRectWidth() : finalX - getScaleRectWidth() / 2;
+
+        return scaleRectX;
+    }
+
+    public int getScaleRectY() {
+        int scaleRectY =
+                finalY - getScaleRectHeight() / 2 < 0 ? 0 :
+                        finalY + getScaleRectHeight() / 2 > getDrawHeight() ?
+                                getDrawHeight() - getScaleRectHeight() : finalY - getScaleRectHeight() / 2;
+
+        return scaleRectY;
+    }
+
+    public int getScaleRectWidth() {
+        return (int) (getDrawWidth() / RESIZE_PLUS_FACTOR);
+    }
+
+    public int getScaleRectHeight() {
+        return (int) (getDrawHeight() / RESIZE_PLUS_FACTOR);
+    }
+
+    public boolean isScaleMode() {
+        return scaleMode;
+    }
+
+    public void setScaleMode(boolean scaleMode) {
+        this.scaleMode = scaleMode;
+    }
+
+    public void setCurrentScale(double currentScale) {
+        this.currentScale = currentScale;
+    }
+
+    public double getCurrentScale() {
+        return currentScale;
+    }
+
+    public int getDrawWidth() {
+        return (int) (drawWidth / currentScale);
+    }
+
+    public void setDrawWidth(int drawWidth) {
+        this.drawWidth = drawWidth;
+    }
+
+    public int getDrawHeight() {
+        return (int) (drawHeight / currentScale);
+    }
+
+    public void setDrawHeight(int drawHeight) {
+        this.drawHeight = drawHeight;
+    }
+
+    public ArrayList<UndoRedoService> getUndoList() {
+        return undoList;
     }
 }

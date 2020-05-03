@@ -19,26 +19,31 @@ public class CursorBuilder {
     private static Cursor defaultCursor;
 
 
-    public static Cursor buildCursorByDrawMode(DrawMode drawMode) throws IllegalAccessException {
+    public static Cursor buildCursorByDrawMode(DrawMode drawMode) {
         String drawModeName = drawMode.name();
         resetCursor();
 
         String pathFieldName = String.format(CURSOR_PATH_NAME_PATTERN, drawModeName);
         String xPointFieldName = String.format(CURSOR_XPOINT_NAME_PATTERN, drawModeName);
         String yPointFieldName = String.format(CURSOR_YPOINT_NAME_PATTERN, drawModeName);
-        Image cursorImage;
+        Image cursorImage = null;
         int firstPoint = 0;
         int secondPoint = 0;
 
         Field[] configFields = Config.class.getDeclaredFields();
         for (Field field : configFields) {
             if (field.getName().equals(pathFieldName)) {
-                String fieldValue = (String) field.get(null);
-                cursorImage = toolkit.getImage(
-                        CursorBuilder.class.getResource(Config.getProperty(fieldValue)));
+                String fieldValue = null;
+                try {
+                    fieldValue = (String) field.get(null);
+                    cursorImage = toolkit.getImage(
+                             CursorBuilder.class.getResource(Config.getProperty(fieldValue)));
 
-                firstPoint = getPointValue(xPointFieldName, firstPoint, configFields);
-                secondPoint = getPointValue(yPointFieldName, secondPoint, configFields);
+                    firstPoint = getPointValue(xPointFieldName, firstPoint, configFields);
+                    secondPoint = getPointValue(yPointFieldName, secondPoint, configFields);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
 
                 cursor = toolkit.createCustomCursor(
                         cursorImage, new Point(firstPoint, secondPoint), drawModeName.toLowerCase());
