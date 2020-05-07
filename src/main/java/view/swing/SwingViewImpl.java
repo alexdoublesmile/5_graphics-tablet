@@ -1,13 +1,11 @@
 package view.swing;
 
 import config.Config;
-import controller.swing.listeners.KeyboardListener;
-import controller.swing.listeners.MouseDrawListener;
 import model.DrawMode;
 import model.Model;
-import model.UndoRedoService;
 import org.imgscalr.Scalr;
 import util.IconBuilder;
+import util.TabUtil;
 import view.View;
 import view.swing.buttons.ButtonTabComponent;
 import view.swing.buttons.ColorButton;
@@ -15,15 +13,7 @@ import view.swing.buttons.FunctionButton;
 import view.swing.buttons.ToolButton;
 
 import javax.swing.*;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.plaf.TabbedPaneUI;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
-import javax.swing.plaf.basic.BasicTabbedPaneUI.MouseHandler;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,6 +65,7 @@ public class SwingViewImpl extends JFrame implements View {
     private ColorButton whiteButton;
     private ColorButton orangeButton;
 
+    private JButton newTabButton;
     private JButton undoButton;
     private JButton redoButton;
     private JButton plusButton;
@@ -101,7 +92,6 @@ public class SwingViewImpl extends JFrame implements View {
     private int scaledWidth;
     private int scaledHeight;
     private boolean extended;
-    private int tabCounter;
 
     public SwingViewImpl(Model model) {
         this.model = model;
@@ -178,6 +168,8 @@ public class SwingViewImpl extends JFrame implements View {
     }
 
     private void initButtons() {
+        newTabButton = new  ToolButton(IconBuilder.buildIconByPath(
+                Config.getProperty(Config.NEW_ICON_PATH)));
         undoButton = new  ToolButton(IconBuilder.buildIconByPath(
                 Config.getProperty(Config.UNDO_ICON_PATH)));
         redoButton = new  ToolButton(IconBuilder.buildIconByPath(
@@ -201,11 +193,11 @@ public class SwingViewImpl extends JFrame implements View {
     private void initDrawingPanel() {
         panelList = new ArrayList<>();
         imageList = new ArrayList<>();
-        mainPanel = new MyPanel(true);
+        mainPanel = new MyPanel(-1, false);
         mainPanel.setBounds(0,0,mainFrame.getWidth(),mainFrame.getHeight());
 
-        panelList.add(mainPanel);
-        addTab(getDefaultTabName(), 0);
+        tabbedPane.add(TabUtil.getDefaultTabName(), panelList.get(0));
+        tabbedPane.setTabComponentAt(0, new ButtonTabComponent(this, model));
 
     }
 
@@ -214,12 +206,18 @@ public class SwingViewImpl extends JFrame implements View {
         add(tabbedPane);
 
         mainMenu.add(fileMenu);
+        mainMenu.add(new JToolBar.Separator());
+
+
+        mainMenu.add(newTabButton);
+
         mainMenu.add(toolBar);
         mainMenu.add(colorBar);
         mainMenu.add(new JToolBar.Separator());
         fileMenu.add(loadMenu);
         fileMenu.add(saveMenu);
         fileMenu.add(saveAsMenu);
+
 
         for (DrawMode drawMode : DrawMode.values()) {
             if (!model.getSpecialModeList().contains(drawMode)) {
@@ -260,7 +258,7 @@ public class SwingViewImpl extends JFrame implements View {
         mainMenu.add(new JToolBar.Separator());
 //        undoButton.setEnabled(false);
 //        redoButton.setEnabled(false);
-        refreshButton.setEnabled(false);
+//        refreshButton.setEnabled(false);
 
         setUndecorated(true);
     }
@@ -297,35 +295,40 @@ public class SwingViewImpl extends JFrame implements View {
         this.pictureImage = pictureImage;
     }
 
+
     public class MyPanel extends JPanel {
 
-        public MyPanel(boolean buffer) {
-            super(buffer);
+        private int previousTabIndex;
+        private boolean newPanel;
 
+        public MyPanel(int previousTabIndex, boolean needCopyImage) {
+            this.previousTabIndex = previousTabIndex;
+            newPanel = true;
             mainImage = new BufferedImage(mainFrame.getWidth(), mainFrame.getHeight(), BufferedImage.TYPE_INT_RGB);
             Graphics2D g2 = (Graphics2D) mainImage.getGraphics();
-            g2.setColor(Color.white);
-            g2.fillRect(0, 0, mainFrame.getWidth(), mainFrame.getHeight());
 
-            if (tabbedPane.getTabCount() < 1) {
-                imageList.add(mainImage);
+            if (needCopyImage) {
+                g2.drawImage(imageList.get(previousTabIndex), 0 , 0, null);
+
             } else {
-                imageList.add(tabbedPane.getSelectedIndex() + 1, mainImage);
+                g2.setColor(Color.white);
+                g2.fillRect(0, 0, mainFrame.getWidth(), mainFrame.getHeight());
             }
+
+            imageList.add(previousTabIndex + 1, mainImage);
+            panelList.add(previousTabIndex + 1, this);
         }
 
         public void paintComponent (Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
-//            g2.translate(scaledX, scaledY);
-//            g2.scale(imageScale, imageScale);
+            if (newPanel) {
+                g2.drawImage(imageList.get(previousTabIndex + 1), 0, 0,null);
+                newPanel = false;
+            } else {
+                g2.drawImage(getCurrentImage(), 0, 0,null);
 
-            g2.drawImage(getCurrentImage(), 0, 0,null);
-//            if (pictureImage != null) {
-//                g2.drawImage(pictureImage, 0, 0,null);
-//
-//            }
-
+            }
         }
     }
 
@@ -581,72 +584,32 @@ public class SwingViewImpl extends JFrame implements View {
         panelList.set(tabbedPane.getSelectedIndex(), mainPanel);
     }
 
-    public String getDefaultTabName() {
-        tabCounter++;
-        return String.format("Panel %d", tabCounter);
+    public JButton getNewTabButton() {
+        return newTabButton;
     }
 
-    public void addTab(String tabName, int index) {
-
-//        JPanel tabHeader = new JPanel();
+    //    public void addTab(String tabName, int index) {
 //
-//        tabHeader.setLayout(new GridBagLayout());
-//
-//        GridBagConstraints labelConst = new GridBagConstraints(
-//                0,0,
-//                1,1,
-//                0.0,0.9,
-//                GridBagConstraints.NORTH,
-//                GridBagConstraints.HORIZONTAL,
-//                new Insets(0,0,0,0),
-//                0,0);
-//
-//        GridBagConstraints buttonConst = new GridBagConstraints(
-//                1,0,
-//                1,1,
-//                0.0,0.9,
-//                GridBagConstraints.NORTH,
-//                GridBagConstraints.HORIZONTAL,
-//                new Insets(0,5,0,0),
-//                0,0);
-//
-//        JButton tabCloseButton = new JButton(IconBuilder.buildIconByPath(Config.getProperty(Config.TAB_CLOSE_ICON_PATH)));
-//        tabCloseButton.setPreferredSize(new Dimension(10, 10));
-//        tabCloseButton.setBorder(null);
-//        tabCloseButton.addActionListener(e -> {
-//            if (getTabbedPane().getTabCount() > 0) {
-//                getPanelList().remove(getTabbedPane().getSelectedIndex());
-//                getImageList().remove(getTabbedPane().getSelectedIndex());
-//                model.getUndoList().remove(getTabbedPane().getSelectedIndex());
-//
-//                getTabbedPane().remove(getTabbedPane().getSelectedIndex());
-//                JPanel currentPanel = (JPanel) getTabbedPane().getTabComponentAt(getTabbedPane().getSelectedIndex());
-//                currentPanel.getComponent(1).setEnabled(true);
-////                removedTabs++;
-//            }
-//        });
-//
-//        JLabel tabLabel = new JLabel();
-//        tabLabel.setFont(new Font("Comic Sans", Font.BOLD, 11));
-//        if (tabName == null) {
-//            tabLabel.setText(String.format("panel №%d", panelList.size()));
+//        if (tabbedPane.getTabCount() < 1) {
+//            tabbedPane.add(panelList.get(panelList.size() - 1));
+//            tabbedPane.setTitleAt(0, tabName);
 //        } else {
-//            tabLabel.setText(tabName);
+//            tabbedPane.add(panelList.get(index + 1), index + 1);
+//            tabbedPane.setTitleAt(index + 1, tabName);
 //        }
 //
-//        tabHeader.add(tabLabel, labelConst);
-//        tabHeader.add(tabCloseButton, buttonConst);
-
-
-        if (tabbedPane.getTabCount() < 1) {
-            tabbedPane.add(panelList.get(panelList.size() - 1));
-            tabbedPane.setTitleAt(0, tabName);
-        } else {
-            tabbedPane.add(panelList.get(index + 1), index + 1);
-            tabbedPane.setTitleAt(index + 1, tabName);
-        }
-
-        JPanel tabHeader = new ButtonTabComponent(tabbedPane, this, model);
+//        JPanel tabHeader = new ButtonTabComponent(tabbedPane, this, model);
+//
+//        if (tabbedPane.getTabCount() <= 1) {
+//            tabbedPane.setTabComponentAt(
+//                    tabbedPane.getTabCount() - 1,
+//                    tabHeader);
+//        } else {
+//
+//            tabbedPane.setTabComponentAt(
+//                    index + 1,
+//                    tabHeader);
+//        }
 
 //        JPopupMenu tabPopupMenu = new JPopupMenu();
 //        JMenuItem renameTab = new JMenuItem("Rename");
@@ -709,16 +672,6 @@ public class SwingViewImpl extends JFrame implements View {
 //        });
 //        tabHeader.setComponentPopupMenu(tabPopupMenu);
 
-        if (tabbedPane.getTabCount() <= 1) {
-            tabbedPane.setTabComponentAt(
-                    tabbedPane.getTabCount() - 1,
-                    tabHeader);
-        } else {
-
-            tabbedPane.setTabComponentAt(
-                    index + 1,
-                    tabHeader);
-        }
 
 
 
@@ -739,7 +692,7 @@ public class SwingViewImpl extends JFrame implements View {
 //            tabPanel.getComponent(1).setEnabled(true);
 //         });
 
-    }
+//    }
 
 
 }

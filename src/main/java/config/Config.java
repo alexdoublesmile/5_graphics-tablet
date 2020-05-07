@@ -57,6 +57,7 @@ public class Config {
     public static final String TEXT_BASIC_FONT_STYLE = "text.basic.font.style";
     public static final String TEXT_BASIC_OFFSET = "text.basic.offset";
 
+    public static final String NEW_ICON_PATH = "new.icon.path";
     public static final String PENCIL_ICON_PATH = "pencil.icon.path";
     public static final String MARKER_ICON_PATH = "marker.icon.path";
     public static final String BRUSH_ICON_PATH = "brush.icon.path";

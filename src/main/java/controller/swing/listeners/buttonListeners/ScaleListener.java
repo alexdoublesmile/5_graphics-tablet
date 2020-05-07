@@ -34,34 +34,6 @@ public class ScaleListener {
     private class PlusButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            MouseDrawListener mouseDrawListeners = new MouseDrawListener(view, model);
-
-            JPanel panel = view.new MyPanel(true);
-            panel.addMouseMotionListener(mouseDrawListeners.getMOUSE_MOTION_ADAPTER());
-            panel.addMouseListener(mouseDrawListeners.getMOUSE_ADAPTER());
-
-            view.getPanelList().add(view.getTabbedPane().getSelectedIndex() + 1, panel);
-
-            view.addTab(view.getDefaultTabName(), view.getTabbedPane().getSelectedIndex());
-
-            view.getTabbedPane().setSelectedIndex(view.getTabbedPane().getSelectedIndex() + 1);
-            if (model.getUndoList().size() < (view.getTabbedPane().getTabCount())) {
-                model.getUndoList().add(view.getTabbedPane().getSelectedIndex(), new UndoRedoService());
-            } else {
-                model.getUndoList().set(view.getTabbedPane().getSelectedIndex(), new UndoRedoService());
-            }
-
-//            if (view.getTabbedPane().getTitleAt(view.getTabbedPane().getSelectedIndex()) == null) {
-//                view.getTabbedPane().setTitleAt(view.getTabbedPane().getSelectedIndex(), "New Tab");
-//            }
-
-            panel.addKeyListener(new KeyboardListener(view, model).getKEY_ADAPTER());
-            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
-//            model.saveAction(view.getMainPanel(), view.getTabbedPane().getSelectedIndex());
-
-
-
-
 
 //            if (!model.isScaleMode()) {
 //                model.setSpecialMode(true);
@@ -75,21 +47,14 @@ public class ScaleListener {
 
 
 
-//            MouseDrawListener.increaseCustomFactor();
-//            MouseDrawListener.rebaseDefaultStroke();
+            MouseDrawListener.increaseCustomFactor();
+            MouseDrawListener.rebaseDefaultStroke();
         }
     }
 
     private class MinusButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (view.getTabbedPane().getTabCount() > 0) {
-                view.getPanelList().remove(view.getTabbedPane().getSelectedIndex());
-                view.getImageList().remove(view.getTabbedPane().getSelectedIndex());
-                model.getUndoList().remove(view.getTabbedPane().getSelectedIndex());
-
-                view.getTabbedPane().remove(view.getTabbedPane().getSelectedIndex());
-            }
 
 
 //            view.setImageScale(view.getImageScale() / Model.RESIZE_PLUS_FACTOR);
@@ -105,31 +70,31 @@ public class ScaleListener {
 
 
 
-//            MouseDrawListener.decreaseCustomFactor();
-//            MouseDrawListener.rebaseDefaultStroke();
+            MouseDrawListener.decreaseCustomFactor();
+            MouseDrawListener.rebaseDefaultStroke();
         }
     }
 
     private class RefreshButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            view.setImageScale(1);
-            model.setCurrentScale(1);
-
-            model.setDrawWidth(view.getWidth());
-            model.setDrawHeight(view.getHeight());
-            view.setTranslateImage(0, 0);
+//            view.setImageScale(1);
+//            model.setCurrentScale(1);
+//
+//            model.setDrawWidth(view.getWidth());
+//            model.setDrawHeight(view.getHeight());
+//            view.setTranslateImage(0, 0);
 
 
 //            if (model.isScaleMode()) {
 //                view.loadSavedImage();
 //            }
-            view.getMainPanel().repaint();
+//            view.getMainPanel().repaint();
 
 
 
-//            MouseDrawListener.resetCustomFactor();
-//            MouseDrawListener.rebaseDefaultStroke();
+            MouseDrawListener.resetCustomFactor();
+            MouseDrawListener.rebaseDefaultStroke();
         }
     }
 

@@ -1,9 +1,7 @@
 package view.swing.buttons;
 
-import controller.swing.listeners.KeyboardListener;
-import controller.swing.listeners.MouseDrawListener;
+import controller.swing.actions.TabAction;
 import model.Model;
-import model.UndoRedoService;
 import view.swing.SwingViewImpl;
 
 import javax.swing.*;
@@ -12,26 +10,26 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class ButtonTabComponent extends JPanel {
-    private final JTabbedPane pane;
     private final SwingViewImpl view;
-    public final Model modell;
+    public final Model model;
+//    public JPanel currentPanel;
 
-    public ButtonTabComponent(final JTabbedPane pane, SwingViewImpl view, Model model) {
+    public ButtonTabComponent(SwingViewImpl view, Model model) {
         super(new FlowLayout(FlowLayout.LEFT, 0, 0));
         this.view = view;
-        this.modell = model;
+        this.model = model;
+//        currentPanel = this;
 
-        if (pane == null) {
+        if (view.getTabbedPane() == null) {
             throw new NullPointerException("TabbedPane is null");
         }
-        this.pane = pane;
         setOpaque(false);
 
         JLabel label = new JLabel() {
             public String getText() {
-                int i = pane.indexOfTabComponent(ButtonTabComponent.this);
+                int i = view.getTabbedPane().indexOfTabComponent(ButtonTabComponent.this);
                 if (i != -1) {
-                    return pane.getTitleAt(i);
+                    return view.getTabbedPane().getTitleAt(i);
                 }
                 return null;
             }
@@ -55,47 +53,20 @@ public class ButtonTabComponent extends JPanel {
         deleteTabsToTheRight.setMnemonic(KeyEvent.VK_R);
         deleteTabsToTheLeft.setMnemonic(KeyEvent.VK_L);
 
-        renameTab.addActionListener(e -> {
-            int i = pane.indexOfTabComponent(ButtonTabComponent.this);
-            String answer = (String) JOptionPane.showInputDialog(
-                    this,
-                    null,
-                    String.format("Rename %s Tab", label.getText()),
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    null,
-                    label.getText());
-            if (answer != null && !answer.isEmpty())
-                pane.setTitleAt(i, answer);
-        });
+        renameTab.addActionListener(TabAction.buildRenameTabAction(view, ButtonTabComponent.this));
+        copyTab.addActionListener(TabAction.buildAddTabAction(view, this.model, ButtonTabComponent.this, true));
+        deleteOtherTabs.addActionListener(TabAction.buildRemoveTabAction(view, this.model, ButtonTabComponent.this, TabAction.REMOVE_OTHERS));
+        deleteTabsToTheRight.addActionListener(TabAction.buildRemoveTabAction(view, this.model, ButtonTabComponent.this, TabAction.REMOVE_TO_THE_RIGHT));
+        deleteTabsToTheLeft.addActionListener(TabAction.buildRemoveTabAction(view, this.model, ButtonTabComponent.this, TabAction.REMOVE_TO_THE_LEFT));
 
-        copyTab.addActionListener(e -> {
-            int i = pane.indexOfTabComponent(ButtonTabComponent.this);
-            MouseDrawListener mouseDrawListeners = new MouseDrawListener(view, modell);
-
-            JPanel panel = view.new MyPanel(true);
-
-            panel.addMouseMotionListener(mouseDrawListeners.getMOUSE_MOTION_ADAPTER());
-            panel.addMouseListener(mouseDrawListeners.getMOUSE_ADAPTER());
-
-            view.getPanelList().add(i + 1, panel);
-            view.addTab(view.getDefaultTabName(), i);
-            Graphics g2 = view.getImageList().get(i + 1).getGraphics();
-            g2.drawImage(view.getImageList().get(i), 0 , 0, null);
-
-            view.getTabbedPane().setSelectedIndex(i + 1);
-            if (modell.getUndoList().size() < pane.getTabCount()) {
-                modell.getUndoList().add(i + 1, new UndoRedoService());
-            } else {
-                modell.getUndoList().set(i + 1, new UndoRedoService());
-            }
-
-            panel.addKeyListener(new KeyboardListener(view, modell).getKEY_ADAPTER());
-            modell.saveAction(view.getMainImage(), i + 1);
-        });
 
         tabPopupMenu.add(renameTab);
         tabPopupMenu.add(copyTab);
+        tabPopupMenu.addSeparator();
+        tabPopupMenu.add(deleteOtherTabs);
+        tabPopupMenu.add(deleteTabsToTheRight);
+        tabPopupMenu.add(deleteTabsToTheLeft);
+
         view.getContentPane().addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -111,10 +82,11 @@ public class ButtonTabComponent extends JPanel {
                 }
             }
         });
-//        this.setComponentPopupMenu(tabPopupMenu);
+
+        button.setComponentPopupMenu(tabPopupMenu);
     }
 
-    private class TabButton extends JButton implements ActionListener {
+    private class TabButton extends JButton {
         public TabButton() {
             int size = 17;
             setPreferredSize(new Dimension(size, size));
@@ -130,27 +102,8 @@ public class ButtonTabComponent extends JPanel {
             //Making nice rollover effect
             addMouseListener(buttonMouseListener);
             setRolloverEnabled(true);
-            addActionListener(this);
+            addActionListener(TabAction.buildRemoveTabAction(view, ButtonTabComponent.this.model, ButtonTabComponent.this, TabAction.REMOVE_CURRENT));
         }
-
-        public void actionPerformed(ActionEvent e) {
-            int i = pane.indexOfTabComponent(ButtonTabComponent.this);
-            if (i != -1 && pane.getTabCount() > 1) {
-                pane.remove(i);
-                view.getPanelList().remove(i);
-                view.getImageList().remove(i);
-                modell.getUndoList().remove(i);
-
-//                JPanel currentPanel = (JPanel) view.getTabbedPane().getTabComponentAt(view.getTabbedPane().getSelectedIndex());
-//                currentPanel.getComponent(1).setEnabled(true);
-            } else {
-                JOptionPane.showMessageDialog(this, "This is the last tab :)");
-            }
-        }
-
-        //don't want to update UI for this button
-//        public void updateUI() {
-//        }
 
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -187,5 +140,6 @@ public class ButtonTabComponent extends JPanel {
                 button.setBorderPainted(false);
             }
         }
+
     };
 }

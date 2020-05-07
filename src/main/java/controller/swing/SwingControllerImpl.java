@@ -1,9 +1,10 @@
 package controller.swing;
 
 import controller.Controller;
+import controller.swing.actions.TabAction;
 import controller.swing.listeners.*;
 import controller.swing.listeners.buttonListeners.*;
-import controller.swing.menuActions.FileAction;
+import controller.swing.actions.FileAction;
 import model.DrawMode;
 import model.Model;
 import model.UndoRedoService;
@@ -38,7 +39,7 @@ public class SwingControllerImpl implements Controller {
         view.setVisible(true);
 
         model.getUndoList().add(new UndoRedoService());
-        model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
+        model.saveAction(view.getMainImage(), 0);
 //        model.saveAction(view.getMainPanel(), view.getTabbedPane().getSelectedIndex());
 
     }
@@ -65,6 +66,7 @@ public class SwingControllerImpl implements Controller {
 
         view.getTabbedPane().setCursor(CursorBuilder.buildCursorByDrawMode(DrawMode.PENCIL));
 
+        view.getNewTabButton().addActionListener(TabAction.buildAddTabAction(view, model, null, false));
         view.getUndoButton().addActionListener(undoListener.getUNDO_BUTTON_LISTENER());
         view.getRedoButton().addActionListener(undoListener.getREDO_BUTTON_LISTENER());
         view.getPlusButton().addActionListener(scaleListener.getPLUS_BUTTON_LISTENER());

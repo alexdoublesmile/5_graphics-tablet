@@ -1,4 +1,4 @@
-package controller.swing.menuActions;
+package controller.swing.actions;
 
 import model.Model;
 import org.apache.commons.io.FilenameUtils;
