@@ -92,6 +92,7 @@ public class Config {
     public static final String MINUS_ICON_PATH = "minus.icon.path";
     public static final String REFRESH_ICON_PATH = "refresh.icon.path";
     public static final String EXPAND_ICON_PATH = "expand.icon.path";
+    public static final String TAB_CLOSE_ICON_PATH = "tab.close.icon.path";
     public static final String UNDO_ICON_PATH = "undo.icon.path";
     public static final String REDO_ICON_PATH = "redo.icon.path";
     public static final String CALCULATOR_ICON_PATH = "calculator.icon.path";

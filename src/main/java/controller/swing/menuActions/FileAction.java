@@ -1,6 +1,7 @@
 package controller.swing.menuActions;
 
 import model.Model;
+import org.apache.commons.io.FilenameUtils;
 import util.TextFileFilter;
 import view.swing.SwingViewImpl;
 
@@ -36,7 +37,9 @@ public class FileAction {
     private BufferedImage image;
     private JFileChooser fileChooser;
     private int chooseValue;
+    private File file;
     private String filePath;
+    private String fileName;
 
     public FileAction(SwingViewImpl view, Model model) {
         this.view = view;
@@ -66,7 +69,7 @@ public class FileAction {
             if (chooseValue == JFileChooser.APPROVE_OPTION) {
                 try {
                     filePath = fileChooser.getSelectedFile().getAbsolutePath();
-                    File file = new File(filePath);
+                    file = new File(filePath);
                     image = ImageIO.read(file);
 
                     view.setMainImage(image);
@@ -75,7 +78,8 @@ public class FileAction {
                     model.setLoading(true);
 //                    frame.setSize(image.getWidth(), image.getHeight());
 //                    panel.setSize(image.getWidth(), image.getHeight());
-                    view.getTabbedPane().setTitleAt(view.getTabbedPane().getSelectedIndex(), file.getName());
+                    fileName = FilenameUtils.removeExtension(file.getName());
+                    view.getTabbedPane().setTitleAt(view.getTabbedPane().getSelectedIndex(), fileName);
 
 
                     model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());

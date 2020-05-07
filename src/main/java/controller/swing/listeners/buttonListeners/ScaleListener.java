@@ -1,5 +1,4 @@
 package controller.swing.listeners.buttonListeners;
-import controller.Controller;
 import controller.swing.SwingControllerImpl;
 import controller.swing.listeners.KeyboardListener;
 import controller.swing.listeners.MouseDrawListener;
@@ -41,14 +40,20 @@ public class ScaleListener {
             panel.addMouseMotionListener(mouseDrawListeners.getMOUSE_MOTION_ADAPTER());
             panel.addMouseListener(mouseDrawListeners.getMOUSE_ADAPTER());
 
-            view.getPanelList().add(panel);
-            view.rebaseTabbedPane();
-            view.getTabbedPane().setSelectedIndex(view.getTabbedPane().getTabCount() - 1);
-            if (model.getUndoList().size() <= (view.getTabbedPane().getSelectedIndex())) {
-                model.getUndoList().add(new UndoRedoService());
+            view.getPanelList().add(view.getTabbedPane().getSelectedIndex() + 1, panel);
+
+            view.addTab(view.getDefaultTabName(), view.getTabbedPane().getSelectedIndex());
+
+            view.getTabbedPane().setSelectedIndex(view.getTabbedPane().getSelectedIndex() + 1);
+            if (model.getUndoList().size() < (view.getTabbedPane().getTabCount())) {
+                model.getUndoList().add(view.getTabbedPane().getSelectedIndex(), new UndoRedoService());
             } else {
                 model.getUndoList().set(view.getTabbedPane().getSelectedIndex(), new UndoRedoService());
             }
+
+//            if (view.getTabbedPane().getTitleAt(view.getTabbedPane().getSelectedIndex()) == null) {
+//                view.getTabbedPane().setTitleAt(view.getTabbedPane().getSelectedIndex(), "New Tab");
+//            }
 
             panel.addKeyListener(new KeyboardListener(view, model).getKEY_ADAPTER());
             model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());

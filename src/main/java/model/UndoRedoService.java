@@ -72,20 +72,15 @@ public class UndoRedoService {
     }
 
     private BufferedImage getNewImage(BufferedImage oldImage) {
-        return oldImage;
+//        return oldImage;
 
-//        BufferedImage newImage = new BufferedImage(
-//                oldImage.getColorModel(),
-//                oldImage.copyData(oldImage.getRaster().createCompatibleWritableRaster()),
-//                oldImage.isAlphaPremultiplied(),
-//                null
-//        );
-//        return newImage;
-
-//        BufferedImage newImage = new BufferedImage(oldImage.getWidth(), oldImage.getHeight(), oldImage.getType());
-//        Graphics2D g2 = (Graphics2D) newImage.getGraphics();
-//        g2.drawImage(oldImage, 0, 0, null);
-//        return newImage;
+        BufferedImage newImage = new BufferedImage(
+                oldImage.getColorModel(),
+                oldImage.copyData(oldImage.getRaster().createCompatibleWritableRaster()),
+                oldImage.isAlphaPremultiplied(),
+                null
+        );
+        return newImage;
     }
 
     private void cropList() {

@@ -1,16 +1,29 @@
 package view.swing;
 
 import config.Config;
+import controller.swing.listeners.KeyboardListener;
+import controller.swing.listeners.MouseDrawListener;
 import model.DrawMode;
 import model.Model;
+import model.UndoRedoService;
+import org.imgscalr.Scalr;
 import util.IconBuilder;
 import view.View;
+import view.swing.buttons.ButtonTabComponent;
 import view.swing.buttons.ColorButton;
 import view.swing.buttons.FunctionButton;
 import view.swing.buttons.ToolButton;
 
 import javax.swing.*;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.plaf.TabbedPaneUI;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import javax.swing.plaf.basic.BasicTabbedPaneUI.MouseHandler;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +50,7 @@ public class SwingViewImpl extends JFrame implements View {
     private final int COLOR_DIALOG_WIDTH = Integer.parseInt(Config.getProperty(Config.COLOR_DIALOG_WIDTH));
     private final int COLOR_DIALOG_HEIGHT = Integer.parseInt(Config.getProperty(Config.COLOR_DIALOG_HEIGHT));
     private final Map<String, ToolButton> toolButtons;
+
     private Model model;
     private JFrame mainFrame;
     private JTabbedPane tabbedPane;
@@ -84,7 +98,10 @@ public class SwingViewImpl extends JFrame implements View {
     private double imageScale;
     private int scaledX;
     private int scaledY;
+    private int scaledWidth;
+    private int scaledHeight;
     private boolean extended;
+    private int tabCounter;
 
     public SwingViewImpl(Model model) {
         this.model = model;
@@ -142,7 +159,7 @@ public class SwingViewImpl extends JFrame implements View {
     }
 
     private void initColorBar() {
-        colorBar = new  JToolBar(JToolBar.HORIZONTAL);
+        colorBar = new JToolBar(JToolBar.HORIZONTAL);
         colorBar.setBackground(CONTROL_PANEL_COLOR);
         colorBar.setBorderPainted(false);
         colorBar.setLayout(null);
@@ -188,14 +205,13 @@ public class SwingViewImpl extends JFrame implements View {
         mainPanel.setBounds(0,0,mainFrame.getWidth(),mainFrame.getHeight());
 
         panelList.add(mainPanel);
+        addTab(getDefaultTabName(), 0);
+
     }
 
     private void collectAllElements() {
         setJMenuBar(mainMenu);
-        rebaseTabbedPane();
         add(tabbedPane);
-//        setContentPane(mainPanel);
-//        add(mainPanel);
 
         mainMenu.add(fileMenu);
         mainMenu.add(toolBar);
@@ -242,6 +258,9 @@ public class SwingViewImpl extends JFrame implements View {
         mainMenu.add(new JToolBar.Separator());
         mainMenu.add(calculatorButton);
         mainMenu.add(new JToolBar.Separator());
+//        undoButton.setEnabled(false);
+//        redoButton.setEnabled(false);
+        refreshButton.setEnabled(false);
 
         setUndecorated(true);
     }
@@ -288,7 +307,11 @@ public class SwingViewImpl extends JFrame implements View {
             g2.setColor(Color.white);
             g2.fillRect(0, 0, mainFrame.getWidth(), mainFrame.getHeight());
 
-            imageList.add(mainImage);
+            if (tabbedPane.getTabCount() < 1) {
+                imageList.add(mainImage);
+            } else {
+                imageList.add(tabbedPane.getSelectedIndex() + 1, mainImage);
+            }
         }
 
         public void paintComponent (Graphics g) {
@@ -296,13 +319,30 @@ public class SwingViewImpl extends JFrame implements View {
             Graphics2D g2 = (Graphics2D) g;
 //            g2.translate(scaledX, scaledY);
 //            g2.scale(imageScale, imageScale);
-            g2.drawImage(imageList.get(tabbedPane.getSelectedIndex()), 0, 0,null);
+
+            g2.drawImage(getCurrentImage(), 0, 0,null);
 //            if (pictureImage != null) {
 //                g2.drawImage(pictureImage, 0, 0,null);
 //
 //            }
 
         }
+    }
+
+    public BufferedImage getCurrentImage() {
+
+        BufferedImage image = Scalr.resize(
+                imageList.get(tabbedPane.getSelectedIndex()),
+                imageList.get(tabbedPane.getSelectedIndex()).getWidth());
+
+        scaledWidth = image.getWidth();
+        scaledHeight = image.getHeight();
+
+//        scaledX = (newWidth - scaledWidth) / 2;
+//        scaledY = (newWidth - scaledHeight) / 2;
+
+//        image.flush();
+        return image;
     }
 
     public class ColorDialog extends JDialog {
@@ -528,12 +568,6 @@ public class SwingViewImpl extends JFrame implements View {
         return tabbedPane;
     }
 
-    public void rebaseTabbedPane() {
-        tabbedPane.add(
-                String.format("panel №%d", panelList.size()),
-                panelList.get(panelList.size() - 1));
-    }
-
     public ArrayList<JPanel> getPanelList() {
         return panelList;
     }
@@ -546,4 +580,166 @@ public class SwingViewImpl extends JFrame implements View {
 
         panelList.set(tabbedPane.getSelectedIndex(), mainPanel);
     }
+
+    public String getDefaultTabName() {
+        tabCounter++;
+        return String.format("Panel %d", tabCounter);
+    }
+
+    public void addTab(String tabName, int index) {
+
+//        JPanel tabHeader = new JPanel();
+//
+//        tabHeader.setLayout(new GridBagLayout());
+//
+//        GridBagConstraints labelConst = new GridBagConstraints(
+//                0,0,
+//                1,1,
+//                0.0,0.9,
+//                GridBagConstraints.NORTH,
+//                GridBagConstraints.HORIZONTAL,
+//                new Insets(0,0,0,0),
+//                0,0);
+//
+//        GridBagConstraints buttonConst = new GridBagConstraints(
+//                1,0,
+//                1,1,
+//                0.0,0.9,
+//                GridBagConstraints.NORTH,
+//                GridBagConstraints.HORIZONTAL,
+//                new Insets(0,5,0,0),
+//                0,0);
+//
+//        JButton tabCloseButton = new JButton(IconBuilder.buildIconByPath(Config.getProperty(Config.TAB_CLOSE_ICON_PATH)));
+//        tabCloseButton.setPreferredSize(new Dimension(10, 10));
+//        tabCloseButton.setBorder(null);
+//        tabCloseButton.addActionListener(e -> {
+//            if (getTabbedPane().getTabCount() > 0) {
+//                getPanelList().remove(getTabbedPane().getSelectedIndex());
+//                getImageList().remove(getTabbedPane().getSelectedIndex());
+//                model.getUndoList().remove(getTabbedPane().getSelectedIndex());
+//
+//                getTabbedPane().remove(getTabbedPane().getSelectedIndex());
+//                JPanel currentPanel = (JPanel) getTabbedPane().getTabComponentAt(getTabbedPane().getSelectedIndex());
+//                currentPanel.getComponent(1).setEnabled(true);
+////                removedTabs++;
+//            }
+//        });
+//
+//        JLabel tabLabel = new JLabel();
+//        tabLabel.setFont(new Font("Comic Sans", Font.BOLD, 11));
+//        if (tabName == null) {
+//            tabLabel.setText(String.format("panel №%d", panelList.size()));
+//        } else {
+//            tabLabel.setText(tabName);
+//        }
+//
+//        tabHeader.add(tabLabel, labelConst);
+//        tabHeader.add(tabCloseButton, buttonConst);
+
+
+        if (tabbedPane.getTabCount() < 1) {
+            tabbedPane.add(panelList.get(panelList.size() - 1));
+            tabbedPane.setTitleAt(0, tabName);
+        } else {
+            tabbedPane.add(panelList.get(index + 1), index + 1);
+            tabbedPane.setTitleAt(index + 1, tabName);
+        }
+
+        JPanel tabHeader = new ButtonTabComponent(tabbedPane, this, model);
+
+//        JPopupMenu tabPopupMenu = new JPopupMenu();
+//        JMenuItem renameTab = new JMenuItem("Rename");
+//        JMenuItem copyTab = new JMenuItem("Duplicate");
+////        renameTab.setMnemonic(KeyEvent.VK_R);
+////        copyTab.setMnemonic(KeyEvent.VK_D);
+////        renameTab.addActionListener(e -> {
+////            String answer = (String) JOptionPane.showInputDialog(
+////                    this,
+////                    null,
+////                    String.format("Rename %s Tab", tabLabel.getText()),
+////                    JOptionPane.PLAIN_MESSAGE,
+////                    null,
+////                    null,
+////                    tabLabel.getText());
+////            if (answer != null && !answer.isEmpty())
+////                tabLabel.setText(answer);
+////        });
+//
+//        copyTab.addActionListener(e -> {
+//            MouseDrawListener mouseDrawListeners = new MouseDrawListener(this, model);
+//
+//            JPanel panel = new MyPanel(true);
+//
+//            panel.addMouseMotionListener(mouseDrawListeners.getMOUSE_MOTION_ADAPTER());
+//            panel.addMouseListener(mouseDrawListeners.getMOUSE_ADAPTER());
+//
+//            getPanelList().add(getTabbedPane().getSelectedIndex() + 1, panel);
+//            addTab(getDefaultTabName());
+//            Graphics g2 = imageList.get(tabbedPane.getSelectedIndex() + 1).getGraphics();
+//            g2.drawImage(imageList.get(tabbedPane.getSelectedIndex()), 0 , 0, null);
+//
+//            getTabbedPane().setSelectedIndex(getTabbedPane().getSelectedIndex() + 1);
+//            if (model.getUndoList().size() <= (getTabbedPane().getSelectedIndex())) {
+//                model.getUndoList().add(new UndoRedoService());
+//            } else {
+//                model.getUndoList().set(getTabbedPane().getSelectedIndex(), new UndoRedoService());
+//            }
+//
+//            panel.addKeyListener(new KeyboardListener(this, model).getKEY_ADAPTER());
+//            model.saveAction(getMainImage(), getTabbedPane().getSelectedIndex());
+//        });
+//
+//        tabPopupMenu.add(renameTab);
+//        tabPopupMenu.add(copyTab);
+//        this.getContentPane().addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mousePressed(MouseEvent e) {
+//                if (e.isPopupTrigger()) {
+//                    tabPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+//                }
+//            }
+//
+//            @Override
+//            public void mouseReleased(MouseEvent e) {
+//                if (e.isPopupTrigger()) {
+//                    tabPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+//                }
+//            }
+//        });
+//        tabHeader.setComponentPopupMenu(tabPopupMenu);
+
+        if (tabbedPane.getTabCount() <= 1) {
+            tabbedPane.setTabComponentAt(
+                    tabbedPane.getTabCount() - 1,
+                    tabHeader);
+        } else {
+
+            tabbedPane.setTabComponentAt(
+                    index + 1,
+                    tabHeader);
+        }
+
+
+
+//        tabHeader.getComponent(0).addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mousePressed(MouseEvent e) {
+//                super.mousePressed(e);
+//
+//            }
+//        });
+
+//        tabbedPane.getModel().addChangeListener(e -> {
+//            for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+//                JPanel tabPanel = (JPanel) tabbedPane.getTabComponentAt(i);
+//                tabPanel.getComponent(1).setEnabled(false);
+//            }
+//            JPanel tabPanel = (JPanel) tabbedPane.getTabComponentAt(tabbedPane.getSelectedIndex());
+//            tabPanel.getComponent(1).setEnabled(true);
+//         });
+
+    }
+
+
 }
