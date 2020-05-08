@@ -278,11 +278,9 @@ public class Model {
     }
 
     public  void saveAction(BufferedImage action, int undoIndex) {
-
         undoList.get(undoIndex).saveAction(action);
     }
     public  void reSaveAction(BufferedImage action, int undoIndex) {
-
         undoList.get(undoIndex).reSaveAction(action);
     }
     public  void removeLastAction(int undoIndex) {
@@ -292,14 +290,10 @@ public class Model {
     public BufferedImage getPreviousAction(int undoIndex) {
         resetAllCustomPoints();
         return undoList.get(undoIndex).getPreviousAction();
-
-//        return null;
     }
 
     public BufferedImage getNextAction(int undoIndex) {
-
         return undoList.get(undoIndex).getNextAction();
-//        return null;
     }
 
     public String getFileName() {

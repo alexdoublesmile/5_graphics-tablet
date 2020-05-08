@@ -15,6 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.stream.Stream;
 
 public class TabAction {
     private static final String LAST_TAB_MESSAGE = "Это последняя вкладочка, Катюша :) \n Не нужно её закрывать";
@@ -74,9 +75,10 @@ public class TabAction {
             JPanel tabHeader = new ButtonTabComponent(view, model);
 
             tabs.add(view.getPanelList().get(newTabIndex), newTabIndex);
-            tabs.setTitleAt(newTabIndex, TabUtil.getDefaultTabName());
             if (needCopyImage) {
-                tabs.setTitleAt(newTabIndex, TabUtil.getCopyTabName(tabs.getTitleAt(previousTabIndex)));
+                tabs.setTitleAt(newTabIndex, TabUtil.getCopyTabName(tabs.getTitleAt(previousTabIndex), getAllTitles()));
+            } else {
+                tabs.setTitleAt(newTabIndex, TabUtil.getDefaultTabName());
             }
             tabs.setTabComponentAt(newTabIndex, tabHeader);
             tabs.setSelectedIndex(newTabIndex);
@@ -87,11 +89,21 @@ public class TabAction {
             model.saveAction(view.getImageList().get(newTabIndex), newTabIndex);
         }
 
+        private String[] getAllTitles() {
+            String[] allTitles = new String[tabs.getTabCount()];
+            for (int i = 0; i < allTitles.length; i++) {
+                allTitles[i] = tabs.getTitleAt(i);
+            }
+
+            return allTitles;
+        }
+
         private int getNewTabIndex() {
             return previousTabIndex + 1;
         }
-
     }
+
+
 
     private static class RenameTabAction extends AbstractAction {
         private SwingViewImpl view;
@@ -116,10 +128,16 @@ public class TabAction {
                     null,
                     null,
                     tabLabel.getText());
-            if (answer != null && !answer.isEmpty())
+            if (answer != null && !answer.isEmpty()) {
                 view.getTabbedPane().setTitleAt(tabIndex, answer);
+            }
+
+            tabComponent.revalidate();
         }
     }
+
+
+
     private static class RemoveTabAction extends AbstractAction {
         private SwingViewImpl view;
         private Model model;

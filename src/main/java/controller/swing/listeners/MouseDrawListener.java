@@ -109,22 +109,22 @@ public class MouseDrawListener {
                 case SCALE:
                     saveCoordsToModel();
 
-//                    view.loadSavedImage();
-//                    setGraphicsAndColor();
-//                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    view.loadSavedImage();
+                    setGraphicsAndColor();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-//                    int scaleStartX = model.getScaleRectX();
-//                    int scaleStartY = model.getScaleRectY();
-//                    int scaleWidth = model.getScaleRectWidth();
-//                    int scaleHeight = model.getScaleRectHeight();
+                    int scaleStartX = model.getScaleRectX();
+                    int scaleStartY = model.getScaleRectY();
+                    int scaleWidth = model.getScaleRectWidth();
+                    int scaleHeight = model.getScaleRectHeight();
 
-//                    g2.drawRect(scaleStartX, scaleStartY, scaleWidth, scaleHeight);
-//                    finalX = mouseEvent.getX() < 0 + scaleWidth / 2 ? 0 + scaleWidth / 2 :
-//                            mouseEvent.getX() > model.getDrawWidth() - scaleWidth / 2 ?
-//                                    model.getDrawWidth() - scaleWidth / 2 : mouseEvent.getX();
-//                    finalY = mouseEvent.getY() < 0 + scaleHeight / 2 ? 0 + scaleHeight / 2 :
-//                            mouseEvent.getY() > model.getDrawHeight() - scaleHeight / 2 ?
-//                                    model.getDrawHeight() - scaleHeight / 2 : mouseEvent.getY();
+                    g2.drawRect(scaleStartX, scaleStartY, scaleWidth, scaleHeight);
+                    finalX = mouseEvent.getX() < 0 + scaleWidth / 2 ? 0 + scaleWidth / 2 :
+                            mouseEvent.getX() > model.getDrawWidth() - scaleWidth / 2 ?
+                                    model.getDrawWidth() - scaleWidth / 2 : mouseEvent.getX();
+                    finalY = mouseEvent.getY() < 0 + scaleHeight / 2 ? 0 + scaleHeight / 2 :
+                            mouseEvent.getY() > model.getDrawHeight() - scaleHeight / 2 ?
+                                    model.getDrawHeight() - scaleHeight / 2 : mouseEvent.getY();
                     finalX = mouseEvent.getX();
                     finalY = mouseEvent.getY();
                     view.getMainPanel().repaint();
@@ -148,6 +148,9 @@ public class MouseDrawListener {
                 g2.setStroke(DOTTED_LINE);
                 switch (model.getDrawMode()) {
                     case PENCIL:
+//                        mouseEvent = SwingUtilities
+//                        mouseEvent = SwingUtilities.convertMouseEvent(
+//                                mouseEvent.getComponent(), mouseEvent, SwingUtilities.windowForComponent(mouseEvent.getComponent()));
                         g2.setStroke(new BasicStroke(Float.valueOf(Config.getProperty(PENCIL_BASIC_STROKE))));
                         g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
                         break;
@@ -449,6 +452,9 @@ public class MouseDrawListener {
     }
 
     private class MouseAdapter implements MouseListener {
+
+        public void mouseEntered(MouseEvent e) { }
+        public void mouseExited(MouseEvent e) { }
         @Override
         public void mousePressed(MouseEvent mouseEvent) {
             listenMouseRightButton(mouseEvent);
@@ -462,6 +468,8 @@ public class MouseDrawListener {
             if (view.getPreviousImage() == null) {
                 view.saveCurrentImage();
             }
+
+
             startX = mouseEvent.getX();
             startY = mouseEvent.getY();
             finalX = mouseEvent.getX();
@@ -806,7 +814,6 @@ public class MouseDrawListener {
             }
             if (!model.isCustomMode() && !model.isScaleMode()) {
                 model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
-//                model.saveAction(view.getMainPanel(), view.getTabbedPane().getSelectedIndex());
             }
 
             view.getMainPanel().repaint();
@@ -814,12 +821,9 @@ public class MouseDrawListener {
         }
 
         public void mouseClicked(MouseEvent mouseEvent) { }
-        public void mouseEntered(MouseEvent e) { }
-        public void mouseExited(MouseEvent e) { }
     }
 
     private void setGraphicsAndColor() {
-//        Graphics g = view.getMainImage().createGraphics();
         g2 = view.getMainImage().createGraphics();
         g2.setColor(view.getMainColor());
     }
@@ -835,8 +839,8 @@ public class MouseDrawListener {
 
     private void listenMouseRightButton(MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
-            if (view.getMainColor() != Color.black) {
-                view.setMainColor(Color.black);
+            if (view.getMainColor() != SwingViewImpl.getDefaultColor()) {
+                view.setMainColor(SwingViewImpl.getDefaultColor());
             } else {
                 view.setMainColor(Color.red);
             }

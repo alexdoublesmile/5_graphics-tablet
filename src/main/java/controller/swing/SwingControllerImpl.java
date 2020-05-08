@@ -40,8 +40,6 @@ public class SwingControllerImpl implements Controller {
 
         model.getUndoList().add(new UndoRedoService());
         model.saveAction(view.getMainImage(), 0);
-//        model.saveAction(view.getMainPanel(), view.getTabbedPane().getSelectedIndex());
-
     }
 
     public void setMenuActions() {
@@ -67,12 +65,13 @@ public class SwingControllerImpl implements Controller {
         view.getTabbedPane().setCursor(CursorBuilder.buildCursorByDrawMode(DrawMode.PENCIL));
 
         view.getNewTabButton().addActionListener(TabAction.buildAddTabAction(view, model, null, false));
+
         view.getUndoButton().addActionListener(undoListener.getUNDO_BUTTON_LISTENER());
         view.getRedoButton().addActionListener(undoListener.getREDO_BUTTON_LISTENER());
         view.getPlusButton().addActionListener(scaleListener.getPLUS_BUTTON_LISTENER());
         view.getMinusButton().addActionListener(scaleListener.getMINUS_BUTTON_LISTENER());
         view.getRefreshButton().addActionListener(scaleListener.getREFRESH_BUTTON_LISTENER());
-        view.getExpandButton().addActionListener(scaleListener.getEXPAND_BUTTON_LISTENER());
+//        view.getExpandButton().addActionListener(scaleListener.getEXPAND_BUTTON_LISTENER());
 
         view.getColorButton().addActionListener(colorListener.getColorDisplayButtonListener());
         view.getColorChooser().getSelectionModel().addChangeListener(colorListener.getChooseColorListener());

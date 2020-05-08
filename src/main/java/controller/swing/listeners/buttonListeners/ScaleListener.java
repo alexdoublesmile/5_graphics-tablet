@@ -2,8 +2,10 @@ package controller.swing.listeners.buttonListeners;
 import controller.swing.SwingControllerImpl;
 import controller.swing.listeners.KeyboardListener;
 import controller.swing.listeners.MouseDrawListener;
+import model.DrawMode;
 import model.Model;
 import model.UndoRedoService;
+import util.CursorBuilder;
 import view.swing.SwingViewImpl;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -34,21 +36,22 @@ public class ScaleListener {
     private class PlusButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-
 //            if (!model.isScaleMode()) {
 //                model.setSpecialMode(true);
 //                model.setDrawMode(DrawMode.SCALE);
 //                view.getMainPanel().setCursor(CursorBuilder.buildCursorByDrawMode(DrawMode.SCALE));
-////                view.saveCurrentImage();
+//                view.saveCurrentImage();
 //            }
 //            model.setScaleMode(true);
 //            model.setDrawWidth(view.getMainImage().getWidth());
 //            model.setDrawHeight(view.getMainImage().getHeight());
 
+            view.setImageScale(2);
+            view.getMainPanel().repaint();
 
 
-            MouseDrawListener.increaseCustomFactor();
-            MouseDrawListener.rebaseDefaultStroke();
+//            MouseDrawListener.increaseCustomFactor();
+//            MouseDrawListener.rebaseDefaultStroke();
         }
     }
 
@@ -56,45 +59,45 @@ public class ScaleListener {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-
 //            view.setImageScale(view.getImageScale() / Model.RESIZE_PLUS_FACTOR);
 //            model.setCurrentScale(model.getCurrentScale() / Model.RESIZE_PLUS_FACTOR);
 //            model.setDrawWidth(view.getWidth());
 //            model.setDrawHeight(view.getHeight());
-//
-////            if (model.isScaleMode()) {
-////                view.loadSavedImage();
-////            }
-//
-//            view.getMainPanel().repaint();
+
+//            if (model.isScaleMode()) {
+//                view.loadSavedImage();
+//            }
 
 
+            view.setImageScale(0);
+            view.getMainPanel().repaint();
 
-            MouseDrawListener.decreaseCustomFactor();
-            MouseDrawListener.rebaseDefaultStroke();
+
+//            MouseDrawListener.decreaseCustomFactor();
+//            MouseDrawListener.rebaseDefaultStroke();
         }
     }
 
     private class RefreshButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-//            view.setImageScale(1);
-//            model.setCurrentScale(1);
-//
-//            model.setDrawWidth(view.getWidth());
-//            model.setDrawHeight(view.getHeight());
-//            view.setTranslateImage(0, 0);
+            view.setImageScale(1);
+            model.setCurrentScale(1);
+
+            model.setDrawWidth(view.getWidth());
+            model.setDrawHeight(view.getHeight());
+            view.setTranslateImage(0, 0);
 
 
-//            if (model.isScaleMode()) {
-//                view.loadSavedImage();
-//            }
-//            view.getMainPanel().repaint();
+            if (model.isScaleMode()) {
+                view.loadSavedImage();
+            }
+            view.getMainPanel().repaint();
 
 
 
-            MouseDrawListener.resetCustomFactor();
-            MouseDrawListener.rebaseDefaultStroke();
+//            MouseDrawListener.resetCustomFactor();
+//            MouseDrawListener.rebaseDefaultStroke();
         }
     }
 

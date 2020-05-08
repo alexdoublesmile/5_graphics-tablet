@@ -80,7 +80,7 @@ public class FileAction {
 //                    panel.setSize(image.getWidth(), image.getHeight());
                     fileName = FilenameUtils.removeExtension(file.getName());
                     view.getTabbedPane().setTitleAt(view.getTabbedPane().getSelectedIndex(), fileName);
-
+                    view.getTabbedPane().getTabComponentAt(view.getTabbedPane().getSelectedIndex()).revalidate();
 
                     model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
                     view.saveCurrentImage();

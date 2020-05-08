@@ -27,6 +27,7 @@ public class SwingViewImpl extends JFrame implements View {
     private static final Color CONTROL_PANEL_COLOR = new Color(0xE9D6BF);
     private static final String COLOR_DIALOG_TITLE = "Choose color";
     private static final ArrayList<String> closingElements;
+    private static final Color DEFAULT_COLOR = new Color(100, 100, 100);
 
     static {
         closingElements = new ArrayList<>();
@@ -96,7 +97,7 @@ public class SwingViewImpl extends JFrame implements View {
     public SwingViewImpl(Model model) {
         this.model = model;
         toolButtons = new HashMap<>();
-        mainColor = new Color(100, 100, 100);
+        mainColor = DEFAULT_COLOR;
         imageScale = 1;
     }
 
@@ -158,7 +159,7 @@ public class SwingViewImpl extends JFrame implements View {
         colorButton.setIcon(IconBuilder.buildIconByPath(Config.getProperty(Config.PALETTE_ICON_PATH)));
         redButton = new  ColorButton(Color.red, true, 15);
         blackButton = new  ColorButton(Color.black);
-        greyButton = new  ColorButton(new Color(100, 100, 100));
+        greyButton = new  ColorButton(DEFAULT_COLOR);
         blueButton = new ColorButton(Color.blue);
         greenButton = new  ColorButton(new Color(0x12A612));
         orangeButton = new  ColorButton(new Color(250, 125, 0));
@@ -194,7 +195,8 @@ public class SwingViewImpl extends JFrame implements View {
         panelList = new ArrayList<>();
         imageList = new ArrayList<>();
         mainPanel = new MyPanel(-1, false);
-        mainPanel.setBounds(0,0,mainFrame.getWidth(),mainFrame.getHeight());
+        mainPanel.setPreferredSize(new Dimension(mainFrame.getContentPane().getWidth(),mainFrame.getContentPane().getHeight()));
+//        mainPanel.setBounds(0,0,mainFrame.getContentPane().getWidth(),mainFrame.getContentPane().getHeight());
 
         tabbedPane.add(TabUtil.getDefaultTabName(), panelList.get(0));
         tabbedPane.setTabComponentAt(0, new ButtonTabComponent(this, model));
@@ -267,11 +269,6 @@ public class SwingViewImpl extends JFrame implements View {
         previousImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics g = previousImage.getGraphics();
         g.drawImage(imageList.get(tabbedPane.getSelectedIndex()), 0, 0, null);
-//        if (previousImageList.size() > 0) {
-//            previousImageList.set(0, previousImage);
-//        } else {
-//            previousImageList.add(previousImage);
-//        }
     }
 
     public void loadSavedImage() {
@@ -297,7 +294,6 @@ public class SwingViewImpl extends JFrame implements View {
 
 
     public class MyPanel extends JPanel {
-
         private int previousTabIndex;
         private boolean newPanel;
 
@@ -326,23 +322,50 @@ public class SwingViewImpl extends JFrame implements View {
                 g2.drawImage(imageList.get(previousTabIndex + 1), 0, 0,null);
                 newPanel = false;
             } else {
-                g2.drawImage(getCurrentImage(), 0, 0,null);
+                g2.drawImage(getCurrentImage(), scaledX, scaledY,null);
 
             }
         }
     }
 
     public BufferedImage getCurrentImage() {
+        BufferedImage image = null;
 
-        BufferedImage image = Scalr.resize(
-                imageList.get(tabbedPane.getSelectedIndex()),
-                imageList.get(tabbedPane.getSelectedIndex()).getWidth());
+        if (imageScale == 1) {
+            image = Scalr.resize(
+                    imageList.get(tabbedPane.getSelectedIndex()),
+                    imageList.get(tabbedPane.getSelectedIndex()).getWidth());
 
-        scaledWidth = image.getWidth();
-        scaledHeight = image.getHeight();
+            scaledWidth = image.getWidth();
+            scaledHeight = image.getHeight();
+        } else if (imageScale == 2) {
+            int realWidth = imageList.get(tabbedPane.getSelectedIndex()).getWidth();
+            int realHeight = imageList.get(tabbedPane.getSelectedIndex()).getHeight();
 
-//        scaledX = (newWidth - scaledWidth) / 2;
-//        scaledY = (newWidth - scaledHeight) / 2;
+            int newWidth = (int) (realWidth * imageScale);
+            int newHeight = (int) (realHeight * imageScale);
+
+            image = Scalr.resize(
+                    imageList.get(tabbedPane.getSelectedIndex()),
+                    Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH,
+                    newWidth, newHeight);
+
+            scaledWidth = image.getWidth();
+            scaledHeight = image.getHeight();
+
+            scaledX = 0 - realWidth / 2;
+            scaledY = 0 - realHeight / 2;
+        } else if (imageScale == 0) {
+            image = Scalr.resize(
+                    imageList.get(tabbedPane.getSelectedIndex()),
+                    imageList.get(tabbedPane.getSelectedIndex()).getWidth());
+
+            scaledWidth = image.getWidth();
+            scaledHeight = image.getHeight();
+        }
+
+
+
 
 //        image.flush();
         return image;
@@ -356,30 +379,11 @@ public class SwingViewImpl extends JFrame implements View {
             super(owner, COLOR_DIALOG_TITLE, true);
             window = this;
             setLayout(new BorderLayout());
-//            JPanel panel = new JPanel();
-//            panel.setLayout(new GridLayout(3, 1));
-//            JSlider slider = new JSlider();
-//            JLabel label = new JLabel("Touch the Slider! ;)");
-//            slider.setMajorTickSpacing(10);
-//            slider.setMinorTickSpacing(1);
-//            slider.setLabelTable(slider.createStandardLabels(10));
-//            slider.setPaintTicks(true);
-//            slider.setPaintLabels(true);
-//            slider.setSnapToTicks(true);
-//
-//            slider.addChangeListener(e -> {
-//                label.setText(String.format("Slider value is %d", slider.getValue()));
-//            });
             JButton closeButton = new JButton("Close");
             closeButton.setMnemonic('c');
             closeButton.addActionListener((e) -> window.setVisible(false));
             add(colorChooser, BorderLayout.NORTH);
             add(closeButton, BorderLayout.SOUTH);
-//            add(panel, BorderLayout.EAST);
-//            panel.add(label);
-//            panel.add(slider);
-//            panel.add(closeButton);
-
             setSize(COLOR_DIALOG_WIDTH, COLOR_DIALOG_HEIGHT);
             pack();
         }
@@ -588,6 +592,9 @@ public class SwingViewImpl extends JFrame implements View {
         return newTabButton;
     }
 
+    public static Color getDefaultColor() {
+        return DEFAULT_COLOR;
+    }
     //    public void addTab(String tabName, int index) {
 //
 //        if (tabbedPane.getTabCount() < 1) {
