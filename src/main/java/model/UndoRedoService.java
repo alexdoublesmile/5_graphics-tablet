@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 public class UndoRedoService {
 
-    private static final String FORWARD_DIRECTION = "Forward";
-    private static final String BACK_DIRECTION = "Back";
-    private static final int UNDO_QUANTITY = Integer.parseInt(Config.getProperty(Config.UNDO_ACTIONS_QUANTITY));
+    private static final int FORWARD_DIRECTION = 1;
+    private static final int BACK_DIRECTION = 2;
+    private static int UNDO_QUANTITY = Integer.parseInt(Config.getProperty(Config.UNDO_ACTIONS_QUANTITY));
 
     private ArrayList<BufferedImage> actionList;
     private int actionCounter;
@@ -54,7 +54,7 @@ public class UndoRedoService {
         return iterate(BACK_DIRECTION);
     }
 
-    private BufferedImage iterate(String direction) {
+    private BufferedImage iterate(int direction) {
         switch (direction) {
             case FORWARD_DIRECTION:
                 if (actionCounter < actionList.size())
@@ -107,5 +107,13 @@ public class UndoRedoService {
     public void removeLastAction() {
         actionList.remove(actionCounter - 1);
         actionCounter--;
+    }
+
+    public static void setUndoQuantity(int undoQuantity) {
+        UNDO_QUANTITY = undoQuantity;
+    }
+
+    public static int getUndoQuantity() {
+        return UNDO_QUANTITY;
     }
 }

@@ -7,12 +7,13 @@ public enum DrawMode {
     ERASER,
     RAG,
     COPY,
-    MOVE,
     CUT,
+    COPY_SHAPE,
+    CUT_SHAPE,
     PASTE,
-    HAND,
+//    HAND,
     LINE,
-    DOTTEDLINE,
+    DOTTED_LINE,
     ARROW,
     CIRCLE,
     ELLIPSE,
@@ -30,6 +31,6 @@ public enum DrawMode {
     SPHERE,
 //    FRUSTUM,
     FILL,
-//    TEXT
+//    TEXT,
     SCALE
 }

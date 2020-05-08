@@ -16,7 +16,7 @@ public class ToolButtonListener implements ActionListener {
     private Model model;
     private DrawMode drawMode;
 
-    private static DrawMode previousDrawMode;
+    private static DrawMode previousDrawMode = DrawMode.PENCIL;
 
 
     public ToolButtonListener(SwingViewImpl view, Model model, DrawMode drawMode) {
@@ -37,15 +37,37 @@ public class ToolButtonListener implements ActionListener {
         view.resetToolButtonBorders();
         model.resetAllCustomPoints();
         view.getToolButtons().get(drawMode.name()).setBorderPainted(true);
+
+        if (previousDrawMode == DrawMode.CUT_SHAPE
+                && drawMode != DrawMode.CUT_SHAPE) {
+            model.setCutting(false);
+        }
+
+        if (drawMode == DrawMode.CUT_SHAPE) {
+            model.setCutting(true);
+        }
+
+        if (model.getCopyModeList().contains(previousDrawMode)
+        && !model.getCopyModeList().contains(drawMode)) {
+            view.loadSavedImage();
+        }
         if (drawMode == DrawMode.FILL) {
             view.setMainColor(Color.white);
             view.getColorButton().setBackground(view.getMainColor());
         }
-        if (model.getFigureModeList().contains(drawMode)) {
+        if (!model.getCopyModeList().contains(previousDrawMode)
+        && model.getFigureModeList().contains(drawMode)) {
             view.saveCurrentImage();
+        }
+        if (model.getFigureModeList().contains(drawMode)) {
             model.setFigureMode(true);
         } else {
             model.setFigureMode(false);
+        }
+        if (model.getCopyModeList().contains(drawMode)) {
+            model.setCopyMode(true);
+        } else {
+            model.setCopyMode(false);
         }
         if (model.getCustomModeList().contains(drawMode)) {
             model.setCustomMode(true);

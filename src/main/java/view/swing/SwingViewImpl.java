@@ -32,7 +32,7 @@ public class SwingViewImpl extends JFrame implements View {
     static {
         closingElements = new ArrayList<>();
         closingElements.add("RAG");
-        closingElements.add("MINUS");
+        closingElements.add("PASTE");
         closingElements.add("POLYGON");
         closingElements.add("SPHERE");
     }
@@ -67,6 +67,7 @@ public class SwingViewImpl extends JFrame implements View {
     private ColorButton orangeButton;
 
     private JButton newTabButton;
+    private JButton openButton;
     private JButton undoButton;
     private JButton redoButton;
     private JButton plusButton;
@@ -125,6 +126,8 @@ public class SwingViewImpl extends JFrame implements View {
 
     private void initMenu() {
         mainMenu = new JMenuBar();
+        mainMenu.setPreferredSize(new Dimension(mainFrame.getWidth(), 40));
+
         mainMenu.setBackground(CONTROL_PANEL_COLOR);
         fileMenu = new JMenu(FILE_MENU_NAME);
         loadMenu = new JMenuItem();
@@ -136,6 +139,7 @@ public class SwingViewImpl extends JFrame implements View {
 
     private void initToolBar() {
         toolBar = new JToolBar(JToolBar.HORIZONTAL);
+
         toolBar.setBackground(CONTROL_PANEL_COLOR);
         toolBar.setBorderPainted(false);
 
@@ -169,12 +173,20 @@ public class SwingViewImpl extends JFrame implements View {
     }
 
     private void initButtons() {
-        newTabButton = new  ToolButton(IconBuilder.buildIconByPath(
+        newTabButton = new ToolButton(IconBuilder.buildIconByPath(
                 Config.getProperty(Config.NEW_ICON_PATH)));
+        newTabButton.setToolTipText("new Tab");
+        openButton = new ToolButton(IconBuilder.buildIconByPath(
+                Config.getProperty(Config.OPEN_ICON_PATH)));
+        openButton.setToolTipText("open picture");
+
         undoButton = new  ToolButton(IconBuilder.buildIconByPath(
                 Config.getProperty(Config.UNDO_ICON_PATH)));
+        undoButton.setToolTipText("return previous action");
         redoButton = new  ToolButton(IconBuilder.buildIconByPath(
                 Config.getProperty(Config.REDO_ICON_PATH)));
+        redoButton.setToolTipText("return next action");
+
         plusButton = new  ToolButton(IconBuilder.buildIconByPath(
                 Config.getProperty(Config.PLUS_ICON_PATH)));
         minusButton = new  ToolButton(IconBuilder.buildIconByPath(
@@ -207,11 +219,38 @@ public class SwingViewImpl extends JFrame implements View {
         setJMenuBar(mainMenu);
         add(tabbedPane);
 
-        mainMenu.add(fileMenu);
-        mainMenu.add(new JToolBar.Separator());
+//        mainMenu.add(fileMenu);
+//        mainMenu.add(new JToolBar.Separator());
 
+        toolBar.add(newTabButton);
+        toolBar.add(openButton);
 
-        mainMenu.add(newTabButton);
+        toolBar.addSeparator();
+
+        JButton undoChangeButton = new JButton(String.valueOf(model.getUndoQuantity() - 1));
+        undoChangeButton.setFocusPainted(false);
+
+        undoChangeButton.addActionListener(e -> {
+            String inputString = null;
+                try {
+                    inputString = JOptionPane.showInputDialog(
+                            this,
+                            "Катюша, введи сюда желаемое кол-во возвратов",
+                            "", JOptionPane.PLAIN_MESSAGE);
+
+                    if (inputString != null) {
+                        model.setUndoQuantity(Integer.parseInt(inputString) + 1);
+                        undoChangeButton.setText(String.valueOf(model.getUndoQuantity() - 1));
+                    }
+                } catch(NumberFormatException ex){
+                    if (inputString.matches("\\w+")) {
+                        JOptionPane.showMessageDialog(null, String.format("Катюша, циферками нужно ;) \n А %s - это не совсем циферки", inputString));
+                    } else {
+                        JOptionPane.showMessageDialog(null, String.format("%s ..Это вообще что?", inputString));
+                    }
+                }
+        });
+
 
         mainMenu.add(toolBar);
         mainMenu.add(colorBar);
@@ -219,6 +258,8 @@ public class SwingViewImpl extends JFrame implements View {
         fileMenu.add(loadMenu);
         fileMenu.add(saveMenu);
         fileMenu.add(saveAsMenu);
+
+
 
 
         for (DrawMode drawMode : DrawMode.values()) {
@@ -256,8 +297,11 @@ public class SwingViewImpl extends JFrame implements View {
         mainMenu.add(cleanButton);
         cleanButton.setMnemonic('c');
         mainMenu.add(new JToolBar.Separator());
-        mainMenu.add(calculatorButton);
+//        mainMenu.add(calculatorButton);
+//        mainMenu.add(new JToolBar.Separator());
+        mainMenu.add(undoChangeButton);
         mainMenu.add(new JToolBar.Separator());
+
 //        undoButton.setEnabled(false);
 //        redoButton.setEnabled(false);
 //        refreshButton.setEnabled(false);
@@ -592,6 +636,10 @@ public class SwingViewImpl extends JFrame implements View {
         return newTabButton;
     }
 
+    public JButton getOpenButton() {
+        return openButton;
+    }
+
     public static Color getDefaultColor() {
         return DEFAULT_COLOR;
     }
@@ -702,4 +750,25 @@ public class SwingViewImpl extends JFrame implements View {
 //    }
 
 
+    public void testSizes() {
+        System.out.println("----------- FROM ---------------------------------------");
+
+        System.out.println(String.format("Scale is: %f", this.getImageScale()));
+        System.out.println("--------------------------------------------------");
+
+        System.out.println(String.format("MainFrame size: %d, %d", this.getMainFrame().getWidth(), this.getMainFrame().getHeight()));
+        System.out.println(String.format("RootPane size: %d, %d", this.getRootPane().getWidth(), this.getRootPane().getHeight()));
+        System.out.println("--------------------------------------------------");
+
+        System.out.println(String.format("MenuBar size: %d, %d", this.getJMenuBar().getWidth(), this.getJMenuBar().getHeight()));
+        System.out.println(String.format("ContentPane size: %d, %d", this.getContentPane().getWidth(), this.getContentPane().getHeight()));
+        System.out.println(String.format("TabbedPane size: %d, %d", this.getTabbedPane().getWidth(), this.getTabbedPane().getHeight()));
+        System.out.println(String.format("Panel size: %d, %d", this.getMainPanel().getWidth(), this.getMainPanel().getHeight()));
+        System.out.println(String.format("Image size: %d, %d", this.getMainImage().getWidth(), this.getMainImage().getHeight()));
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("");
+
+    }
 }

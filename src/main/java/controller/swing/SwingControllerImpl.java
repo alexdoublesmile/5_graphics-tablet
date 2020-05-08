@@ -8,16 +8,39 @@ import controller.swing.actions.FileAction;
 import model.DrawMode;
 import model.Model;
 import model.UndoRedoService;
+import org.apache.commons.io.FilenameUtils;
 import util.CursorBuilder;
+import util.TextFileFilter;
 import view.swing.SwingViewImpl;
 import view.View;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class SwingControllerImpl implements Controller {
 
     private SwingViewImpl view;
     private Model model;
+
+
+    private JFrame frame;
+    private BufferedImage image;
+    private JFileChooser fileChooser;
+    private int chooseValue;
+    private File file;
+    private String filePath;
+    private String fileName;
+
+    private static final String FILE_NOT_FOUND_MESSAGE = "Такого файла не существует";
+    private static final String IOEXCEPTION_MESSAGE = "Исключение ввода-вывода";
+    private static final String DEFAULT_EXCEPTION_MESSAGE = "Что-то пошло не так.\n\nДетали:\n";
+    private  TextFileFilter PNG_FILTER;
+    private  TextFileFilter JPG_FILTER;
+
 
     public SwingControllerImpl(View view, Model model) {
         this.model = model;
@@ -40,6 +63,18 @@ public class SwingControllerImpl implements Controller {
 
         model.getUndoList().add(new UndoRedoService());
         model.saveAction(view.getMainImage(), 0);
+
+        // testing
+        view.testSizes();
+
+        PNG_FILTER = new TextFileFilter(TextFileFilter.getPngFormat());
+        JPG_FILTER = new TextFileFilter(TextFileFilter.getJpgFormat());
+
+        frame = view.getMainFrame();
+//        panel = view.getMainPanel();
+        fileChooser = view.getFileChooser();
+        fileChooser.addChoosableFileFilter(PNG_FILTER);
+        fileChooser.addChoosableFileFilter(JPG_FILTER);
     }
 
     public void setMenuActions() {
@@ -65,6 +100,8 @@ public class SwingControllerImpl implements Controller {
         view.getTabbedPane().setCursor(CursorBuilder.buildCursorByDrawMode(DrawMode.PENCIL));
 
         view.getNewTabButton().addActionListener(TabAction.buildAddTabAction(view, model, null, false));
+        view.getOpenButton().addActionListener(new FileButtonListener(view, model).getOPEN_BUTTON_LISTENER());
+
 
         view.getUndoButton().addActionListener(undoListener.getUNDO_BUTTON_LISTENER());
         view.getRedoButton().addActionListener(undoListener.getREDO_BUTTON_LISTENER());

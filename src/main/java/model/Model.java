@@ -1,8 +1,8 @@
 package model;
 
 import config.Config;
-import view.swing.SwingViewImpl;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -79,13 +79,14 @@ public class Model {
 
 
     private ArrayList<DrawMode> figureModeList;
+    private ArrayList<DrawMode> copyModeList;
     private ArrayList<DrawMode> customModeList;
     private ArrayList<DrawMode> specialModeList;
 
     {
         figureModeList = new ArrayList<>();
         figureModeList.add(DrawMode.LINE);
-        figureModeList.add(DrawMode.DOTTEDLINE);
+        figureModeList.add(DrawMode.DOTTED_LINE);
         figureModeList.add(DrawMode.ARROW);
         figureModeList.add(DrawMode.CIRCLE);
         figureModeList.add(DrawMode.ELLIPSE);
@@ -101,6 +102,17 @@ public class Model {
         figureModeList.add(DrawMode.CONE);
         figureModeList.add(DrawMode.CYLINDER);
         figureModeList.add(DrawMode.SPHERE);
+        figureModeList.add(DrawMode.COPY);
+        figureModeList.add(DrawMode.CUT);
+        figureModeList.add(DrawMode.COPY_SHAPE);
+        figureModeList.add(DrawMode.CUT_SHAPE);
+        figureModeList.add(DrawMode.PASTE);
+
+        copyModeList = new ArrayList<>();
+        copyModeList.add(DrawMode.COPY);
+        copyModeList.add(DrawMode.CUT);
+        copyModeList.add(DrawMode.COPY_SHAPE);
+        copyModeList.add(DrawMode.CUT_SHAPE);
 
         customModeList = new ArrayList<>();
         customModeList.add(DrawMode.POLYGON);
@@ -158,11 +170,13 @@ public class Model {
     private ArrayList<Point> prismTopPointList;
     private Polygon polygon;
     private boolean figureMode;
+    private boolean copyMode;
     private boolean customMode;
     private boolean specialMode;
     private boolean scaleMode;
     private boolean polygonInWork;
     private double currentScale;
+    private boolean cutting;
 
     public Model() {
         undoList = new ArrayList<>();
@@ -706,5 +720,34 @@ public class Model {
 
     public ArrayList<UndoRedoService> getUndoList() {
         return undoList;
+    }
+
+    public int getUndoQuantity() {
+        return UndoRedoService.getUndoQuantity();
+    }
+
+    public void setUndoQuantity(int newUndoQuantity) {
+
+            UndoRedoService.setUndoQuantity(newUndoQuantity);
+    }
+
+    public boolean isCopyMode() {
+        return copyMode;
+    }
+
+    public void setCopyMode(boolean copyMode) {
+        this.copyMode = copyMode;
+    }
+
+    public ArrayList<DrawMode> getCopyModeList() {
+        return copyModeList;
+    }
+
+    public boolean isCutting() {
+        return cutting;
+    }
+
+    public void setCutting(boolean cutting) {
+        this.cutting = cutting;
     }
 }

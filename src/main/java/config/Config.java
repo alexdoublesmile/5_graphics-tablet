@@ -46,6 +46,7 @@ public class Config {
     public static final String SCALE_BASIC_STROKE = "scale.basic.stroke";
 
     public static final String HAND_CURSOR_PATH = "hand.cursor.path";
+    public static final String PASTE_CURSOR_PATH = "hand.cursor.path";
     public static final String GRAB_CURSOR_PATH = "grab.cursor.path";
     public static final String POINTER_CURSOR_PATH = "pointer.cursor.path";
 
@@ -58,13 +59,14 @@ public class Config {
     public static final String TEXT_BASIC_OFFSET = "text.basic.offset";
 
     public static final String NEW_ICON_PATH = "new.icon.path";
+    public static final String OPEN_ICON_PATH = "open.icon.path";
     public static final String PENCIL_ICON_PATH = "pencil.icon.path";
     public static final String MARKER_ICON_PATH = "marker.icon.path";
     public static final String BRUSH_ICON_PATH = "brush.icon.path";
     public static final String ERASER_ICON_PATH = "eraser.icon.path";
     public static final String RAG_ICON_PATH = "rag.icon.path";
     public static final String LINE_ICON_PATH = "line.icon.path";
-    public static final String DOTTEDLINE_ICON_PATH = "dotted.line.icon.path";
+    public static final String DOTTED_LINE_ICON_PATH = "dotted.line.icon.path";
     public static final String ARROW_ICON_PATH = "arrow.icon.path";
     public static final String CIRCLE_ICON_PATH = "circle.icon.path";
     public static final String ELLIPSE_ICON_PATH = "ellipse.icon.path";
@@ -88,6 +90,8 @@ public class Config {
     public static final String MOVE_ICON_PATH = "move.icon.path";
     public static final String COPY_ICON_PATH = "copy.icon.path";
     public static final String CUT_ICON_PATH = "cut.icon.path";
+    public static final String COPY_SHAPE_ICON_PATH = "copy.shape.icon.path";
+    public static final String CUT_SHAPE_ICON_PATH = "cut.shape.icon.path";
     public static final String PASTE_ICON_PATH = "paste.icon.path";
     public static final String PLUS_ICON_PATH = "plus.icon.path";
     public static final String MINUS_ICON_PATH = "minus.icon.path";

@@ -3,11 +3,12 @@ package controller.swing.listeners;
 import config.Config;
 import model.DrawMode;
 import model.Model;
+import util.CursorBuilder;
 import view.swing.SwingViewImpl;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import static config.Config.*;
@@ -87,6 +88,14 @@ public class MouseDrawListener {
     private Point currentTopPoint;
     private Point previousTopPoint;
     private int prismHeight;
+    private ArrayList<Integer> polX;
+    private ArrayList<Integer> polY;
+    private boolean polBorderDraw;
+    private int copyPolX;
+    private int copyPolY;
+    private int[] polCopyX;
+    private int[] polCopyY;
+    private BufferedImage copyShape;
 
     public MouseDrawListener(SwingViewImpl view, Model model) {
         this.view = view;
@@ -98,6 +107,9 @@ public class MouseDrawListener {
         this.finalY = model.getFinalY();
         MOUSE_MOTION_ADAPTER = new MouseMotionAdapter();
         MOUSE_ADAPTER = new MouseAdapter();
+
+        polX = new ArrayList<>(1000);
+        polY = new ArrayList<>(1000);
     }
 
     private class MouseMotionAdapter implements MouseMotionListener {
@@ -140,7 +152,7 @@ public class MouseDrawListener {
                 g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-                if (model.isFigureMode()) {
+                if (model.isFigureMode() && model.getDrawMode() != DrawMode.COPY_SHAPE && model.getDrawMode() != DrawMode.CUT_SHAPE) {
                     view.loadSavedImage();
                     saveCoordsToModel();
                 }
@@ -175,9 +187,41 @@ public class MouseDrawListener {
                         g2.setColor(Color.WHITE);
                         g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
                         break;
+                    case COPY:
+                        g2.setStroke(DOTTED_LINE);
+                        g2.setColor(Color.BLUE);
+                        finalX = mouseEvent.getX();
+                        finalY = mouseEvent.getY();
+                        g2.drawRect(Math.min(startX, finalX), Math.min(startY, finalY), Math.abs(finalX - startX), Math.abs(finalY - startY));
+                        break;
+                    case CUT:
+                        g2.setStroke(DOTTED_LINE);
+                        g2.setColor(Color.BLACK);
+                        finalX = mouseEvent.getX();
+                        finalY = mouseEvent.getY();
+                        g2.drawRect(Math.min(startX, finalX), Math.min(startY, finalY), Math.abs(finalX - startX), Math.abs(finalY - startY));
+                        break;
+                    case COPY_SHAPE:
+                    case CUT_SHAPE:
+                        polX.add(mouseEvent.getX());
+                        polY.add(mouseEvent.getY());
+                        g2.setColor(Color.BLUE);
+                        g2.drawLine(startX, startY, mouseEvent.getX(),mouseEvent.getY());
+                        startX = mouseEvent.getX();
+                        startY = mouseEvent.getY();
+                        break;
+                    case PASTE:
+                        view.getTabbedPane().setCursor(CursorBuilder.buildICursorByPath(Config.getProperty(Config.GRAB_CURSOR_PATH),
+                                0, 0, ""));
+
+                        finalX = mouseEvent.getX();
+                        finalY = mouseEvent.getY();
+                        polBorderDraw = true;
+                        pasteDefaultShape(finalX, finalY);
+                        break;
                     case LINE:
                         g2.setStroke(DEFAULT_LINE);
-                    case DOTTEDLINE:
+                    case DOTTED_LINE:
                     case ARROW:
                         drawStickyLine();
                         break;
@@ -520,11 +564,37 @@ public class MouseDrawListener {
                     g2.setColor(Color.WHITE);
                     g2.drawLine(mouseEvent.getX(), mouseEvent.getY(), mouseEvent.getX(), mouseEvent.getY());
                     break;
+                case COPY:
+                    g2.setStroke(DOTTED_LINE);
+                    g2.setColor(Color.BLACK);
+                    copyPart(Math.min(startX , finalX), Math.min(startY, finalY), Math.abs(startX - finalX), Math.abs(startY - finalY));
+                    break;
+                case CUT:
+                    g2.setStroke(DOTTED_LINE);
+                    g2.setColor(Color.BLUE);
+                    cutPart(Math.min(startX , finalX), Math.min(startY, finalY), Math.abs(startX - finalX), Math.abs(startY - finalY));
+                    g2.drawRect(Math.min(startX , finalX), Math.min(startY, finalY), Math.abs(startX - finalX), Math.abs(startY - finalY));
+                    break;
+                case COPY_SHAPE:
+                case CUT_SHAPE:
+                    view.saveCurrentImage();
+                    cutDefaultShape();
+                    break;
+                case PASTE:
+
+                    view.getTabbedPane().setCursor(CursorBuilder.buildCursorByDrawMode(model.getDrawMode()));
+
+                    finalX = mouseEvent.getX();
+                    finalY = mouseEvent.getY();
+                    polBorderDraw = false;
+                    pasteDefaultShape(finalX, finalY);
+                    view.saveCurrentImage();
+                    break;
                 case LINE:
                     g2.setStroke(DEFAULT_LINE);
                     drawStickyLine();
                     break;
-                case DOTTEDLINE:
+                case DOTTED_LINE:
                     g2.setStroke(DOTTED_LINE);
                     drawStickyLine();
                     break;
@@ -809,7 +879,7 @@ public class MouseDrawListener {
             }
             finalX = 0;
             finalY = 0;
-            if (model.isFigureMode() && !model.isCustomMode()) {
+            if (model.isFigureMode() && !model.isCustomMode() && !model.isCopyMode()) {
                 view.saveCurrentImage();
             }
             if (!model.isCustomMode() && !model.isScaleMode()) {
@@ -818,6 +888,8 @@ public class MouseDrawListener {
 
             view.getMainPanel().repaint();
             g2.dispose();
+
+            view.testSizes();
         }
 
         public void mouseClicked(MouseEvent mouseEvent) { }
@@ -1189,5 +1261,86 @@ public class MouseDrawListener {
     public static void rebaseDefaultStroke() {
         DEFAULT_LINE = new  BasicStroke(
                 Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)) * CUSTOM_FACTOR);
+    }
+
+    public void copyPart(int x1, int y1, int h, int w) {
+        polX.add(x1);
+        polY.add(y1);
+        polX.add(x1 + h);
+        polY.add(y1);
+        polX.add(x1 + h);
+        polY.add(y1 + w);
+        polX.add(x1);
+        polY.add(y1 + w);
+        cutDefaultShape();
+    }
+
+    public void cutPart(int x1, int y1, int h, int w) {
+        view.loadSavedImage();
+        copyPart(x1, y1, h, w);
+        view.loadSavedImage();
+        Polygon mys = new Polygon();
+        for (int i = 0; i < polCopyX.length; i++)
+        {
+            mys.addPoint(polCopyX[i], polCopyY[i]);
+        }
+        Graphics g1 = view.getMainImage().getGraphics();
+        g1.fillPolygon(mys);
+        view.saveCurrentImage();
+    }
+
+    public void cutDefaultShape() {
+        copyShape = new BufferedImage(view.getMainPanel().getWidth(), view.getMainPanel().getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics g = copyShape.getGraphics();
+        g.drawImage(view.getMainImage(), 0, 0, null);
+
+        polCopyX = new int[polX.size()];
+        polCopyY = new int[polY.size()];
+
+        for (int i = 0; i < polX.size(); i++)
+        {
+            polCopyX[i] = polX.get(i);
+            polCopyY[i] = polY.get(i);
+        }
+        Polygon mys = new Polygon(polCopyX, polCopyY, polCopyX.length);
+        Graphics g1 = view.getMainImage().getGraphics();
+        g1.setColor(Color.BLUE);
+        ((Graphics2D)g1).setStroke(DOTTED_LINE);
+
+        if (model.isCutting()) {
+            g1.setColor(Color.WHITE);
+            g1.fillPolygon(mys);
+            view.saveCurrentImage();
+        }
+
+        g1.drawPolygon(mys);
+
+        copyPolX = mys.getBounds().x;
+        copyPolY = mys.getBounds().y;
+
+        polX.clear();
+        polY.clear();
+    }
+
+    private void pasteDefaultShape(int finalX, int finalY) {
+
+        int dx, dy;
+        dx = finalX - copyPolX;
+        dy = finalY - copyPolY;
+
+        Polygon mys = new Polygon();
+        for (int i = 0; i < polCopyX.length; i++) {
+            mys.addPoint(polCopyX[i] + dx, polCopyY[i] + dy);
+        }
+
+        Graphics g1 = view.getMainImage().getGraphics();
+        g1.setClip(mys);
+        g1.drawImage(copyShape, dx, dy, view.getMainPanel());
+        if (polBorderDraw) {
+            g1.setClip(0, 0, view.getMainImage().getWidth(), view.getMainImage().getHeight());
+            g1.setColor(Color.BLUE);
+            ((Graphics2D)g1).setStroke(DOTTED_LINE);
+            g1.drawPolygon(mys);
+        }
     }
 }

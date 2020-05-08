@@ -46,12 +46,14 @@ public class ScaleListener {
 //            model.setDrawWidth(view.getMainImage().getWidth());
 //            model.setDrawHeight(view.getMainImage().getHeight());
 
-            view.setImageScale(2);
-            view.getMainPanel().repaint();
+//            view.setImageScale(2);
+//            view.getMainPanel().repaint();
+//
+//            view.testSizes();
 
 
-//            MouseDrawListener.increaseCustomFactor();
-//            MouseDrawListener.rebaseDefaultStroke();
+            MouseDrawListener.increaseCustomFactor();
+            MouseDrawListener.rebaseDefaultStroke();
         }
     }
 
@@ -69,35 +71,37 @@ public class ScaleListener {
 //            }
 
 
-            view.setImageScale(0);
-            view.getMainPanel().repaint();
+//            view.setImageScale(0);
+//            view.getMainPanel().repaint();
+//
+//            view.testSizes();
 
-
-//            MouseDrawListener.decreaseCustomFactor();
-//            MouseDrawListener.rebaseDefaultStroke();
+            MouseDrawListener.decreaseCustomFactor();
+            MouseDrawListener.rebaseDefaultStroke();
         }
     }
 
     private class RefreshButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            view.setImageScale(1);
-            model.setCurrentScale(1);
+//            view.setImageScale(1);
+//            model.setCurrentScale(1);
+//
+//            model.setDrawWidth(view.getWidth());
+//            model.setDrawHeight(view.getHeight());
+//            view.setTranslateImage(0, 0);
+//
+//
+//            if (model.isScaleMode()) {
+//                view.loadSavedImage();
+//            }
+//            view.getMainPanel().repaint();
+//
+//            view.testSizes();
 
-            model.setDrawWidth(view.getWidth());
-            model.setDrawHeight(view.getHeight());
-            view.setTranslateImage(0, 0);
 
-
-            if (model.isScaleMode()) {
-                view.loadSavedImage();
-            }
-            view.getMainPanel().repaint();
-
-
-
-//            MouseDrawListener.resetCustomFactor();
-//            MouseDrawListener.rebaseDefaultStroke();
+            MouseDrawListener.resetCustomFactor();
+            MouseDrawListener.rebaseDefaultStroke();
         }
     }
 
@@ -134,5 +138,6 @@ public class ScaleListener {
     public RefreshButtonListener getREFRESH_BUTTON_LISTENER() {
         return REFRESH_BUTTON_LISTENER;
     }
+
 }
 
