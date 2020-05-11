@@ -82,6 +82,8 @@ public class Model {
     private ArrayList<DrawMode> copyModeList;
     private ArrayList<DrawMode> customModeList;
     private ArrayList<DrawMode> specialModeList;
+    private boolean firstMove;
+    private boolean rectExtract;
 
     {
         figureModeList = new ArrayList<>();
@@ -749,5 +751,21 @@ public class Model {
 
     public void setCutting(boolean cutting) {
         this.cutting = cutting;
+    }
+
+    public boolean isFirstMove() {
+        return firstMove;
+    }
+
+    public void setFirstMove(boolean firstMove) {
+        this.firstMove = firstMove;
+    }
+
+    public boolean isRectExtract() {
+        return rectExtract;
+    }
+
+    public void setRectExtract(boolean rectExtract) {
+        this.rectExtract = rectExtract;
     }
 }

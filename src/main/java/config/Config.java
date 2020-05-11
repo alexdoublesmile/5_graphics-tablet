@@ -46,8 +46,14 @@ public class Config {
     public static final String SCALE_BASIC_STROKE = "scale.basic.stroke";
 
     public static final String HAND_CURSOR_PATH = "hand.cursor.path";
+    public static final String HAND_CURSOR_XPOINT = "hand.cursor.x.point";
+    public static final String HAND_CURSOR_YPOINT = "hand.cursor.y.point";
     public static final String PASTE_CURSOR_PATH = "hand.cursor.path";
+    public static final String PASTE_CURSOR_XPOINT = "hand.cursor.x.point";
+    public static final String PASTE_CURSOR_YPOINT = "hand.cursor.y.point";
     public static final String GRAB_CURSOR_PATH = "grab.cursor.path";
+    public static final String GRAB_CURSOR_XPOINT = "grab.cursor.x.point";
+    public static final String GRAB_CURSOR_YPOINT = "grab.cursor.y.point";
     public static final String POINTER_CURSOR_PATH = "pointer.cursor.path";
 
     public static final String FIGURE_BASIC_STROKE = "figure.basic.stroke";

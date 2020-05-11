@@ -38,13 +38,31 @@ public class ToolButtonListener implements ActionListener {
         model.resetAllCustomPoints();
         view.getToolButtons().get(drawMode.name()).setBorderPainted(true);
 
-        if (previousDrawMode == DrawMode.CUT_SHAPE
-                && drawMode != DrawMode.CUT_SHAPE) {
-            model.setCutting(false);
+        if ((drawMode == DrawMode.COPY
+                || drawMode == DrawMode.CUT)) {
+            model.setRectExtract(true);
+        } else {
+            model.setRectExtract(false);
         }
 
-        if (drawMode == DrawMode.CUT_SHAPE) {
+        if (drawMode == DrawMode.CUT_SHAPE
+                || drawMode == DrawMode.CUT) {
             model.setCutting(true);
+            model.setFirstMove(true);
+        }
+
+        if ((previousDrawMode == DrawMode.CUT_SHAPE
+                && drawMode != DrawMode.CUT_SHAPE)
+        || (previousDrawMode == DrawMode.CUT
+                && drawMode != DrawMode.CUT)) {
+            model.setCutting(false);
+            model.setFirstMove(false);
+        }
+
+        if (drawMode == DrawMode.CUT_SHAPE
+        || drawMode == DrawMode.CUT) {
+            model.setCutting(true);
+            model.setFirstMove(true);
         }
 
         if (model.getCopyModeList().contains(previousDrawMode)
