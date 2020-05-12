@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 public class TabAction {
     private static final String LAST_TAB_MESSAGE = "Это последняя вкладочка, Катюша :) \n Не нужно её закрывать";
-    private static final String RENAME_DIALOD_TITLE = "Rename %s Tab";
+    private static final String RENAME_DIALOD_TITLE = "Rename %s";
 
     public static final int REMOVE_CURRENT = 1;
     public static final int REMOVE_OTHERS = 2;

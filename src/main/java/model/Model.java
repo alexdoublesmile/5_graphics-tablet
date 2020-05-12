@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Model {
 
@@ -88,38 +89,38 @@ public class Model {
     {
         figureModeList = new ArrayList<>();
         figureModeList.add(DrawMode.LINE);
-        figureModeList.add(DrawMode.DOTTED_LINE);
+//        figureModeList.add(DrawMode.DOTTED_LINE);
         figureModeList.add(DrawMode.ARROW);
-        figureModeList.add(DrawMode.CIRCLE);
+//        figureModeList.add(DrawMode.CIRCLE);
         figureModeList.add(DrawMode.ELLIPSE);
         figureModeList.add(DrawMode.RECT);
-        figureModeList.add(DrawMode.PARALLELOGRAM);
+//        figureModeList.add(DrawMode.PARALLELOGRAM);
         figureModeList.add(DrawMode.POLYGON);
         figureModeList.add(DrawMode.PYRAMID);
         figureModeList.add(DrawMode.PYRAMID_TETRA);
-        figureModeList.add(DrawMode.PYRAMID_CUSTOM);
+//        figureModeList.add(DrawMode.PYRAMID_CUSTOM);
         figureModeList.add(DrawMode.PRISM);
         figureModeList.add(DrawMode.PARALLELEPIPED);
-        figureModeList.add(DrawMode.PRISM_CUSTOM);
+//        figureModeList.add(DrawMode.PRISM_CUSTOM);
         figureModeList.add(DrawMode.CONE);
         figureModeList.add(DrawMode.CYLINDER);
         figureModeList.add(DrawMode.SPHERE);
-        figureModeList.add(DrawMode.COPY);
+//        figureModeList.add(DrawMode.COPY);
         figureModeList.add(DrawMode.CUT);
-        figureModeList.add(DrawMode.COPY_SHAPE);
+//        figureModeList.add(DrawMode.COPY_SHAPE);
         figureModeList.add(DrawMode.CUT_SHAPE);
-        figureModeList.add(DrawMode.PASTE);
+//        figureModeList.add(DrawMode.PASTE);
 
         copyModeList = new ArrayList<>();
-        copyModeList.add(DrawMode.COPY);
+//        copyModeList.add(DrawMode.COPY);
         copyModeList.add(DrawMode.CUT);
-        copyModeList.add(DrawMode.COPY_SHAPE);
+//        copyModeList.add(DrawMode.COPY_SHAPE);
         copyModeList.add(DrawMode.CUT_SHAPE);
 
         customModeList = new ArrayList<>();
         customModeList.add(DrawMode.POLYGON);
-        customModeList.add(DrawMode.PYRAMID_CUSTOM);
-        customModeList.add(DrawMode.PRISM_CUSTOM);
+//        customModeList.add(DrawMode.PYRAMID_CUSTOM);
+//        customModeList.add(DrawMode.PRISM_CUSTOM);
 
         specialModeList = new ArrayList<>();
         specialModeList.add(DrawMode.SCALE);
@@ -180,6 +181,10 @@ public class Model {
     private double currentScale;
     private boolean cutting;
 
+    private HashMap<DrawMode, Float> strokeList;
+    private HashMap<DrawMode, Float> defaultStrokeList;
+    private float pencilStroke;
+
     public Model() {
         undoList = new ArrayList<>();
 
@@ -220,6 +225,38 @@ public class Model {
         currentScale = 1;
         drawWidth = 0;
         drawHeight = 0;
+
+        strokeList = new HashMap<>();
+        strokeList.put(DrawMode.PENCIL, Float.valueOf(Config.getProperty(Config.PENCIL_BASIC_STROKE)));
+        strokeList.put(DrawMode.RAG, Float.valueOf(Config.getProperty(Config.RAG_BASIC_STROKE)));
+        strokeList.put(DrawMode.LINE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.ELLIPSE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.RECT, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.ARROW, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.PYRAMID, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.PYRAMID_TETRA, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.PRISM, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.PARALLELEPIPED, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.CONE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.CYLINDER, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.SPHERE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.POLYGON, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+
+        defaultStrokeList = new HashMap<>();
+        defaultStrokeList.put(DrawMode.PENCIL, Float.valueOf(Config.getProperty(Config.PENCIL_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.RAG, Float.valueOf(Config.getProperty(Config.RAG_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.LINE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.ELLIPSE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.RECT, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.ARROW, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.PYRAMID, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.PYRAMID_TETRA, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.PRISM, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.PARALLELEPIPED, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.CONE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.CYLINDER, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.SPHERE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.POLYGON, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
     }
 
     public int getEllipseBigRadius() {
@@ -767,5 +804,21 @@ public class Model {
 
     public void setRectExtract(boolean rectExtract) {
         this.rectExtract = rectExtract;
+    }
+
+    public float getPencilStroke() {
+        return pencilStroke;
+    }
+
+    public void setPencilStroke(float pencilStroke) {
+        this.pencilStroke = pencilStroke;
+    }
+
+    public HashMap<DrawMode, Float> getStrokeList() {
+        return strokeList;
+    }
+
+    public HashMap<DrawMode, Float> getDefaultStrokeList() {
+        return defaultStrokeList;
     }
 }

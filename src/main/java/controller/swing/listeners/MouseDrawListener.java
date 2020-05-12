@@ -156,48 +156,55 @@ public class MouseDrawListener {
                 g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-                if (model.isFigureMode() && model.getDrawMode() != DrawMode.COPY_SHAPE && model.getDrawMode() != DrawMode.CUT_SHAPE) {
+                if (
+                        model.isFigureMode() &&
+//                                model.getDrawMode() != DrawMode.COPY_SHAPE &&
+                                model.getDrawMode() != DrawMode.CUT_SHAPE) {
                     view.loadSavedImage();
                     saveCoordsToModel();
                 }
 
-                g2.setStroke(DOTTED_LINE);
+//                g2.setStroke(DOTTED_LINE);
+                if (!model.isCopyMode()) {
+                    g2.setStroke(new BasicStroke(
+                            model.getStrokeList().get(model.getDrawMode())));
+                }
                 switch (model.getDrawMode()) {
                     case PENCIL:
 //                        mouseEvent = SwingUtilities
 //                        mouseEvent = SwingUtilities.convertMouseEvent(
 //                                mouseEvent.getComponent(), mouseEvent, SwingUtilities.windowForComponent(mouseEvent.getComponent()));
-                        g2.setStroke(new BasicStroke(Float.valueOf(Config.getProperty(PENCIL_BASIC_STROKE))));
+//                        g2.setStroke(new BasicStroke(Float.valueOf(Config.getProperty(PENCIL_BASIC_STROKE))));
                         g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
                         break;
-                    case MARKER:
-                        g2.setStroke(new BasicStroke(Float.valueOf(Config.getProperty(MARKER_BASIC_STROKE))));
-                        g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
-                        break;
-                    case BRUSH:
-                        g2.setStroke(new BasicStroke(Float.valueOf(Config.getProperty(BRUSH_BASIC_STROKE))));
-                        g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
-                        break;
-                    case ERASER:
-                        g2.setStroke(new BasicStroke(model.getEraserStroke()));
-                        g2.setColor(Color.WHITE);
-                        g2.fillOval(mouseEvent.getX() - Integer.parseInt(Config.getProperty(ERASER_XPOINT_OFFSET)),
-                                mouseEvent.getY() + Integer.parseInt(Config.getProperty(ERASER_YPOINT_OFFSET)),
-                                model.getEraserStroke(),
-                                model.getEraserStroke());
-                        break;
+//                    case MARKER:
+//                        g2.setStroke(new BasicStroke(Float.valueOf(Config.getProperty(MARKER_BASIC_STROKE))));
+//                        g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
+//                        break;
+//                    case BRUSH:
+//                        g2.setStroke(new BasicStroke(Float.valueOf(Config.getProperty(BRUSH_BASIC_STROKE))));
+//                        g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
+//                        break;
+//                    case ERASER:
+//                        g2.setStroke(new BasicStroke(model.getEraserStroke()));
+//                        g2.setColor(Color.WHITE);
+//                        g2.fillOval(mouseEvent.getX() - Integer.parseInt(Config.getProperty(ERASER_XPOINT_OFFSET)),
+//                                mouseEvent.getY() + Integer.parseInt(Config.getProperty(ERASER_YPOINT_OFFSET)),
+//                                model.getEraserStroke(),
+//                                model.getEraserStroke());
+//                        break;
                     case RAG:
-                        g2.setStroke(new BasicStroke(model.getRagStroke()));
+//                        g2.setStroke(new BasicStroke(model.getRagStroke()));
                         g2.setColor(Color.WHITE);
                         g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
                         break;
-                    case COPY:
-                        g2.setStroke(DOTTED_LINE);
-                        g2.setColor(Color.BLUE);
-                        finalX = mouseEvent.getX();
-                        finalY = mouseEvent.getY();
-                        g2.drawRect(Math.min(startX, finalX), Math.min(startY, finalY), Math.abs(finalX - startX), Math.abs(finalY - startY));
-                        break;
+//                    case COPY:
+//                        g2.setStroke(DOTTED_LINE);
+//                        g2.setColor(Color.BLUE);
+//                        finalX = mouseEvent.getX();
+//                        finalY = mouseEvent.getY();
+//                        g2.drawRect(Math.min(startX, finalX), Math.min(startY, finalY), Math.abs(finalX - startX), Math.abs(finalY - startY));
+//                        break;
                     case CUT:
                         g2.setStroke(DOTTED_LINE);
                         g2.setColor(Color.BLACK);
@@ -205,7 +212,7 @@ public class MouseDrawListener {
                         finalY = mouseEvent.getY();
                         g2.drawRect(Math.min(startX, finalX), Math.min(startY, finalY), Math.abs(finalX - startX), Math.abs(finalY - startY));
                         break;
-                    case COPY_SHAPE:
+//                    case COPY_SHAPE:
                     case CUT_SHAPE:
                         polX.add(mouseEvent.getX());
                         polY.add(mouseEvent.getY());
@@ -229,19 +236,19 @@ public class MouseDrawListener {
                         pasteDefaultShape(finalX, finalY);
                         break;
                     case LINE:
-                        g2.setStroke(DEFAULT_LINE);
-                    case DOTTED_LINE:
+//                        g2.setStroke(DEFAULT_LINE);
+//                    case DOTTED_LINE:
                     case ARROW:
                         drawStickyLine();
                         break;
-                    case CIRCLE:
-                        Point center = model.getCircleCenter();
-                        int radius = model.getEllipseBigRadius();
-
-                        g2.drawOval(center.x - radius, center.y - radius,
-                                abs(center.x - finalX), abs(center.x - finalX));
-                        g2.drawLine(center.x, center.y, center.x, center.y);
-                        break;
+//                    case CIRCLE:
+//                        Point center = model.getCircleCenter();
+//                        int radius = model.getEllipseBigRadius();
+//
+//                        g2.drawOval(center.x - radius, center.y - radius,
+//                                abs(center.x - finalX), abs(center.x - finalX));
+//                        g2.drawLine(center.x, center.y, center.x, center.y);
+//                        break;
                     case ELLIPSE:
                         Point ellipseCenter = model.getCircleCenter();
                         int bigRadius = model.getEllipseBigRadius();
@@ -260,21 +267,21 @@ public class MouseDrawListener {
                         setHorizontalIndicator(rectCenter,
                                 abs(abs(startX - finalX) - abs(startY - finalY)));
                         break;
-                    case PARALLELOGRAM:
-                        model.getParallelogramRightTop().setLocation(
-                                finalX + drawLine * PARALLELOGRAM_FACTOR,
-                                startY);
-                        model.getParallelogramLeftBottom().setLocation(
-                                startX - drawLine * PARALLELOGRAM_FACTOR,
-                                finalY);
-                        Point pmLeftBottom = model.getParallelogramLeftBottom();
-                        Point pmRightTop = model.getParallelogramRightTop();
-
-                        g2.drawLine(startX, startY, pmRightTop.x, pmRightTop.y);
-                        g2.drawLine(startX, startY, pmLeftBottom.x, pmLeftBottom.y);
-                        g2.drawLine(pmLeftBottom.x, pmLeftBottom.y, finalX, finalY);
-                        g2.drawLine(pmRightTop.x, pmRightTop.y, finalX, finalY);
-                        break;
+//                    case PARALLELOGRAM:
+//                        model.getParallelogramRightTop().setLocation(
+//                                finalX + drawLine * PARALLELOGRAM_FACTOR,
+//                                startY);
+//                        model.getParallelogramLeftBottom().setLocation(
+//                                startX - drawLine * PARALLELOGRAM_FACTOR,
+//                                finalY);
+//                        Point pmLeftBottom = model.getParallelogramLeftBottom();
+//                        Point pmRightTop = model.getParallelogramRightTop();
+//
+//                        g2.drawLine(startX, startY, pmRightTop.x, pmRightTop.y);
+//                        g2.drawLine(startX, startY, pmLeftBottom.x, pmLeftBottom.y);
+//                        g2.drawLine(pmLeftBottom.x, pmLeftBottom.y, finalX, finalY);
+//                        g2.drawLine(pmRightTop.x, pmRightTop.y, finalX, finalY);
+//                        break;
                     case PYRAMID:
                         model.getTriPyramidFront().setLocation(
                                 startX + drawLine * PYRAMID_MAIN_FACTOR, finalY);
@@ -531,8 +538,10 @@ public class MouseDrawListener {
             saveCoordsToModel();
             model.resetAllPoints();
 
-            if (model.getDrawMode() == DrawMode.CIRCLE
-                    || model.getDrawMode() == DrawMode.ELLIPSE
+            if (
+//                    model.getDrawMode() == DrawMode.CIRCLE
+//                    ||
+                    model.getDrawMode() == DrawMode.ELLIPSE
                     || model.getDrawMode() == DrawMode.SPHERE) {
                 model.setCircleCenter(new Point(mouseEvent.getX(), mouseEvent.getY()));
             }
@@ -547,39 +556,44 @@ public class MouseDrawListener {
             if (model.isFigureMode() && !model.isCustomMode()) {
                 view.loadSavedImage();
             }
+
+            if (!model.isCopyMode()) {
+                g2.setStroke(new BasicStroke(
+                        model.getStrokeList().get(model.getDrawMode())));
+            }
             switch(model.getDrawMode()) {
                 case PENCIL:
-                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(PENCIL_BASIC_STROKE))));
+//                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(PENCIL_BASIC_STROKE))));
                     g2.drawLine(finalX, finalY, finalX + 1, finalY + 1);
                     break;
-                case MARKER:
-                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(MARKER_BASIC_STROKE))));
-                    g2.drawLine(finalX, finalY, finalX + 1, finalY + 1);
-                    break;
-                case BRUSH:
-                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(BRUSH_BASIC_STROKE))));
-                    g2.drawLine(finalX, finalY, finalX + 1, finalY + 1);
-                    break;
-                case ERASER:
-                    g2.setStroke(new  BasicStroke(model.getEraserStroke()));
-                    g2.setColor(Color.WHITE);
-                    g2.fillOval(mouseEvent.getX() - Integer.parseInt(Config.getProperty(Config.ERASER_XPOINT_OFFSET)),
-                            mouseEvent.getY() + Integer.parseInt(Config.getProperty(Config.ERASER_YPOINT_OFFSET)),
-                            model.getEraserStroke(),
-                            model.getEraserStroke());
-                    break;
+//                case MARKER:
+//                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(MARKER_BASIC_STROKE))));
+//                    g2.drawLine(finalX, finalY, finalX + 1, finalY + 1);
+//                    break;
+//                case BRUSH:
+//                    g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(BRUSH_BASIC_STROKE))));
+//                    g2.drawLine(finalX, finalY, finalX + 1, finalY + 1);
+//                    break;
+//                case ERASER:
+//                    g2.setStroke(new  BasicStroke(model.getEraserStroke()));
+//                    g2.setColor(Color.WHITE);
+//                    g2.fillOval(mouseEvent.getX() - Integer.parseInt(Config.getProperty(Config.ERASER_XPOINT_OFFSET)),
+//                            mouseEvent.getY() + Integer.parseInt(Config.getProperty(Config.ERASER_YPOINT_OFFSET)),
+//                            model.getEraserStroke(),
+//                            model.getEraserStroke());
+//                    break;
                 case RAG:
-                    g2.setStroke(new  BasicStroke(model.getRagStroke()));
+//                    g2.setStroke(new  BasicStroke(model.getRagStroke()));
                     g2.setColor(Color.WHITE);
                     g2.drawLine(mouseEvent.getX(), mouseEvent.getY(),
                             mouseEvent.getX(), mouseEvent.getY());
                     break;
-                case COPY:
-                    g2.setStroke(DOTTED_LINE);
-//                    g2.setColor(Color.BLACK);
-                    copyPart(Math.min(startX , finalX), Math.min(startY, finalY),
-                            Math.abs(startX - finalX), Math.abs(startY - finalY));
-                    break;
+//                case COPY:
+//                    g2.setStroke(DOTTED_LINE);
+////                    g2.setColor(Color.BLACK);
+//                    copyPart(Math.min(startX , finalX), Math.min(startY, finalY),
+//                            Math.abs(startX - finalX), Math.abs(startY - finalY));
+//                    break;
                 case CUT:
                     g2.setStroke(DOTTED_LINE);
                     g2.setColor(Color.BLACK);
@@ -588,7 +602,7 @@ public class MouseDrawListener {
                     g2.drawRect(Math.min(startX , finalX), Math.min(startY, finalY),
                             Math.abs(startX - finalX), Math.abs(startY - finalY));
                     break;
-                case COPY_SHAPE:
+//                case COPY_SHAPE:
                 case CUT_SHAPE:
                     g2.setStroke(DOTTED_LINE);
                     view.saveCurrentImage();
@@ -609,29 +623,29 @@ public class MouseDrawListener {
                     model.setFirstMove(true);
                     break;
                 case LINE:
-                    g2.setStroke(DEFAULT_LINE);
+//                    g2.setStroke(DEFAULT_LINE);
                     drawStickyLine();
                     break;
-                case DOTTED_LINE:
-                    g2.setStroke(DOTTED_LINE);
-                    drawStickyLine();
-                    break;
+//                case DOTTED_LINE:
+////                    g2.setStroke(DOTTED_LINE);
+//                    drawStickyLine();
+//                    break;
                 case ARROW:
-                    g2.setStroke(DEFAULT_LINE);
+//                    g2.setStroke(DEFAULT_LINE);
                     drawStickyLine();
                     drawArrowPeak();
                     break;
-                case CIRCLE:
-                    g2.setStroke(DEFAULT_LINE);
-                    Point center = model.getCircleCenter();
-                    int radius = model.getEllipseBigRadius();
-
-                    g2.drawOval(center.x - radius, center.y - radius,
-                            abs(center.x - finalX), abs(center.x - finalX));
-                    g2.drawLine(center.x, center.y, center.x, center.y);
-                    break;
+//                case CIRCLE:
+////                    g2.setStroke(DEFAULT_LINE);
+//                    Point center = model.getCircleCenter();
+//                    int radius = model.getEllipseBigRadius();
+//
+//                    g2.drawOval(center.x - radius, center.y - radius,
+//                            abs(center.x - finalX), abs(center.x - finalX));
+//                    g2.drawLine(center.x, center.y, center.x, center.y);
+//                    break;
                 case ELLIPSE:
-                    g2.setStroke(DEFAULT_LINE);
+//                    g2.setStroke(DEFAULT_LINE);
                     Point ellipseCenter = model.getCircleCenter();
                     int bigRadius = model.getEllipseBigRadius();
                     int smallRadius = model.getEllipseSmallRadius();
@@ -641,22 +655,22 @@ public class MouseDrawListener {
                     g2.drawLine(ellipseCenter.x, ellipseCenter.y, ellipseCenter.x, ellipseCenter.y);
                     break;
                 case RECT:
-                    g2.setStroke(DEFAULT_LINE);
+//                    g2.setStroke(DEFAULT_LINE);
                     g2.drawRect(min(finalX, startX), min(finalY, startY),
                             abs(startX - finalX), abs(startY - finalY));
                     break;
-                case PARALLELOGRAM:
-                    g2.setStroke(DEFAULT_LINE);
-                    Point pmLeftBottom = model.getParallelogramLeftBottom();
-                    Point pmRightTop = model.getParallelogramRightTop();
-
-                    g2.drawLine(startX, startY, pmRightTop.x, pmRightTop.y);
-                    g2.drawLine(startX, startY, pmLeftBottom.x, pmLeftBottom.y);
-                    g2.drawLine(pmLeftBottom.x, pmLeftBottom.y, finalX, finalY);
-                    g2.drawLine(pmRightTop.x, pmRightTop.y, finalX, finalY);
-                    break;
+//                case PARALLELOGRAM:
+////                    g2.setStroke(DEFAULT_LINE);
+//                    Point pmLeftBottom = model.getParallelogramLeftBottom();
+//                    Point pmRightTop = model.getParallelogramRightTop();
+//
+//                    g2.drawLine(startX, startY, pmRightTop.x, pmRightTop.y);
+//                    g2.drawLine(startX, startY, pmLeftBottom.x, pmLeftBottom.y);
+//                    g2.drawLine(pmLeftBottom.x, pmLeftBottom.y, finalX, finalY);
+//                    g2.drawLine(pmRightTop.x, pmRightTop.y, finalX, finalY);
+//                    break;
                 case POLYGON:
-                    g2.setStroke(DEFAULT_LINE);
+//                    g2.setStroke(DEFAULT_LINE);
                     drawPolygonIfPointRepeats();
 
                     if (pointIsNew) {
@@ -669,7 +683,7 @@ public class MouseDrawListener {
                     }
                     break;
                 case PYRAMID:
-                    g2.setStroke(DEFAULT_LINE);
+//                    g2.setStroke(DEFAULT_LINE);
                     Point frontPoint = model.getTriPyramidFront();
                     Point leftPoint = model.getTriPyramidLeft();
                     Point rightPoint = model.getTriPyramidRight();
@@ -684,7 +698,7 @@ public class MouseDrawListener {
                     g2.drawLine(leftPoint.x, leftPoint.y, rightPoint.x, rightPoint.y);
                     break;
                 case PYRAMID_TETRA:
-                    g2.setStroke(DEFAULT_LINE);
+//                    g2.setStroke(DEFAULT_LINE);
                     Point backLeft = model.getTetraPyramidBackLeft();
                     Point backRight = model.getTetraPyramidBackRight();
                     Point frontLeft = model.getTetraPyramidFrontLeft();
@@ -701,21 +715,21 @@ public class MouseDrawListener {
                     g2.drawLine(frontLeft.x, frontLeft.y, backLeft.x, backLeft.y);
                     g2.drawLine(backRight.x, backRight.y, backLeft.x, backLeft.y);
                     break;
-                case PYRAMID_CUSTOM:
-                    g2.setStroke(DEFAULT_LINE);
-                    drawPyramidIfPointRepeats();
-
-                    if (pointIsNew) {
-                        if (!model.isPolygonInWork()) {
-                            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
-                            model.setPolygonInWork(true);
-                        }
-                        g2.drawLine(finalX, finalY, finalX, finalY);
-                        model.getPointList().add(new Point(finalX, finalY));
-                    }
-                    break;
+//                case PYRAMID_CUSTOM:
+////                    g2.setStroke(DEFAULT_LINE);
+//                    drawPyramidIfPointRepeats();
+//
+//                    if (pointIsNew) {
+//                        if (!model.isPolygonInWork()) {
+//                            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
+//                            model.setPolygonInWork(true);
+//                        }
+//                        g2.drawLine(finalX, finalY, finalX, finalY);
+//                        model.getPointList().add(new Point(finalX, finalY));
+//                    }
+//                    break;
                 case PRISM:
-                    g2.setStroke(DEFAULT_LINE);
+//                    g2.setStroke(DEFAULT_LINE);
                     Point leftTop = model.getTriPrismLeftTop();
                     Point rightTop = model.getTriPrismRightTop();
                     Point leftBottom = model.getTriPrismLeftBottom();
@@ -750,7 +764,7 @@ public class MouseDrawListener {
                     g2.drawLine(leftBottom.x, leftBottom.y, rightBottom.x, rightBottom.y);
                     break;
                 case PARALLELEPIPED:
-                    g2.setStroke(DEFAULT_LINE);
+//                    g2.setStroke(DEFAULT_LINE);
                     Point frontLeftTop = model.getParallelepipedFrontLeftTop();
                     Point frontRightTop = model.getParallelepipedFrontRightTop();
                     Point frontLeftBottom = model.getParallelepipedFrontLeftBottom();
@@ -776,21 +790,21 @@ public class MouseDrawListener {
                     g2.drawLine(backRightBottom.x, backRightBottom.y, backLeftBottom.x, backLeftBottom.y);
                     g2.drawLine(backLeftTop.x, backLeftTop.y, backLeftBottom.x, backLeftBottom.y);
                     break;
-                case PRISM_CUSTOM:
-                    g2.setStroke(DEFAULT_LINE);
-                    drawPrismIfPointRepeats();
-
-                    if (pointIsNew) {
-                        if (!model.isPolygonInWork()) {
-                            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
-                            model.setPolygonInWork(true);
-                        }
-                        g2.drawLine(finalX, finalY, finalX, finalY);
-                        model.getPointList().add(new Point(finalX, finalY));
-                    }
-                    break;
+//                case PRISM_CUSTOM:
+////                    g2.setStroke(DEFAULT_LINE);
+//                    drawPrismIfPointRepeats();
+//
+//                    if (pointIsNew) {
+//                        if (!model.isPolygonInWork()) {
+//                            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
+//                            model.setPolygonInWork(true);
+//                        }
+//                        g2.drawLine(finalX, finalY, finalX, finalY);
+//                        model.getPointList().add(new Point(finalX, finalY));
+//                    }
+//                    break;
                 case CONE:
-                    g2.setStroke(DEFAULT_LINE);
+//                    g2.setStroke(DEFAULT_LINE);
                     Point coneCenter = model.getCircleCenter();
                     int coneBigRadius = model.getEllipseBigRadius();
                     int coneSmallRadius = model.getEllipseSmallRadius();
@@ -824,7 +838,7 @@ public class MouseDrawListener {
                             CONE_DOTTED_ARC_START_ANGLE, CONE_DOTTED_ARC_FINAL_ANGLE);
                     break;
                 case CYLINDER:
-                    g2.setStroke(DEFAULT_LINE);
+//                    g2.setStroke(DEFAULT_LINE);
                     Point cylinderCenter = model.getCircleCenter();
                     int cylinderBigRadius = model.getEllipseBigRadius();
                     int cylinderSmallRadius = model.getEllipseSmallRadius();
@@ -863,7 +877,7 @@ public class MouseDrawListener {
                             CYLINDER_DOTTED_ARC_START_ANGLE, CYLINDER_DOTTED_ARC_FINAL_ANGLE);
                     break;
                 case SPHERE:
-                    g2.setStroke(DEFAULT_LINE);
+//                    g2.setStroke(DEFAULT_LINE);
                     Point sphereCenter = model.getCircleCenter();
                     int sphereRadius = model.getEllipseBigRadius();
                     int sphereSmallRadius = model.getEllipseSmallRadius();
@@ -897,11 +911,21 @@ public class MouseDrawListener {
             }
             finalX = 0;
             finalY = 0;
-            if (model.isFigureMode() && !model.isCustomMode() && !model.isCopyMode()) {
+            if (model.isFigureMode()
+                    && !model.isCustomMode()
+                    && !model.isCopyMode()) {
                 view.saveCurrentImage();
             }
             if (!model.isCustomMode() && !model.isScaleMode()) {
-                model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
+//                if (
+//                    model.getDrawMode() != DrawMode.COPY
+//                    || model.getDrawMode() != DrawMode.CUT
+//                    || model.getDrawMode() != DrawMode.COPY_SHAPE
+//                    || model.getDrawMode() != DrawMode.CUT_SHAPE
+//                )
+                model.saveAction(
+                        view.getMainImage(),
+                        view.getTabbedPane().getSelectedIndex());
             }
 
             view.getMainPanel().repaint();

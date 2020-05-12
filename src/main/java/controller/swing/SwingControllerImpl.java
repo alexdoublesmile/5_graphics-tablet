@@ -8,18 +8,14 @@ import controller.swing.actions.FileAction;
 import model.DrawMode;
 import model.Model;
 import model.UndoRedoService;
-import org.apache.commons.io.FilenameUtils;
 import util.CursorBuilder;
 import util.TextFileFilter;
 import view.swing.SwingViewImpl;
 import view.View;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 public class SwingControllerImpl implements Controller {
 
@@ -125,7 +121,7 @@ public class SwingControllerImpl implements Controller {
         FunctionButtonListener buttonListener = new FunctionButtonListener(view, model);
 
         view.getDiscolorButton().addActionListener(buttonListener.getDISCOLOR_BUTTON_LISTENER());
-        view.getCleanButton().addActionListener(buttonListener.getCLEAN_BUTTON_LISTENER());
+        view.getClearButton().addActionListener(buttonListener.getCLEAN_BUTTON_LISTENER());
         view.getCalculatorButton().addActionListener(buttonListener.getCALCULATOR_BUTTON_LISTENER());
     }
 

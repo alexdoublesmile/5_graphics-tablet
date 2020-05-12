@@ -22,12 +22,38 @@ import java.util.Map;
 public class SwingViewImpl extends JFrame implements View {
     private String MAIN_FRAME_NAME = "Графический планшетик";
     private static final String FILE_MENU_NAME = "File";
+    private static final String VIEW_MENU_NAME = "Veiw";
+    private static final String TOOLS_MENU_NAME = "Tols";
+    private static final String SETTINGS_MENU_NAME = "Settings";
+    private static final String HELP_MENU_NAME = "Help";
+    private static final String ADMIN_MENU_NAME = "Admin";
+
+    private static final String NEW_MENU_NAME = "New";
+    private static final String LOAD_MENU_NAME = "Open";
+    private static final String LOAD_NEW_MENU_NAME = "Open New";
+    private static final String LOAD_RECENT_MENU_NAME = "Open Recent";
+    private static final String SAVE_MENU_NAME = "Save";
+    private static final String SAVE_AS_MENU_NAME = "Save As";
+    private static final String SAVE_ALL_MENU_NAME = "Save All";
+    private static final String RENAME_MENU_NAME = "Rename";
+    private static final String CLOSE_MENU_NAME = "Close";
+    private static final String CLOSE_ALL_MENU_NAME = "Close All";
+    private static final String EXIT_MENU_NAME = "Exit";
+
+    private static final String VERSION_MENU_NAME = "Version";
+    private static final String HELP_MODE_MENU_NAME = "Help Mode";
+
+    private static final String LOGS_MENU_NAME = "Logs";
+    private static final String MEMORY_MENU_NAME = "Memory";
+    private static final String STATISTIC_MENU_NAME = "Statistic";
+
+
+
     private static final String DISCOLOR_BUTTON_NAME = "Discolor";
-    private static final String CLEAN_BUTTON_NAME = "Clean";
     private static final Color CONTROL_PANEL_COLOR = new Color(0xE9D6BF);
     private static final String COLOR_DIALOG_TITLE = "Choose color";
     private static final ArrayList<String> closingElements;
-    private static final Color DEFAULT_COLOR = new Color(100, 100, 100);
+    public static final Color DEFAULT_COLOR = new Color(100, 100, 100);
 
     static {
         closingElements = new ArrayList<>();
@@ -46,16 +72,36 @@ public class SwingViewImpl extends JFrame implements View {
     private JFrame mainFrame;
     private JTabbedPane tabbedPane;
     private JLayeredPane layeredPane;
+    private ColorDialog colorDialog;
+    private ToolDialog toolDialog;
 
     private JMenuBar mainMenu;
     private JMenu fileMenu;
+    private JMenu viewMenu;
+    private JMenu toolsMenu;
+    private JMenu settingsMenu;
+    private JMenu helpMenu;
+    private JMenu adminMenu;
+    private JMenuItem newMenu;
     private JMenuItem loadMenu;
+    private JMenuItem loadNewMenu;
+    private JMenuItem loadRecentMenu;
     private JMenuItem saveMenu;
     private JMenuItem saveAsMenu;
+    private JMenuItem saveAllMenu;
+    private JMenuItem renameMenu;
+    private JMenuItem closeMenu;
+    private JMenuItem closeAllMenu;
+    private JMenuItem exitMenu;
+    private JMenuItem versionMenu;
+    private JMenuItem helpModeMenu;
+    private JMenuItem logsMenu;
+    private JMenuItem memoryMenu;
+    private JMenuItem statisticMenu;
+    private JButton closeButton;
 
     private JPanel mainPanel;
     private JToolBar toolBar;
-    private JToolBar colorBar;
 
     private JButton colorButton;
     private ColorButton redButton;
@@ -66,6 +112,7 @@ public class SwingViewImpl extends JFrame implements View {
     private ColorButton whiteButton;
     private ColorButton orangeButton;
 
+    private JButton menuButton;
     private JButton newTabButton;
     private JButton openButton;
     private JButton undoButton;
@@ -79,7 +126,7 @@ public class SwingViewImpl extends JFrame implements View {
     private JFileChooser fileChooser;
 
     private JButton discolorButton;
-    private JButton cleanButton;
+    private JButton clearButton;
     private JButton calculatorButton;
 
     private ArrayList<JPanel> panelList;
@@ -94,6 +141,7 @@ public class SwingViewImpl extends JFrame implements View {
     private int scaledWidth;
     private int scaledHeight;
     private boolean extended;
+    private JButton undoChangeButton;
 
     public SwingViewImpl(Model model) {
         this.model = model;
@@ -104,44 +152,106 @@ public class SwingViewImpl extends JFrame implements View {
 
     @Override
     public void compareCanvas() {
-        initMainWindow();
+        initWindows();
         initMenu();
         initToolBar();
-        initColorBar();
         initButtons();
         initDrawingPanel();
         collectAllElements();
     }
 
-    private void initMainWindow() {
+    private void initWindows() {
         mainFrame = this;
         setTitle(MAIN_FRAME_NAME);
         setSize(MAIN_FRAME_WIDTH, MAIN_FRAME_HEIGHT);
         setExtendedState(MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
-        tabbedPane.addChangeListener(e -> previousImage = null);
+        setUndecorated(true);
     }
 
     private void initMenu() {
         mainMenu = new JMenuBar();
-        mainMenu.setPreferredSize(new Dimension(mainFrame.getWidth(), 40));
-
+        mainMenu.setPreferredSize(new Dimension(mainFrame.getWidth(), 20));
         mainMenu.setBackground(CONTROL_PANEL_COLOR);
-        fileMenu = new JMenu(FILE_MENU_NAME);
-        loadMenu = new JMenuItem();
-        saveMenu = new JMenuItem();
-        saveAsMenu = new JMenuItem();
-        fileChooser = new JFileChooser();
+        mainMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
+        fileMenu = new JMenu(FILE_MENU_NAME);
+        viewMenu = new JMenu(VIEW_MENU_NAME);
+        toolsMenu = new JMenu(TOOLS_MENU_NAME);
+        settingsMenu = new JMenu(SETTINGS_MENU_NAME);
+        helpMenu = new JMenu(HELP_MENU_NAME);
+        adminMenu = new JMenu(ADMIN_MENU_NAME);
+        closeButton = new JButton(IconBuilder.buildIconByPath(
+                Config.getProperty(Config.APP_CLOSE_ICON_PATH)));
+        closeButton.setBorderPainted(false);
+        closeButton.setFocusPainted(false);
+        closeButton.setOpaque(false);
+        closeButton.setPreferredSize(new Dimension(20, 20));
+        closeButton.addActionListener(e -> System.exit(0));
+
+        newMenu = new JMenuItem(NEW_MENU_NAME);
+        loadMenu = new JMenuItem(LOAD_MENU_NAME);
+        loadNewMenu = new JMenuItem(LOAD_NEW_MENU_NAME);
+        loadRecentMenu = new JMenuItem(LOAD_RECENT_MENU_NAME);
+        saveMenu = new JMenuItem(SAVE_MENU_NAME);
+        saveAsMenu = new JMenuItem(SAVE_AS_MENU_NAME);
+        saveAllMenu = new JMenuItem(SAVE_ALL_MENU_NAME);
+        renameMenu = new JMenuItem(RENAME_MENU_NAME);
+        closeMenu = new JMenuItem(CLOSE_MENU_NAME);
+        closeAllMenu = new JMenuItem(CLOSE_ALL_MENU_NAME);
+        exitMenu = new JMenuItem(EXIT_MENU_NAME);
+
+        versionMenu = new JMenuItem(VERSION_MENU_NAME);
+        helpModeMenu = new JMenuItem(HELP_MODE_MENU_NAME);
+
+        logsMenu = new JMenuItem(LOGS_MENU_NAME);
+        memoryMenu = new JMenuItem(MEMORY_MENU_NAME);
+        statisticMenu = new JMenuItem(STATISTIC_MENU_NAME);
+
+        mainMenu.add(fileMenu);
+//        mainMenu.add(viewMenu);
+//        mainMenu.add(toolsMenu);
+//        mainMenu.add(settingsMenu);
+        mainMenu.add(helpMenu);
+//        mainMenu.add(adminMenu);
+        mainMenu.add(Box.createGlue());
+        mainMenu.add(closeButton);
+
+        fileMenu.add(newMenu);
+        fileMenu.addSeparator();
+        fileMenu.add(loadMenu);
+        fileMenu.add(loadNewMenu);
+        fileMenu.add(loadRecentMenu);
+        fileMenu.addSeparator();
+        fileMenu.add(saveMenu);
+        fileMenu.add(saveAsMenu);
+        fileMenu.add(saveAllMenu);
+        fileMenu.addSeparator();
+        fileMenu.add(renameMenu);
+        fileMenu.addSeparator();
+        fileMenu.add(closeMenu);
+        fileMenu.add(closeAllMenu);
+        fileMenu.add(exitMenu);
+
+        helpMenu.add(versionMenu);
+//        helpMenu.add(helpModeMenu);
+
+        adminMenu.add(logsMenu);
+        adminMenu.add(memoryMenu);
+        adminMenu.add(statisticMenu);
+
+        mainMenu.setVisible(false);
     }
 
     private void initToolBar() {
         toolBar = new JToolBar(JToolBar.HORIZONTAL);
+        toolBar.setFloatable(false);
+        toolBar.setRollover(false);
+        toolBar.setBorderPainted(false);
+        toolBar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        toolBar.setPreferredSize(new Dimension(mainFrame.getWidth(), 35));
 
         toolBar.setBackground(CONTROL_PANEL_COLOR);
-        toolBar.setBorderPainted(false);
 
         for (DrawMode drawMode : DrawMode.values()) {
             if (!model.getSpecialModeList().contains(drawMode)) {
@@ -151,25 +261,6 @@ public class SwingViewImpl extends JFrame implements View {
                         .toString().toLowerCase());
             }
         }
-    }
-
-    private void initColorBar() {
-        colorBar = new JToolBar(JToolBar.HORIZONTAL);
-        colorBar.setBackground(CONTROL_PANEL_COLOR);
-        colorBar.setBorderPainted(false);
-        colorBar.setLayout(null);
-
-        colorButton = new ColorButton(mainColor, 25);
-        colorButton.setIcon(IconBuilder.buildIconByPath(Config.getProperty(Config.PALETTE_ICON_PATH)));
-        redButton = new  ColorButton(Color.red, true, 15);
-        blackButton = new  ColorButton(Color.black);
-        greyButton = new  ColorButton(DEFAULT_COLOR);
-        blueButton = new ColorButton(Color.blue);
-        greenButton = new  ColorButton(new Color(0x12A612));
-        orangeButton = new  ColorButton(new Color(250, 125, 0));
-        whiteButton = new  ColorButton(Color.white);
-        colorChooser = new  JColorChooser(mainColor);
-
     }
 
     private void initButtons() {
@@ -200,67 +291,90 @@ public class SwingViewImpl extends JFrame implements View {
         ));
 
         discolorButton = new FunctionButton(DISCOLOR_BUTTON_NAME);
-        cleanButton = new FunctionButton(CLEAN_BUTTON_NAME);
+        discolorButton.setMnemonic('d');
+
+        clearButton = new FunctionButton(IconBuilder.buildIconByPath(
+                Config.getProperty(Config.CLEAR_ICON_PATH)));
+        clearButton.setBorderPainted(false);
+        clearButton.setFocusPainted(false);
+        clearButton.setOpaque(false);
+
+        undoChangeButton = new JButton(String.valueOf(model.getUndoQuantity() - 1));
+        undoChangeButton.setBorderPainted(false);
+        undoChangeButton.setFocusPainted(false);
+        undoChangeButton.setOpaque(false);
+        undoChangeButton.setFont(new Font("Bookman OldStyle", Font.ITALIC, 14));
+
+        undoChangeButton.addActionListener(e -> {
+            String inputString = null;
+            try {
+                inputString = JOptionPane.showInputDialog(
+                        this,
+                        "Катюша, введи сюда желаемое кол-во возвратов",
+                        "", JOptionPane.PLAIN_MESSAGE);
+
+                if (inputString != null) {
+                    model.setUndoQuantity(Integer.parseInt(inputString) + 1);
+                    undoChangeButton.setText(String.valueOf(model.getUndoQuantity() - 1));
+                }
+            } catch(NumberFormatException ex){
+                if (inputString.matches("\\w+")) {
+                    JOptionPane.showMessageDialog(null, String.format("Катюша, циферками нужно ;) \n А %s - это не совсем циферки", inputString));
+                } else {
+                    JOptionPane.showMessageDialog(null, String.format("%s ..Это вообще что?", inputString));
+                }
+            }
+        });
+
+
+        colorButton = new ColorButton(mainColor, 25);
+        colorButton.setIcon(IconBuilder.buildIconByPath(
+                Config.getProperty(Config.PALETTE_ICON_PATH)));
+
+        redButton = new  ColorButton(Color.red, true, 15);
+        blackButton = new  ColorButton(Color.black);
+        greyButton = new  ColorButton(DEFAULT_COLOR);
+        blueButton = new ColorButton(Color.blue);
+        greenButton = new  ColorButton(new Color(0x12A612));
+        orangeButton = new  ColorButton(new Color(250, 125, 0));
+        whiteButton = new  ColorButton(Color.white);
+
+        colorChooser = new  JColorChooser(mainColor);
+
+        menuButton = new JButton();
+        menuButton.setFocusPainted(false);
+        menuButton.setBorderPainted(false);
+        menuButton.setIcon(IconBuilder.buildIconByPath(
+                        Config.getProperty(Config.MENU_ICON_PATH)));
+        menuButton.addActionListener(e -> changeVisibility(mainMenu));
     }
 
     private void initDrawingPanel() {
+        tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
+        tabbedPane.addChangeListener(e -> previousImage = null);
+
         panelList = new ArrayList<>();
         imageList = new ArrayList<>();
         mainPanel = new MyPanel(-1, false);
-        mainPanel.setPreferredSize(new Dimension(mainFrame.getContentPane().getWidth(),mainFrame.getContentPane().getHeight()));
-//        mainPanel.setBounds(0,0,mainFrame.getContentPane().getWidth(),mainFrame.getContentPane().getHeight());
-
+        mainPanel.setPreferredSize(new Dimension(
+                mainFrame.getContentPane().getWidth(),
+                mainFrame.getContentPane().getHeight()));
         tabbedPane.add(TabUtil.getDefaultTabName(), panelList.get(0));
         tabbedPane.setTabComponentAt(0, new ButtonTabComponent(this, model));
 
+        fileChooser = new JFileChooser();
     }
 
     private void collectAllElements() {
         setJMenuBar(mainMenu);
         add(tabbedPane);
+        add(toolBar, BorderLayout.NORTH);
 
-//        mainMenu.add(fileMenu);
-//        mainMenu.add(new JToolBar.Separator());
-
+        toolBar.add(menuButton);
         toolBar.add(newTabButton);
         toolBar.add(openButton);
 
         toolBar.addSeparator();
-
-        JButton undoChangeButton = new JButton(String.valueOf(model.getUndoQuantity() - 1));
-        undoChangeButton.setFocusPainted(false);
-
-        undoChangeButton.addActionListener(e -> {
-            String inputString = null;
-                try {
-                    inputString = JOptionPane.showInputDialog(
-                            this,
-                            "Катюша, введи сюда желаемое кол-во возвратов",
-                            "", JOptionPane.PLAIN_MESSAGE);
-
-                    if (inputString != null) {
-                        model.setUndoQuantity(Integer.parseInt(inputString) + 1);
-                        undoChangeButton.setText(String.valueOf(model.getUndoQuantity() - 1));
-                    }
-                } catch(NumberFormatException ex){
-                    if (inputString.matches("\\w+")) {
-                        JOptionPane.showMessageDialog(null, String.format("Катюша, циферками нужно ;) \n А %s - это не совсем циферки", inputString));
-                    } else {
-                        JOptionPane.showMessageDialog(null, String.format("%s ..Это вообще что?", inputString));
-                    }
-                }
-        });
-
-
-        mainMenu.add(toolBar);
-        mainMenu.add(colorBar);
-        mainMenu.add(new JToolBar.Separator());
-        fileMenu.add(loadMenu);
-        fileMenu.add(saveMenu);
-        fileMenu.add(saveAsMenu);
-
-
-
 
         for (DrawMode drawMode : DrawMode.values()) {
             if (!model.getSpecialModeList().contains(drawMode)) {
@@ -277,36 +391,23 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar.add(undoButton);
         toolBar.add(redoButton);
         toolBar.addSeparator();
-
         toolBar.add(plusButton);
         toolBar.add(minusButton);
         toolBar.add(refreshButton);
-//        toolBar.add(expandButton);
-        colorBar.add(colorButton);
-        colorBar.add(blackButton);
-        colorBar.add(greyButton);
-        colorBar.add(redButton);
-        colorBar.add(blueButton);
-        colorBar.add(greenButton);
-        colorBar.add(whiteButton);
-        colorBar.add(orangeButton);
 
-        mainMenu.add(discolorButton);
-        discolorButton.setMnemonic('d');
-        mainMenu.add(new JToolBar.Separator());
-        mainMenu.add(cleanButton);
-        cleanButton.setMnemonic('c');
-        mainMenu.add(new JToolBar.Separator());
-//        mainMenu.add(calculatorButton);
-//        mainMenu.add(new JToolBar.Separator());
-        mainMenu.add(undoChangeButton);
-        mainMenu.add(new JToolBar.Separator());
+        toolBar.add(Box.createGlue());
+        toolBar.add(clearButton);
+        toolBar.add(undoChangeButton);
+        toolBar.addSeparator();
+        toolBar.add(colorButton);
+    }
 
-//        undoButton.setEnabled(false);
-//        redoButton.setEnabled(false);
-//        refreshButton.setEnabled(false);
-
-        setUndecorated(true);
+    public void changeVisibility(Component component) {
+        if (component.isVisible()) {
+            component.setVisible(false);
+        } else {
+            component.setVisible(true);
+        }
     }
 
     public void saveCurrentImage() {
@@ -408,25 +509,195 @@ public class SwingViewImpl extends JFrame implements View {
             scaledHeight = image.getHeight();
         }
 
-
-
-
 //        image.flush();
         return image;
     }
 
-    public class ColorDialog extends JDialog {
+    public class ToolDialog extends JDialog {
+        private final JButton defaultButton;
+        private final JPanel buttonPanel;
+        private ToolDialog toolWindow;
+        private JPanel optionPanel;
+        private JLabel widthLabel;
+        private JSlider widthSlider;
+        private JToolBar colorBar;
+        private JLabel lineType;
+        private JRadioButton solid;
+        private JRadioButton dashed;
+        private JRadioButton dotted;
+        private ButtonGroup lineTypeGroup;
+        private JButton closeButton;
 
+
+        public ToolDialog (JFrame owner, String title) {
+            super(owner, title);
+            toolWindow = this;
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            setLayout(new BorderLayout());
+
+            optionPanel = new JPanel();
+            optionPanel.setLayout(new GridLayout(4, 0));
+            widthLabel = new JLabel();
+            widthLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
+            widthSlider = new JSlider();
+            widthSlider.setMinimum(10);
+            widthSlider.setMaximum(100);
+            widthSlider.setExtent(10);
+//            widthSlider.setPaintTrack(true);
+//            widthSlider.setPaintLabels(true);
+//            widthSlider.setSnapToTicks(true);
+//            widthSlider.setPaintTicks(true);
+
+            colorBar = new JToolBar();
+            colorBar.setFloatable(false);
+            colorBar.setRollover(false);
+            colorBar.setBorderPainted(false);
+            colorBar.setLayout(new FlowLayout());
+            colorBar.add(blackButton);
+            colorBar.add(greyButton);
+            colorBar.add(redButton);
+            colorBar.add(blueButton);
+            colorBar.add(greenButton);
+            colorBar.add(orangeButton);
+            colorBar.add(whiteButton);
+            lineType = new JLabel("lineType");
+            lineTypeGroup = new ButtonGroup();
+            solid = new JRadioButton();
+            dashed = new JRadioButton();
+            dotted = new JRadioButton();
+            lineTypeGroup.add(solid);
+            lineTypeGroup.add(dashed);
+            lineTypeGroup.add(dotted);
+            optionPanel.add(widthLabel);
+            optionPanel.add(widthSlider);
+            optionPanel.add(colorBar);
+
+//            optionPanel.add(lineType);
+//            optionPanel.add(solid);
+//            optionPanel.add(dashed);
+//            optionPanel.add(dotted);
+
+            buttonPanel = new JPanel();
+            buttonPanel.setLayout(new GridLayout(2, 0));
+            defaultButton = new JButton("Load Defaults");
+            defaultButton.setMnemonic('d');
+            closeButton = new JButton("OK");
+            closeButton.setMnemonic('c');
+            buttonPanel.add(defaultButton);
+            buttonPanel.add(closeButton);
+
+            add(optionPanel, BorderLayout.CENTER);
+            add(buttonPanel, BorderLayout.SOUTH);
+            setUndecorated(true);
+            pack();
+        }
+
+        public ToolDialog getToolWindow() {
+            return toolWindow;
+        }
+
+        public void setToolWindow(ToolDialog toolWindow) {
+            this.toolWindow = toolWindow;
+        }
+
+        public JPanel getOptionPanel() {
+            return optionPanel;
+        }
+
+        public void setOptionPanel(JPanel optionPanel) {
+            this.optionPanel = optionPanel;
+        }
+
+        public JLabel getWidthLabel() {
+            return widthLabel;
+        }
+
+        public void setWidthLabel(JLabel widthLabel) {
+            this.widthLabel = widthLabel;
+        }
+
+        public JSlider getWidthSlider() {
+            return widthSlider;
+        }
+
+        public void setWidthSlider(JSlider widthSlider) {
+            this.widthSlider = widthSlider;
+        }
+
+        public JToolBar getColorBar() {
+            return colorBar;
+        }
+
+        public void setColorBar(JToolBar colorBar) {
+            this.colorBar = colorBar;
+        }
+
+        public JLabel getLineType() {
+            return lineType;
+        }
+
+        public void setLineType(JLabel lineType) {
+            this.lineType = lineType;
+        }
+
+        public JRadioButton getSolid() {
+            return solid;
+        }
+
+        public void setSolid(JRadioButton solid) {
+            this.solid = solid;
+        }
+
+        public JRadioButton getDashed() {
+            return dashed;
+        }
+
+        public void setDashed(JRadioButton dashed) {
+            this.dashed = dashed;
+        }
+
+        public JRadioButton getDotted() {
+            return dotted;
+        }
+
+        public void setDotted(JRadioButton dotted) {
+            this.dotted = dotted;
+        }
+
+        public ButtonGroup getLineTypeGroup() {
+            return lineTypeGroup;
+        }
+
+        public void setLineTypeGroup(ButtonGroup lineTypeGroup) {
+            this.lineTypeGroup = lineTypeGroup;
+        }
+
+        public JButton getCloseButton() {
+            return closeButton;
+        }
+
+        public void setCloseButton(JButton closeButton) {
+            this.closeButton = closeButton;
+        }
+
+        public JButton getDefaultButton() {
+            return defaultButton;
+        }
+    }
+
+    public class ColorDialog extends JDialog {
         private ColorDialog window;
 
         public ColorDialog (JFrame owner) {
-            super(owner, COLOR_DIALOG_TITLE, true);
+            super(owner, COLOR_DIALOG_TITLE, false);
             window = this;
             setLayout(new BorderLayout());
-            JButton closeButton = new JButton("Close");
-            closeButton.setMnemonic('c');
-            closeButton.addActionListener((e) -> window.setVisible(false));
-            add(colorChooser, BorderLayout.NORTH);
+            JButton closeButton = new JButton("Dispose");
+            closeButton.addActionListener((e) -> window.dispose());
+
+            add(discolorButton, BorderLayout.NORTH);
+            add(colorChooser, BorderLayout.CENTER);
             add(closeButton, BorderLayout.SOUTH);
             setSize(COLOR_DIALOG_WIDTH, COLOR_DIALOG_HEIGHT);
             pack();
@@ -488,10 +759,6 @@ public class SwingViewImpl extends JFrame implements View {
         return toolBar;
     }
 
-    public JToolBar getColorBar() {
-        return colorBar;
-    }
-
     public JButton getUndoButton() {
         return undoButton;
     }
@@ -532,8 +799,8 @@ public class SwingViewImpl extends JFrame implements View {
         return fileChooser;
     }
 
-    public JButton getCleanButton() {
-        return cleanButton;
+    public JButton getClearButton() {
+        return clearButton;
     }
 
     public Color getMainColor() {
@@ -643,6 +910,23 @@ public class SwingViewImpl extends JFrame implements View {
     public static Color getDefaultColor() {
         return DEFAULT_COLOR;
     }
+
+    public ColorDialog getColorDialog() {
+        return colorDialog;
+    }
+
+    public void setColorDialog(ColorDialog colorDialog) {
+        this.colorDialog = colorDialog;
+    }
+
+    public ToolDialog getToolDialog() {
+        return toolDialog;
+    }
+
+    public void setToolDialog(ToolDialog toolDialog) {
+        this.toolDialog = toolDialog;
+    }
+
     //    public void addTab(String tabName, int index) {
 //
 //        if (tabbedPane.getTabCount() < 1) {

@@ -90,16 +90,11 @@ public class ButtonTabComponent extends JPanel {
         public TabButton() {
             int size = 17;
             setPreferredSize(new Dimension(size, size));
-//            setToolTipText("close this tab");
-            //Make the button looks the same for all Laf's
             setUI(new BasicButtonUI());
-            //Make it transparent
             setContentAreaFilled(false);
-            //No need to be focusable
             setFocusable(false);
             setBorder(BorderFactory.createEtchedBorder());
             setBorderPainted(false);
-            //Making nice rollover effect
             addMouseListener(buttonMouseListener);
             setRolloverEnabled(true);
             addActionListener(TabAction.buildRemoveTabAction(view, ButtonTabComponent.this.model, ButtonTabComponent.this, TabAction.REMOVE_CURRENT));

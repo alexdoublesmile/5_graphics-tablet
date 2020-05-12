@@ -50,10 +50,14 @@ public class ToolButton extends Button {
 
     }
 
+    public ToolButton(ImageIcon icon, boolean buttonMenu) {
+        super(icon);
+        buttonCounter++;
+    }
+
     public ToolButton(ImageIcon icon) {
         super(icon);
         buttonCounter++;
-
     }
 
     public ToolButton() {

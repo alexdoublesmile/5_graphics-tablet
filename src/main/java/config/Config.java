@@ -40,6 +40,16 @@ public class Config {
     public static final String FILL_CURSOR_YPOINT = "fill.cursor.y.point";
     public static final String FILL_BASIC_STROKE = "fill.basic.stroke";
 
+    public static final String DROPPER_CURSOR_PATH = "dropper.cursor.path";
+    public static final String DROPPER_CURSOR_XPOINT = "dropper.cursor.x.point";
+    public static final String DROPPER_CURSOR_YPOINT = "dropper.cursor.y.point";
+    public static final String DROPPER_BASIC_STROKE = "dropper.basic.stroke";
+
+    public static final String STAMP_CURSOR_PATH = "stamp.cursor.path";
+    public static final String STAMP_CURSOR_XPOINT = "stamp.cursor.x.point";
+    public static final String STAMP_CURSOR_YPOINT = "stamp.cursor.y.point";
+    public static final String STAMP_BASIC_STROKE = "stamp.basic.stroke";
+
     public static final String SCALE_CURSOR_PATH = "scale.cursor.path";
     public static final String SCALE_CURSOR_XPOINT = "scale.cursor.x.point";
     public static final String SCALE_CURSOR_YPOINT = "scale.cursor.y.point";
@@ -66,6 +76,13 @@ public class Config {
 
     public static final String NEW_ICON_PATH = "new.icon.path";
     public static final String OPEN_ICON_PATH = "open.icon.path";
+    public static final String COPY_ICON_PATH = "copy.icon.path";
+    public static final String CUT_ICON_PATH = "cut.icon.path";
+    public static final String COPY_SHAPE_ICON_PATH = "copy.shape.icon.path";
+    public static final String CUT_SHAPE_ICON_PATH = "cut.shape.icon.path";
+    public static final String PASTE_ICON_PATH = "paste.icon.path";
+    public static final String HAND_ICON_PATH = "hand.icon.path";
+    public static final String MOVE_ICON_PATH = "move.icon.path";
     public static final String PENCIL_ICON_PATH = "pencil.icon.path";
     public static final String MARKER_ICON_PATH = "marker.icon.path";
     public static final String BRUSH_ICON_PATH = "brush.icon.path";
@@ -91,23 +108,22 @@ public class Config {
     public static final String SPHERE_ICON_PATH = "sphere.icon.path";
     public static final String FRUSTUM_ICON_PATH = "frustum.icon.path";
     public static final String FILL_ICON_PATH = "fill.icon.path";
+    public static final String DROPPER_ICON_PATH = "dropper.icon.path";
+    public static final String GRID_ICON_PATH = "grid.icon.path";
+    public static final String STAMP_ICON_PATH = "stamp.icon.path";
     public static final String TEXT_ICON_PATH = "text.icon.path";
-    public static final String HAND_ICON_PATH = "hand.icon.path";
-    public static final String MOVE_ICON_PATH = "move.icon.path";
-    public static final String COPY_ICON_PATH = "copy.icon.path";
-    public static final String CUT_ICON_PATH = "cut.icon.path";
-    public static final String COPY_SHAPE_ICON_PATH = "copy.shape.icon.path";
-    public static final String CUT_SHAPE_ICON_PATH = "cut.shape.icon.path";
-    public static final String PASTE_ICON_PATH = "paste.icon.path";
+    public static final String UNDO_ICON_PATH = "undo.icon.path";
+    public static final String REDO_ICON_PATH = "redo.icon.path";
     public static final String PLUS_ICON_PATH = "plus.icon.path";
     public static final String MINUS_ICON_PATH = "minus.icon.path";
     public static final String REFRESH_ICON_PATH = "refresh.icon.path";
     public static final String EXPAND_ICON_PATH = "expand.icon.path";
-    public static final String TAB_CLOSE_ICON_PATH = "tab.close.icon.path";
-    public static final String UNDO_ICON_PATH = "undo.icon.path";
-    public static final String REDO_ICON_PATH = "redo.icon.path";
-    public static final String CALCULATOR_ICON_PATH = "calculator.icon.path";
     public static final String PALETTE_ICON_PATH = "palette.icon.path";
+    public static final String CLEAR_ICON_PATH = "clear.icon.path";
+    public static final String MENU_ICON_PATH = "menu.icon.path";
+    public static final String CALCULATOR_ICON_PATH = "calculator.icon.path";
+    public static final String APP_CLOSE_ICON_PATH = "app.close.icon.path";
+    public static final String BUTTON_MENU_ICON_PATH = "button.menu.icon.path";
 
     public static final String TOOL_BUTTON_XPOINT = "tool.buttons.main.x.point";
     public static final String TOOL_BUTTON_YPOINT = "tool.buttons.main.y.point";
