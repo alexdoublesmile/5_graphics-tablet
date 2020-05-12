@@ -43,7 +43,12 @@ public class ToolButtonListener implements ActionListener {
             if (view.getToolDialog() == null || !view.getToolDialog().isVisible()) {
                 toolDialog = view.new ToolDialog(
                         view, sourceButton.getToolTipText());
-
+                view.getMainPanel().addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        toolDialog.dispose();
+                    }
+                });
                 setListeners();
 
                 view.setToolDialog(toolDialog);

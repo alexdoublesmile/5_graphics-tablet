@@ -139,12 +139,7 @@ public class SwingControllerImpl implements Controller {
 
     private void setFrameListeners() {
         view.addComponentListener(new FrameListener(view, model).getFRAME_RESIZE_LISTENER());
-        view.getMainPanel().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                view.getToolDialog().dispose();
-            }
-        });
+
     }
 
     public View getView() {
