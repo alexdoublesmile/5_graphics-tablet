@@ -14,6 +14,8 @@ import view.swing.buttons.ToolButton;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,8 +59,8 @@ public class SwingViewImpl extends JFrame implements View {
 
     static {
         closingElements = new ArrayList<>();
-        closingElements.add("RAG");
-        closingElements.add("PASTE");
+//        closingElements.add("RAG");
+        closingElements.add("CUT_SHAPE");
         closingElements.add("POLYGON");
         closingElements.add("SPHERE");
     }
@@ -234,6 +236,8 @@ public class SwingViewImpl extends JFrame implements View {
         fileMenu.add(exitMenu);
 
         helpMenu.add(versionMenu);
+        versionMenu.addActionListener(e -> JOptionPane.showMessageDialog(
+                null, "version 6.1.2"));
 //        helpMenu.add(helpModeMenu);
 
         adminMenu.add(logsMenu);
@@ -377,7 +381,8 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar.addSeparator();
 
         for (DrawMode drawMode : DrawMode.values()) {
-            if (!model.getSpecialModeList().contains(drawMode)) {
+            if (!model.getSpecialModeList().contains(drawMode)
+            && drawMode != DrawMode.PASTE) {
                 if (closingElements.contains(drawMode.name())) {
                     toolBar.add(toolButtons.get(drawMode.name()));
                     toolBar.addSeparator();
@@ -394,6 +399,9 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar.add(plusButton);
         toolBar.add(minusButton);
         toolBar.add(refreshButton);
+        plusButton.setEnabled(false);
+        minusButton.setEnabled(false);
+        refreshButton.setEnabled(false);
 
         toolBar.add(Box.createGlue());
         toolBar.add(clearButton);
@@ -582,10 +590,7 @@ public class SwingViewImpl extends JFrame implements View {
             buttonPanel.setLayout(new GridLayout(2, 0));
             defaultButton = new JButton("Load Defaults");
             defaultButton.setMnemonic('d');
-            closeButton = new JButton("OK");
-            closeButton.setMnemonic('c');
             buttonPanel.add(defaultButton);
-            buttonPanel.add(closeButton);
 
             add(optionPanel, BorderLayout.CENTER);
             add(buttonPanel, BorderLayout.SOUTH);

@@ -14,6 +14,10 @@ import view.swing.SwingViewImpl;
 import view.View;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -135,6 +139,12 @@ public class SwingControllerImpl implements Controller {
 
     private void setFrameListeners() {
         view.addComponentListener(new FrameListener(view, model).getFRAME_RESIZE_LISTENER());
+        view.getMainPanel().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                view.getToolDialog().dispose();
+            }
+        });
     }
 
     public View getView() {

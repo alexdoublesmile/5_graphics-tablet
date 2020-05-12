@@ -61,47 +61,41 @@ public class ScaleListener {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-//            view.setImageScale(view.getImageScale() / Model.RESIZE_PLUS_FACTOR);
-//            model.setCurrentScale(model.getCurrentScale() / Model.RESIZE_PLUS_FACTOR);
-//            model.setDrawWidth(view.getWidth());
-//            model.setDrawHeight(view.getHeight());
+            view.setImageScale(view.getImageScale() / Model.RESIZE_PLUS_FACTOR);
+            model.setCurrentScale(model.getCurrentScale() / Model.RESIZE_PLUS_FACTOR);
+            model.setDrawWidth(view.getWidth());
+            model.setDrawHeight(view.getHeight());
 
-//            if (model.isScaleMode()) {
-//                view.loadSavedImage();
-//            }
+            if (model.isScaleMode()) {
+                view.loadSavedImage();
+            }
 
 
-//            view.setImageScale(0);
-//            view.getMainPanel().repaint();
-//
-//            view.testSizes();
+            view.setImageScale(0);
+            view.getMainPanel().repaint();
 
-            MouseDrawListener.decreaseCustomFactor();
-            MouseDrawListener.rebaseDefaultStroke();
+            view.testSizes();
         }
     }
 
     private class RefreshButtonListener extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-//            view.setImageScale(1);
-//            model.setCurrentScale(1);
-//
-//            model.setDrawWidth(view.getWidth());
-//            model.setDrawHeight(view.getHeight());
-//            view.setTranslateImage(0, 0);
-//
-//
-//            if (model.isScaleMode()) {
-//                view.loadSavedImage();
-//            }
-//            view.getMainPanel().repaint();
-//
-//            view.testSizes();
+            view.setImageScale(1);
+            model.setCurrentScale(1);
+
+            model.setDrawWidth(view.getWidth());
+            model.setDrawHeight(view.getHeight());
+            view.setTranslateImage(0, 0);
 
 
-            MouseDrawListener.resetCustomFactor();
-            MouseDrawListener.rebaseDefaultStroke();
+            if (model.isScaleMode()) {
+                view.loadSavedImage();
+            }
+            view.getMainPanel().repaint();
+
+            view.testSizes();
+
         }
     }
 

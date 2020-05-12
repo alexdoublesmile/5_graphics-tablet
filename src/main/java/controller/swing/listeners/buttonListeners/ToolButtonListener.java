@@ -7,8 +7,7 @@ import view.swing.SwingViewImpl;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class ToolButtonListener implements ActionListener {
 
@@ -44,6 +43,7 @@ public class ToolButtonListener implements ActionListener {
             if (view.getToolDialog() == null || !view.getToolDialog().isVisible()) {
                 toolDialog = view.new ToolDialog(
                         view, sourceButton.getToolTipText());
+
                 setListeners();
 
                 view.setToolDialog(toolDialog);
@@ -162,7 +162,8 @@ public class ToolButtonListener implements ActionListener {
                 model.getStrokeList().put(drawMode,
                         model.getDefaultStrokeList().get(drawMode)
                 );
-                strokeLabel.setText(String.valueOf(getStrokeSliderValue()));
+                strokeLabel.setText(String.format("Line size is %s now",
+                        String.valueOf(getStrokeSliderValue())));
                 setStrokeSliderValue();
 
                 view.setMainColor(SwingViewImpl.DEFAULT_COLOR);
@@ -173,7 +174,6 @@ public class ToolButtonListener implements ActionListener {
             // TODO
         }
 
-        toolDialog.getCloseButton().addActionListener((e) -> toolDialog.dispose());
     }
 
     private float getStrokeSliderValue() {
