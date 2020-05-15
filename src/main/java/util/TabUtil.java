@@ -35,7 +35,6 @@ public class TabUtil {
         }
     }
 
-
     private static boolean hasTabCopies() {
         for (String title : allTitles) {
             if (isCopy(title)) {
@@ -51,7 +50,8 @@ public class TabUtil {
     }
 
     private static boolean isCopy(String title) {
-        return title.endsWith(TAB_COPY_RIGHT_DELIMITER) && equalsActionTitle(title);
+        currentTitle = title;
+        return title.endsWith(TAB_COPY_RIGHT_DELIMITER) && equalsActionTitle();
     }
 
     private static int getCopyNumber() {
@@ -75,14 +75,13 @@ public class TabUtil {
         if (copyCounter < copyNumber) copyCounter = copyNumber;
     }
 
-    private static boolean equalsActionTitle(String title) {
-        initTitleParts(title);
+    private static boolean equalsActionTitle() {
+        initTitleParts();
         return titleName.equals(actionTitle);
     }
 
-    private static void initTitleParts(String title) {
-        currentTitle = title;
-        titleLength = title.length();
+    private static void initTitleParts() {
+        titleLength = currentTitle.length();
         delimiterIndex = getDelimiterBackIndex();
         titleName = currentTitle.substring(0, titleLength - delimiterIndex);
     }
@@ -90,7 +89,6 @@ public class TabUtil {
     private static String getSymbolByBackIndex(int index) {
         return String.valueOf(currentTitle.charAt(titleLength - index));
     }
-
 
     private static String defaultTabName() {
         return String.format(DEFAULT_TAB_NAME, tabCounter);
