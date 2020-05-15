@@ -10,9 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static config.Config.*;
 import static java.lang.Math.abs;
@@ -40,7 +38,6 @@ import static model.Model.CYLINDER_TOP_RIGHT_BUG_FACTOR;
 import static model.Model.PARALLELEPIPED_CURVE_FACTOR;
 import static model.Model.PARALLELEPIPED_FRONT_ANGLE_FACTOR;
 import static model.Model.PARALLELEPIPED_SIDE_ANGLE_FACTOR;
-import static model.Model.PARALLELOGRAM_FACTOR;
 import static model.Model.POLYGON_ACCURACY_FACTOR;
 import static model.Model.PYRAMID_LEFT_XFACTOR;
 import static model.Model.PYRAMID_LEFT_YFACTOR;
@@ -225,7 +222,7 @@ public class MouseDrawListener {
                         startY = mouseEvent.getY();
                         break;
                     case PASTE:
-                        view.getTabbedPane().setCursor(CursorBuilder.buildICursorByPath(Config.getProperty(Config.GRAB_CURSOR_PATH),
+                        view.getTabbedPane().setCursor(CursorBuilder.buildCursorByPath(Config.getProperty(Config.GRAB_CURSOR_PATH),
                                 Integer.parseInt(Config.getProperty(GRAB_CURSOR_XPOINT)),
                                 Integer.parseInt(Config.getProperty(GRAB_CURSOR_YPOINT)),
                                                 ""));

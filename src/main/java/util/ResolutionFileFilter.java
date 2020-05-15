@@ -3,7 +3,7 @@ package util;
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
 
-public class TextFileFilter extends FileFilter {
+public class ResolutionFileFilter extends FileFilter {
     private static final String PNG_FORMAT = "png";
     private static final String JPG_FORMAT = "jpg";
     private static final String JPEG_FORMAT = "jpeg";
@@ -13,7 +13,7 @@ public class TextFileFilter extends FileFilter {
     private String fileFormat;
     private String fileResolution;
     
-    public TextFileFilter(String fileFormat) {
+    public ResolutionFileFilter(String fileFormat) {
         this.fileFormat = fileFormat;
         this.fileResolution = "." + fileFormat;
     }

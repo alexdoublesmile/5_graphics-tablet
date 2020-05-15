@@ -33,7 +33,7 @@ public class CursorBuilder {
         Field[] configFields = Config.class.getDeclaredFields();
         for (Field field : configFields) {
             if (field.getName().equals(pathFieldName)) {
-                String fieldValue = null;
+                String fieldValue;
                 try {
                     fieldValue = (String) field.get(null);
                     cursorImage = toolkit.getImage(
@@ -59,7 +59,7 @@ public class CursorBuilder {
         return cursor;
     }
 
-    public static Cursor buildICursorByPath(String path, int pointX, int pointY, String name) {
+    public static Cursor buildCursorByPath(String path, int pointX, int pointY, String name) {
         Image cursorImage = toolkit.getImage(Cursor.class.getResource(path));
         cursor = toolkit.createCustomCursor(
                 cursorImage, new Point(pointX, pointY), name);

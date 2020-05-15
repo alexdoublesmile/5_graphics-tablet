@@ -1,50 +1,48 @@
 package util;
 
 public class TabUtil {
+    private static final String TAB_COPY_LEFT_DELIMITER = "(";
+    private static final String TAB_COPY_RIGHT_DELIMITER = ")";
+    private static final int LEFT_DELIMITER_MIN_BACK_INDEX = 3;
+    private static final String DEFAULT_TAB_NAME = "Panel %d";
+    private static final String NEW_TAB_COPY_NAME = "%s" + TAB_COPY_LEFT_DELIMITER + "1" + TAB_COPY_RIGHT_DELIMITER;
+    private static final String REGULAR_TAB_COPY_NAME = "%s" + TAB_COPY_LEFT_DELIMITER + "%d" + TAB_COPY_RIGHT_DELIMITER;
     private static int tabCounter;
+
     private static int copyCounter;
     private static String[] allTitles;
-    private static String previousTitle;
+    private static String actionTitle;
     private static String currentTitle;
+    private static int titleLength;
+    private static int delimiterIndex;
 
     public static String getDefaultTabName() {
         tabCounter++;
-        return String.format("Panel %d", tabCounter);
+        return defaultTabName();
     }
 
-    public static String getCopyTabName(String previousTitle, String[] allTitles) {
+    public static String getCopyTabName(String actionTitle, String[] allTitles) {
         TabUtil.allTitles = allTitles;
-        TabUtil.previousTitle = previousTitle;
-        if (tabHasCopies()) {
-            try {
-                copyCounter++;
-                currentTitle = previousTitle + "(" + copyCounter + ")";
-            } catch (NumberFormatException ex) {
-                currentTitle = previousTitle + "(1)";
-            }
-
-        } else {
-            currentTitle = previousTitle + "(1)";
-        }
+        TabUtil.actionTitle = actionTitle;
         copyCounter = 0;
-        return currentTitle;
+
+        try {
+            return hasTabCopies() ? regularTabCopyName() : newTabCopyName();
+
+        } catch (NumberFormatException ex) {
+            return newTabCopyName();
+        }
     }
 
-    private static boolean tabHasCopies() {
-        int numberInTitle = 0;
-        for (String title : allTitles) {
-            if (title.endsWith(")") && tabsAreSame(title)) {
-                try {
-                    if (getBackSymbol(title, 3).equals("(")) {
-                        numberInTitle = Integer.parseInt(getBackSymbol(title, 2));
-                    } else {
-                        numberInTitle = Integer.parseInt(getBackSymbol(title, 3) + getBackSymbol(title, 2));
-                    }
-                    if (copyCounter < numberInTitle) {
-                        copyCounter = numberInTitle;
-                    }
 
+    private static boolean hasTabCopies() {
+        for (String title : allTitles) {
+            initTitleParts(title);
+            if (isCopy()) {
+                try {
+                    updateCounter(getCopyNumber());
                     return true;
+
                 } catch (NumberFormatException ex) {
                     return false;
                 }
@@ -53,21 +51,61 @@ public class TabUtil {
         return false;
     }
 
-    private static boolean tabsAreSame(String title) {
-        if (getBackSymbol(title, 3).equals("(")) {
-            String titleName = title.substring(0, title.length() - 3);
-            return titleName.equals(previousTitle);
-
-        } else if (getBackSymbol(title, 4).equals("(")) {
-
-            String titleName = title.substring(0, title.length() - 4);
-            return titleName.equals(previousTitle);
-        } else {
-            return false;
-        }
+    private static void initTitleParts(String title) {
+        currentTitle = title;
+        titleLength = title.length();
+        delimiterIndex = getDelimiterBackIndex();
     }
 
-    private static String getBackSymbol(String word, int index) {
-        return String.valueOf(word.charAt(word.length() - index));
+    private static boolean isCopy() {
+        return currentTitle.endsWith(TAB_COPY_RIGHT_DELIMITER) && equalsActionTitle();
+    }
+
+    private static int getCopyNumber() {
+        String copyNumber = "";
+        for (int i = delimiterIndex - 1; i > 1; i--) {
+            copyNumber += getSymbolByBackIndex(i);
+        }
+        return Integer.parseInt(copyNumber);
+    }
+
+    private static int getDelimiterBackIndex() {
+        for (int i = LEFT_DELIMITER_MIN_BACK_INDEX; i < titleLength; i++) {
+            if (getSymbolByBackIndex(i).equals(TAB_COPY_LEFT_DELIMITER)) {
+                return i;
+            }
+        }
+        return LEFT_DELIMITER_MIN_BACK_INDEX;
+    }
+
+    private static void updateCounter(int copyNumber) {
+        if (copyCounter < copyNumber) copyCounter = copyNumber;
+    }
+
+    private static boolean equalsActionTitle() {
+        String titleName = currentTitle.substring(0, titleLength - delimiterIndex);
+        return titleName.equals(actionTitle);
+    }
+
+    private static String getSymbolByBackIndex(int index) {
+        return String.valueOf(currentTitle.charAt(titleLength - index));
+    }
+
+
+    private static String defaultTabName() {
+        return String.format(DEFAULT_TAB_NAME, tabCounter);
+    }
+
+    private static String newTabCopyName() {
+        return String.format(NEW_TAB_COPY_NAME, actionTitle);
+    }
+
+    private static String regularTabCopyName() {
+        copyCounter++;
+        return String.format(REGULAR_TAB_COPY_NAME, actionTitle, copyCounter);
+    }
+
+    public static int getTabCounter() {
+        return tabCounter;
     }
 }

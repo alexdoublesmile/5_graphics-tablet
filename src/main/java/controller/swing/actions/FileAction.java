@@ -2,7 +2,7 @@ package controller.swing.actions;
 
 import model.Model;
 import org.apache.commons.io.FilenameUtils;
-import util.TextFileFilter;
+import util.ResolutionFileFilter;
 import view.swing.SwingViewImpl;
 
 import javax.imageio.ImageIO;
@@ -22,8 +22,8 @@ public class FileAction {
     private static final String IOEXCEPTION_MESSAGE = "Исключение ввода-вывода";
     private static final String DEFAULT_EXCEPTION_MESSAGE = "Что-то пошло не так.\n\nДетали:\n";
 
-    private final TextFileFilter PNG_FILTER;
-    private final TextFileFilter JPG_FILTER;
+    private final ResolutionFileFilter PNG_FILTER;
+    private final ResolutionFileFilter JPG_FILTER;
 
     private final OpenMenuAction LOAD_MENU_ACTION;
     private final SaveMenuAction SAVE_MENU_ACTION;
@@ -45,8 +45,8 @@ public class FileAction {
         this.view = view;
         this.model = model;
 
-        PNG_FILTER = new TextFileFilter(TextFileFilter.getPngFormat());
-        JPG_FILTER = new TextFileFilter(TextFileFilter.getJpgFormat());
+        PNG_FILTER = new ResolutionFileFilter(ResolutionFileFilter.getPngFormat());
+        JPG_FILTER = new ResolutionFileFilter(ResolutionFileFilter.getJpgFormat());
 
         frame = view.getMainFrame();
 //        panel = view.getMainPanel();

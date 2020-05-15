@@ -9,15 +9,11 @@ import model.DrawMode;
 import model.Model;
 import model.UndoRedoService;
 import util.CursorBuilder;
-import util.TextFileFilter;
+import util.ResolutionFileFilter;
 import view.swing.SwingViewImpl;
 import view.View;
 
 import javax.swing.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -38,8 +34,8 @@ public class SwingControllerImpl implements Controller {
     private static final String FILE_NOT_FOUND_MESSAGE = "Такого файла не существует";
     private static final String IOEXCEPTION_MESSAGE = "Исключение ввода-вывода";
     private static final String DEFAULT_EXCEPTION_MESSAGE = "Что-то пошло не так.\n\nДетали:\n";
-    private  TextFileFilter PNG_FILTER;
-    private  TextFileFilter JPG_FILTER;
+    private ResolutionFileFilter PNG_FILTER;
+    private ResolutionFileFilter JPG_FILTER;
 
 
     public SwingControllerImpl(View view, Model model) {
@@ -67,8 +63,8 @@ public class SwingControllerImpl implements Controller {
         // testing
         view.testSizes();
 
-        PNG_FILTER = new TextFileFilter(TextFileFilter.getPngFormat());
-        JPG_FILTER = new TextFileFilter(TextFileFilter.getJpgFormat());
+        PNG_FILTER = new ResolutionFileFilter(ResolutionFileFilter.getPngFormat());
+        JPG_FILTER = new ResolutionFileFilter(ResolutionFileFilter.getJpgFormat());
 
         frame = view.getMainFrame();
 //        panel = view.getMainPanel();
