@@ -885,10 +885,19 @@ public class MouseDrawListener {
                     g2.drawOval(sphereCenter.x - sphereRadius, sphereCenter.y - sphereRadius,
                             abs(sphereCenter.x - finalX), abs(sphereCenter.x - finalX));
                     g2.drawLine(sphereCenter.x, sphereCenter.y, sphereCenter.x, sphereCenter.y);
+                    g2.drawArc(
+                            sphereCenter.x - abs(sphereCenter.x - finalX) / 2,
+                            sphereCenter.y - sphereSmallRadius,
+                            abs(sphereCenter.x - finalX), abs(sphereCenter.y - finalY),
+                            CYLINDER_LINED_ARC_START_ANGLE, CYLINDER_LINED_ARC_FINAL_ANGLE);
 
                     g2.setStroke(DOTTED_LINE);
-                    g2.drawOval(sphereCenter.x - sphereRadius, sphereCenter.y - sphereSmallRadius,
-                            abs(sphereCenter.x - finalX), abs(sphereCenter.y - finalY));
+                    g2.drawArc(
+                            sphereCenter.x - abs(sphereCenter.x - finalX) / 2,
+                            sphereCenter.y - sphereSmallRadius,
+                            abs(sphereCenter.x - finalX), abs(sphereCenter.y - finalY),
+                            CYLINDER_DOTTED_ARC_START_ANGLE, CYLINDER_DOTTED_ARC_FINAL_ANGLE);
+
                     break;
                 case FILL:
                     g2.setStroke(new  BasicStroke(Float.valueOf(Config.getProperty(Config.FILL_BASIC_STROKE))));
