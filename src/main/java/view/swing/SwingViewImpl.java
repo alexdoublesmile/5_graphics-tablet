@@ -14,8 +14,6 @@ import view.swing.buttons.ToolButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -258,7 +256,7 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar.setBackground(CONTROL_PANEL_COLOR);
 
         for (DrawMode drawMode : DrawMode.values()) {
-            if (!model.getSpecialModeList().contains(drawMode)) {
+            if (!model.getNoButtonModeList().contains(drawMode)) {
                 ToolButton toolButton = new ToolButton(IconBuilder.buildIconByDrawMode(drawMode));
                 toolButtons.put(drawMode.name(), toolButton);
                 toolButton.setToolTipText(new StringBuilder(drawMode.name())
@@ -381,7 +379,7 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar.addSeparator();
 
         for (DrawMode drawMode : DrawMode.values()) {
-            if (!model.getSpecialModeList().contains(drawMode)
+            if (!model.getNoButtonModeList().contains(drawMode)
             && drawMode != DrawMode.PASTE) {
                 if (closingElements.contains(drawMode.name())) {
                     toolBar.add(toolButtons.get(drawMode.name()));

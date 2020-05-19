@@ -1,11 +1,7 @@
 package controller.swing.listeners.buttonListeners;
 import controller.swing.SwingControllerImpl;
-import controller.swing.listeners.KeyboardListener;
 import controller.swing.listeners.MouseDrawListener;
-import model.DrawMode;
 import model.Model;
-import model.UndoRedoService;
-import util.CursorBuilder;
 import view.swing.SwingViewImpl;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -37,14 +33,14 @@ public class ScaleListener {
         @Override
         public void actionPerformed(ActionEvent e) {
 //            if (!model.isScaleMode()) {
-//                model.setSpecialMode(true);
+//                model.setNoButtonMode(true);
 //                model.setDrawMode(DrawMode.SCALE);
 //                view.getMainPanel().setCursor(CursorBuilder.buildCursorByDrawMode(DrawMode.SCALE));
 //                view.saveCurrentImage();
 //            }
 //            model.setScaleMode(true);
-//            model.setDrawWidth(view.getMainImage().getWidth());
-//            model.setDrawHeight(view.getMainImage().getHeight());
+//            model.setDrawPanelWidth(view.getMainImage().getWidth());
+//            model.setDrawPanelHeight(view.getMainImage().getHeight());
 
 //            view.setImageScale(2);
 //            view.getMainPanel().repaint();
@@ -63,8 +59,8 @@ public class ScaleListener {
 
             view.setImageScale(view.getImageScale() / Model.RESIZE_PLUS_FACTOR);
             model.setCurrentScale(model.getCurrentScale() / Model.RESIZE_PLUS_FACTOR);
-            model.setDrawWidth(view.getWidth());
-            model.setDrawHeight(view.getHeight());
+            model.setDrawPanelWidth(view.getWidth());
+            model.setDrawPanelHeight(view.getHeight());
 
             if (model.isScaleMode()) {
                 view.loadSavedImage();
@@ -84,8 +80,8 @@ public class ScaleListener {
             view.setImageScale(1);
             model.setCurrentScale(1);
 
-            model.setDrawWidth(view.getWidth());
-            model.setDrawHeight(view.getHeight());
+            model.setDrawPanelWidth(view.getWidth());
+            model.setDrawPanelHeight(view.getHeight());
             view.setTranslateImage(0, 0);
 
 

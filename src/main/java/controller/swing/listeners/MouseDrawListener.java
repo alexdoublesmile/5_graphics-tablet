@@ -67,7 +67,6 @@ public class MouseDrawListener {
 
     private SwingViewImpl view;
     private Model model;
-//    private JPanel view.getMainPanel();
     private Graphics2D g2;
     private int startX;
     private int startY;
@@ -133,11 +132,11 @@ public class MouseDrawListener {
 
                     g2.drawRect(scaleStartX, scaleStartY, scaleWidth, scaleHeight);
                     finalX = mouseEvent.getX() < 0 + scaleWidth / 2 ? 0 + scaleWidth / 2 :
-                            mouseEvent.getX() > model.getDrawWidth() - scaleWidth / 2 ?
-                                    model.getDrawWidth() - scaleWidth / 2 : mouseEvent.getX();
+                            mouseEvent.getX() > model.getDrawPanelWidth() - scaleWidth / 2 ?
+                                    model.getDrawPanelWidth() - scaleWidth / 2 : mouseEvent.getX();
                     finalY = mouseEvent.getY() < 0 + scaleHeight / 2 ? 0 + scaleHeight / 2 :
-                            mouseEvent.getY() > model.getDrawHeight() - scaleHeight / 2 ?
-                                    model.getDrawHeight() - scaleHeight / 2 : mouseEvent.getY();
+                            mouseEvent.getY() > model.getDrawPanelHeight() - scaleHeight / 2 ?
+                                    model.getDrawPanelHeight() - scaleHeight / 2 : mouseEvent.getY();
                     finalX = mouseEvent.getX();
                     finalY = mouseEvent.getY();
                     view.getMainPanel().repaint();
@@ -147,14 +146,11 @@ public class MouseDrawListener {
 
         @Override
         public void mouseDragged(MouseEvent mouseEvent) {
-            if (!model.isCustomMode()) {
+            if (!model.isCustomShapeMode()) {
                 setGraphicsAndColor();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
                 if (
-                        model.isFigureMode() &&
+                        model.isShapeMode() &&
 //                                model.getDrawMode() != DrawMode.COPY_SHAPE &&
                                 model.getDrawMode() != DrawMode.CUT_SHAPE) {
                     view.loadSavedImage();
@@ -239,7 +235,7 @@ public class MouseDrawListener {
                         drawStickyLine();
                         break;
 //                    case CIRCLE:
-//                        Point center = model.getCircleCenter();
+//                        Point center = model.getEllipseCenter();
 //                        int radius = model.getEllipseBigRadius();
 //
 //                        g2.drawOval(center.x - radius, center.y - radius,
@@ -247,7 +243,7 @@ public class MouseDrawListener {
 //                        g2.drawLine(center.x, center.y, center.x, center.y);
 //                        break;
                     case ELLIPSE:
-                        Point ellipseCenter = model.getCircleCenter();
+                        Point ellipseCenter = model.getEllipseCenter();
                         int bigRadius = model.getEllipseBigRadius();
                         int smallRadius = model.getEllipseSmallRadius();
 
@@ -435,7 +431,7 @@ public class MouseDrawListener {
                         g2.drawLine(frontRightTop.x, frontRightTop.y, frontRightBottom.x, frontRightBottom.y);
                         break;
                     case CONE:
-                        Point coneCenter = model.getCircleCenter();
+                        Point coneCenter = model.getEllipseCenter();
                         int coneBigRadius = model.getEllipseBigRadius();
                         int coneSmallRadius = model.getEllipseSmallRadius();
                         int coneHeight = (int) (coneBigRadius * CONE_GROW_FACTOR);
@@ -464,7 +460,7 @@ public class MouseDrawListener {
                         }
                         break;
                     case CYLINDER:
-                        Point cylinderCenter = model.getCircleCenter();
+                        Point cylinderCenter = model.getEllipseCenter();
                         int cylinderBigRadius = model.getEllipseBigRadius();
                         int cylinderSmallRadius = model.getEllipseSmallRadius();
                         int cylinderHeight = (int) (cylinderBigRadius * CYLINDER_GROW_FACTOR);
@@ -488,7 +484,7 @@ public class MouseDrawListener {
                                 abs(cylinderCenter.x - finalX), abs(cylinderCenter.y - finalY));
                         break;
                     case SPHERE:
-                        Point sphereCenter = model.getCircleCenter();
+                        Point sphereCenter = model.getEllipseCenter();
                         int sphereRadius = model.getEllipseBigRadius();
                         int sphereSmallRadius = model.getEllipseSmallRadius();
 
@@ -535,22 +531,22 @@ public class MouseDrawListener {
             saveCoordsToModel();
             model.resetAllPoints();
 
+
             if (
 //                    model.getDrawMode() == DrawMode.CIRCLE
 //                    ||
                     model.getDrawMode() == DrawMode.ELLIPSE
-                    || model.getDrawMode() == DrawMode.SPHERE) {
-                model.setCircleCenter(new Point(mouseEvent.getX(), mouseEvent.getY()));
+                    || model.getDrawMode() == DrawMode.SPHERE
+                            || model.getDrawMode() == DrawMode.CONE
+                            || model.getDrawMode() == DrawMode.CYLINDER) {
+                model.setEllipseCenter(new Point(mouseEvent.getX(), mouseEvent.getY()));
             }
         }
 
         @Override
         public void mouseReleased(MouseEvent mouseEvent) {
             setGraphicsAndColor();
-            g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
-            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            if (model.isFigureMode() && !model.isCustomMode()) {
+            if (model.isShapeMode() && !model.isCustomShapeMode()) {
                 view.loadSavedImage();
             }
 
@@ -634,7 +630,7 @@ public class MouseDrawListener {
                     break;
 //                case CIRCLE:
 ////                    g2.setStroke(DEFAULT_LINE);
-//                    Point center = model.getCircleCenter();
+//                    Point center = model.getEllipseCenter();
 //                    int radius = model.getEllipseBigRadius();
 //
 //                    g2.drawOval(center.x - radius, center.y - radius,
@@ -643,7 +639,7 @@ public class MouseDrawListener {
 //                    break;
                 case ELLIPSE:
 //                    g2.setStroke(DEFAULT_LINE);
-                    Point ellipseCenter = model.getCircleCenter();
+                    Point ellipseCenter = model.getEllipseCenter();
                     int bigRadius = model.getEllipseBigRadius();
                     int smallRadius = model.getEllipseSmallRadius();
 
@@ -802,7 +798,7 @@ public class MouseDrawListener {
 //                    break;
                 case CONE:
 //                    g2.setStroke(DEFAULT_LINE);
-                    Point coneCenter = model.getCircleCenter();
+                    Point coneCenter = model.getEllipseCenter();
                     int coneBigRadius = model.getEllipseBigRadius();
                     int coneSmallRadius = model.getEllipseSmallRadius();
                     int coneHeight = (int) (coneBigRadius * CONE_GROW_FACTOR);
@@ -836,7 +832,7 @@ public class MouseDrawListener {
                     break;
                 case CYLINDER:
 //                    g2.setStroke(DEFAULT_LINE);
-                    Point cylinderCenter = model.getCircleCenter();
+                    Point cylinderCenter = model.getEllipseCenter();
                     int cylinderBigRadius = model.getEllipseBigRadius();
                     int cylinderSmallRadius = model.getEllipseSmallRadius();
                     int cylinderHeight = (int) (cylinderBigRadius * CYLINDER_GROW_FACTOR);
@@ -875,7 +871,7 @@ public class MouseDrawListener {
                     break;
                 case SPHERE:
 //                    g2.setStroke(DEFAULT_LINE);
-                    Point sphereCenter = model.getCircleCenter();
+                    Point sphereCenter = model.getEllipseCenter();
                     int sphereRadius = model.getEllipseBigRadius();
                     int sphereSmallRadius = model.getEllipseSmallRadius();
 
@@ -917,12 +913,12 @@ public class MouseDrawListener {
             }
             finalX = 0;
             finalY = 0;
-            if (model.isFigureMode()
-                    && !model.isCustomMode()
+            if (model.isShapeMode()
+                    && !model.isCustomShapeMode()
                     && !model.isCopyMode()) {
                 view.saveCurrentImage();
             }
-            if (!model.isCustomMode() && !model.isScaleMode()) {
+            if (!model.isCustomShapeMode() && !model.isScaleMode()) {
 //                if (
 //                    model.getDrawMode() != DrawMode.COPY
 //                    || model.getDrawMode() != DrawMode.CUT
@@ -946,6 +942,9 @@ public class MouseDrawListener {
     private void setGraphicsAndColor() {
         g2 = view.getMainImage().createGraphics();
         g2.setColor(view.getMainColor());
+        g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
 
     private  void saveCoordsToModel() {
@@ -1337,8 +1336,8 @@ public class MouseDrawListener {
 
         view.saveCurrentImage();
         pasteDefaultShape(finalX - (polCopyX[1] - polCopyX[0]) / 2, finalY - (polCopyY[2] - polCopyY[1]) / 2);
-        view.resetToolButtonBorders();
-        view.getToolButtons().get("PASTE").setBorderPainted(true);
+//        view.resetToolButtonBorders();
+//        view.getToolButtons().get("PASTE").setBorderPainted(true);
         model.setDrawMode(DrawMode.PASTE);
         view.getTabbedPane().setCursor(CursorBuilder.buildCursorByDrawMode(DrawMode.PASTE));
         try {
@@ -1386,8 +1385,8 @@ public class MouseDrawListener {
 
 
 
-        view.resetToolButtonBorders();
-        view.getToolButtons().get("PASTE").setBorderPainted(true);
+//        view.resetToolButtonBorders();
+//        view.getToolButtons().get("PASTE").setBorderPainted(true);
         model.setDrawMode(DrawMode.PASTE);
         view.getTabbedPane().setCursor(
                 CursorBuilder.buildCursorByDrawMode(DrawMode.PASTE));

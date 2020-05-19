@@ -87,7 +87,7 @@ public class SwingControllerImpl implements Controller {
         ColorButtonListener colorListener = new ColorButtonListener(view);
 
         for (DrawMode drawMode : DrawMode.values()) {
-            if (!model.getSpecialModeList().contains(drawMode)) {
+            if (!model.getNoButtonModeList().contains(drawMode)) {
                 view.getToolButtons().get(drawMode.name())
                         .addActionListener(new ToolButtonListener(view, model, drawMode));
             }

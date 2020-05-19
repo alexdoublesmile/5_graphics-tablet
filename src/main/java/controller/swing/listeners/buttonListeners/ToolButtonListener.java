@@ -35,8 +35,8 @@ public class ToolButtonListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (previousDrawMode == drawMode
-        && drawMode != DrawMode.PASTE
-        && drawMode != DrawMode.SCALE
+                && drawMode != DrawMode.PASTE
+                && drawMode != DrawMode.SCALE
                 && drawMode != DrawMode.FILL) {
             sourceButton = (JButton) e.getSource();
 
@@ -69,22 +69,48 @@ public class ToolButtonListener implements ActionListener {
             }
         }
 
-        model.setSpecialMode(false);
-        if (model.isScaleMode()) {
-//            view.loadSavedImage();
-//            view.getMainPanel().repaint();
-            model.setScaleMode(false);
-        }
-
         view.resetToolButtonBorders();
         model.resetAllCustomPoints();
         view.getToolButtons().get(drawMode.name()).setBorderPainted(true);
 
-        if (
-              (
-//              drawMode == DrawMode.COPY
-//                ||
-        drawMode == DrawMode.CUT)) {
+
+        if (model.getCopyModeList().contains(previousDrawMode)
+        && !model.getCopyModeList().contains(drawMode)) {
+            view.loadSavedImage();
+        }
+        if (drawMode == DrawMode.FILL) {
+            view.setMainColor(Color.white);
+            view.getColorButton().setBackground(view.getMainColor());
+        }
+
+
+        if (!model.getCopyModeList().contains(previousDrawMode)
+        && model.getShapeModeList().contains(drawMode)) {
+            view.saveCurrentImage();
+        }
+
+        if (model.getShapeModeList().contains(drawMode)) {
+            model.setShapeMode(true);
+        } else {
+            model.setShapeMode(false);
+        }
+        if (model.getCustomShapeModeList().contains(drawMode)) {
+            model.setCustomShapeMode(true);
+        } else {
+            model.setCustomShapeMode(false);
+        }
+        if (model.getCopyModeList().contains(drawMode)) {
+            model.setCopyMode(true);
+        } else {
+            model.setCopyMode(false);
+        }
+        if (model.isPolygonInWork()) {
+            view.setMainImage(model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
+            view.getMainPanel().repaint();
+            model.setPolygonInWork(false);
+        }
+
+        if (drawMode == DrawMode.CUT) {
             model.setRectExtract(true);
         } else {
             model.setRectExtract(false);
@@ -98,50 +124,16 @@ public class ToolButtonListener implements ActionListener {
 
         if ((previousDrawMode == DrawMode.CUT_SHAPE
                 && drawMode != DrawMode.CUT_SHAPE)
-        || (previousDrawMode == DrawMode.CUT
+                || (previousDrawMode == DrawMode.CUT
                 && drawMode != DrawMode.CUT)) {
             model.setCutting(false);
             model.setFirstMove(false);
         }
 
         if (drawMode == DrawMode.CUT_SHAPE
-        || drawMode == DrawMode.CUT) {
+                || drawMode == DrawMode.CUT) {
             model.setCutting(true);
             model.setFirstMove(true);
-        }
-
-        if (model.getCopyModeList().contains(previousDrawMode)
-        && !model.getCopyModeList().contains(drawMode)) {
-            view.loadSavedImage();
-        }
-        if (drawMode == DrawMode.FILL) {
-            view.setMainColor(Color.white);
-            view.getColorButton().setBackground(view.getMainColor());
-        }
-        if (!model.getCopyModeList().contains(previousDrawMode)
-        && model.getFigureModeList().contains(drawMode)) {
-            view.saveCurrentImage();
-        }
-        if (model.getFigureModeList().contains(drawMode)) {
-            model.setFigureMode(true);
-        } else {
-            model.setFigureMode(false);
-        }
-        if (model.getCopyModeList().contains(drawMode)) {
-            model.setCopyMode(true);
-        } else {
-            model.setCopyMode(false);
-        }
-        if (model.getCustomModeList().contains(drawMode)) {
-            model.setCustomMode(true);
-        } else {
-            model.setCustomMode(false);
-        }
-        if (model.isPolygonInWork()) {
-            view.setMainImage(model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
-//            view.setMainPanel((JPanel) model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
-            view.getMainPanel().repaint();
-            model.setPolygonInWork(false);
         }
 
         model.setDrawMode(drawMode);
@@ -215,6 +207,5 @@ public class ToolButtonListener implements ActionListener {
         } else {
             // TODO
         }
-
     }
 }

@@ -10,7 +10,6 @@ public enum DrawMode {
     CUT,
 //    COPY_SHAPE,
     CUT_SHAPE,
-    PASTE,
 //    HAND,
     LINE,
 //    DOTTED_LINE,
@@ -32,5 +31,6 @@ public enum DrawMode {
 //    FRUSTUM,
     FILL,
 //    TEXT,
+    PASTE,
     SCALE
 }
