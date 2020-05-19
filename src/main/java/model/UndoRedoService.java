@@ -2,11 +2,8 @@ package model;
 
 import config.Config;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class UndoRedoService {
@@ -17,7 +14,7 @@ public class UndoRedoService {
 
     private ArrayList<BufferedImage> actionList;
     private int actionCounter;
-    private boolean wasIterated;
+    private boolean iterated;
     private BufferedImage selectedAction;
 
     public UndoRedoService() {
@@ -25,7 +22,7 @@ public class UndoRedoService {
     }
 
     public void saveAction(BufferedImage action) {
-        if (wasIterated) {
+        if (iterated) {
             cropList();
             // change the rewritten BufferedImage object to the previously selected
             BufferedImage rewrittenImage = actionList.get(actionCounter - 1);
@@ -65,7 +62,7 @@ public class UndoRedoService {
                     actionCounter--;
                 break;
         }
-        wasIterated = true;
+        iterated = true;
 
         selectedAction = getNewImage(actionList.get(actionCounter - 1));
         return selectedAction;
@@ -89,15 +86,15 @@ public class UndoRedoService {
                 .collect(Collectors.toCollection(ArrayList::new));
         actionList = newList;
 
-        wasIterated = false;
+        iterated = false;
     }
 
-    public boolean isWasIterated() {
-        return wasIterated;
+    public boolean isIterated() {
+        return iterated;
     }
 
-    public void setWasIterated(boolean wasIterated) {
-        this.wasIterated = wasIterated;
+    public void setIterated(boolean iterated) {
+        this.iterated = iterated;
     }
 
     public void reSaveAction(BufferedImage action) {

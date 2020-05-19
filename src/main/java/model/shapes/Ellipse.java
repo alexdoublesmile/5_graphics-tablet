@@ -4,13 +4,13 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Ellipse extends Shape {
-    private Point ellipseCenter;
+    private Point center;
     private ArrayList<Point> allPoints;
 
     public Ellipse() {
         allPoints = new ArrayList<>();
-        ellipseCenter = new Point(0, 0);
-        allPoints.add(ellipseCenter);
+        center = new Point(0, 0);
+        allPoints.add(center);
     }
 
     @Override
@@ -18,11 +18,11 @@ public class Ellipse extends Shape {
         return allPoints;
     }
 
-    public Point getEllipseCenter() {
-        return ellipseCenter;
+    public Point getCenter() {
+        return center;
     }
 
-    public void setEllipseCenter(Point ellipseCenter) {
-        this.ellipseCenter = ellipseCenter;
+    public void setCenter(Point center) {
+        this.center = center;
     }
 }

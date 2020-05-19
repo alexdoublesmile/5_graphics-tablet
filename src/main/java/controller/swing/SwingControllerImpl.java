@@ -104,7 +104,6 @@ public class SwingControllerImpl implements Controller {
         view.getPlusButton().addActionListener(scaleListener.getPLUS_BUTTON_LISTENER());
         view.getMinusButton().addActionListener(scaleListener.getMINUS_BUTTON_LISTENER());
         view.getRefreshButton().addActionListener(scaleListener.getREFRESH_BUTTON_LISTENER());
-//        view.getExpandButton().addActionListener(scaleListener.getEXPAND_BUTTON_LISTENER());
 
         view.getColorButton().addActionListener(colorListener.getColorDisplayButtonListener());
         view.getColorChooser().getSelectionModel().addChangeListener(colorListener.getChooseColorListener());

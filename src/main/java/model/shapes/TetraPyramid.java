@@ -5,26 +5,26 @@ import java.util.ArrayList;
 
 public class TetraPyramid extends Shape {
 
-    private Point tetraPyramidFrontLeft;
-    private Point tetraPyramidFrontRight;
-    private Point tetraPyramidBackLeft;
-    private Point tetraPyramidBackRight;
-    private Point tetraPyramidBottomCenter;
+    private Point frontLeft;
+    private Point frontRight;
+    private Point backLeft;
+    private Point backRight;
+    private Point bottomCenter;
 
     private ArrayList<Point> allPoints;
 
     public TetraPyramid() {
         allPoints = new ArrayList<>();
-        tetraPyramidFrontLeft = new Point(0, 0);
-        tetraPyramidFrontRight = new Point(0, 0);
-        tetraPyramidBackLeft = new Point(0, 0);
-        tetraPyramidBackRight = new Point(0, 0);
-        tetraPyramidBottomCenter = new Point(0, 0);
-        allPoints.add(tetraPyramidFrontLeft);
-        allPoints.add(tetraPyramidFrontRight);
-        allPoints.add(tetraPyramidBackLeft);
-        allPoints.add(tetraPyramidBackRight);
-        allPoints.add(tetraPyramidBottomCenter);
+        frontLeft = new Point(0, 0);
+        frontRight = new Point(0, 0);
+        backLeft = new Point(0, 0);
+        backRight = new Point(0, 0);
+        bottomCenter = new Point(0, 0);
+        allPoints.add(frontLeft);
+        allPoints.add(frontRight);
+        allPoints.add(backLeft);
+        allPoints.add(backRight);
+        allPoints.add(bottomCenter);
     }
 
     @Override
@@ -32,43 +32,43 @@ public class TetraPyramid extends Shape {
         return allPoints;
     }
 
-    public Point getTetraPyramidFrontLeft() {
-        return tetraPyramidFrontLeft;
+    public Point getFrontLeft() {
+        return frontLeft;
     }
 
-    public void setTetraPyramidFrontLeft(Point tetraPyramidFrontLeft) {
-        this.tetraPyramidFrontLeft = tetraPyramidFrontLeft;
+    public void setFrontLeft(Point frontLeft) {
+        this.frontLeft = frontLeft;
     }
 
-    public Point getTetraPyramidFrontRight() {
-        return tetraPyramidFrontRight;
+    public Point getFrontRight() {
+        return frontRight;
     }
 
-    public void setTetraPyramidFrontRight(Point tetraPyramidFrontRight) {
-        this.tetraPyramidFrontRight = tetraPyramidFrontRight;
+    public void setFrontRight(Point frontRight) {
+        this.frontRight = frontRight;
     }
 
-    public Point getTetraPyramidBackLeft() {
-        return tetraPyramidBackLeft;
+    public Point getBackLeft() {
+        return backLeft;
     }
 
-    public void setTetraPyramidBackLeft(Point tetraPyramidBackLeft) {
-        this.tetraPyramidBackLeft = tetraPyramidBackLeft;
+    public void setBackLeft(Point backLeft) {
+        this.backLeft = backLeft;
     }
 
-    public Point getTetraPyramidBackRight() {
-        return tetraPyramidBackRight;
+    public Point getBackRight() {
+        return backRight;
     }
 
-    public void setTetraPyramidBackRight(Point tetraPyramidBackRight) {
-        this.tetraPyramidBackRight = tetraPyramidBackRight;
+    public void setBackRight(Point backRight) {
+        this.backRight = backRight;
     }
 
-    public Point getTetraPyramidBottomCenter() {
-        return tetraPyramidBottomCenter;
+    public Point getBottomCenter() {
+        return bottomCenter;
     }
 
-    public void setTetraPyramidBottomCenter(Point tetraPyramidBottomCenter) {
-        this.tetraPyramidBottomCenter = tetraPyramidBottomCenter;
+    public void setBottomCenter(Point bottomCenter) {
+        this.bottomCenter = bottomCenter;
     }
 }

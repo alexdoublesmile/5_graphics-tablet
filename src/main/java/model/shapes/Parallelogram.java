@@ -5,16 +5,16 @@ import java.util.ArrayList;
 
 public class Parallelogram extends Shape {
 
-    private Point parallelogramLeftBottom;
-    private Point parallelogramRightTop;
+    private Point leftBottom;
+    private Point rightTop;
     private ArrayList<Point> allPoints;
 
     public Parallelogram() {
         allPoints = new ArrayList<>();
-        parallelogramLeftBottom = new Point(0, 0);
-        parallelogramRightTop = new Point(0, 0);
-        allPoints.add(parallelogramLeftBottom);
-        allPoints.add(parallelogramRightTop);
+        leftBottom = new Point(0, 0);
+        rightTop = new Point(0, 0);
+        allPoints.add(leftBottom);
+        allPoints.add(rightTop);
     }
 
     @Override
@@ -22,19 +22,19 @@ public class Parallelogram extends Shape {
         return allPoints;
     }
 
-    public Point getParallelogramLeftBottom() {
-        return parallelogramLeftBottom;
+    public Point getLeftBottom() {
+        return leftBottom;
     }
 
-    public void setParallelogramLeftBottom(Point parallelogramLeftBottom) {
-        this.parallelogramLeftBottom = parallelogramLeftBottom;
+    public void setLeftBottom(Point leftBottom) {
+        this.leftBottom = leftBottom;
     }
 
-    public Point getParallelogramRightTop() {
-        return parallelogramRightTop;
+    public Point getRightTop() {
+        return rightTop;
     }
 
-    public void setParallelogramRightTop(Point parallelogramRightTop) {
-        this.parallelogramRightTop = parallelogramRightTop;
+    public void setRightTop(Point rightTop) {
+        this.rightTop = rightTop;
     }
 }

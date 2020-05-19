@@ -5,34 +5,34 @@ import java.util.ArrayList;
 
 public class TetraPrism extends Shape {
 
-    private Point parallelepipedFrontLeftTop;
-    private Point parallelepipedFrontRightTop;
-    private Point parallelepipedFrontLeftBottom;
-    private Point parallelepipedFrontRightBottom;
-    private Point parallelepipedBackLeftTop;
-    private Point parallelepipedBackRightTop;
-    private Point parallelepipedBackLeftBottom;
-    private Point parallelepipedBackRightBottom;
+    private Point frontLeftTop;
+    private Point frontRightTop;
+    private Point frontLeftBottom;
+    private Point frontRightBottom;
+    private Point backLeftTop;
+    private Point backRightTop;
+    private Point backLeftBottom;
+    private Point backRightBottom;
     private ArrayList<Point> allPoints;
 
     public TetraPrism() {
         allPoints = new ArrayList<>();
-        parallelepipedFrontLeftTop = new Point(0, 0);
-        parallelepipedFrontRightTop = new Point(0, 0);
-        parallelepipedFrontLeftBottom = new Point(0, 0);
-        parallelepipedFrontRightBottom = new Point(0, 0);
-        parallelepipedBackLeftTop = new Point(0, 0);
-        parallelepipedBackRightTop = new Point(0, 0);
-        parallelepipedBackLeftBottom = new Point(0, 0);
-        parallelepipedBackRightBottom = new Point(0, 0);
-        allPoints.add(parallelepipedFrontLeftTop);
-        allPoints.add(parallelepipedFrontRightTop);
-        allPoints.add(parallelepipedFrontLeftBottom);
-        allPoints.add(parallelepipedFrontRightBottom);
-        allPoints.add(parallelepipedBackLeftTop);
-        allPoints.add(parallelepipedBackRightTop);
-        allPoints.add(parallelepipedBackLeftBottom);
-        allPoints.add(parallelepipedBackRightBottom);
+        frontLeftTop = new Point(0, 0);
+        frontRightTop = new Point(0, 0);
+        frontLeftBottom = new Point(0, 0);
+        frontRightBottom = new Point(0, 0);
+        backLeftTop = new Point(0, 0);
+        backRightTop = new Point(0, 0);
+        backLeftBottom = new Point(0, 0);
+        backRightBottom = new Point(0, 0);
+        allPoints.add(frontLeftTop);
+        allPoints.add(frontRightTop);
+        allPoints.add(frontLeftBottom);
+        allPoints.add(frontRightBottom);
+        allPoints.add(backLeftTop);
+        allPoints.add(backRightTop);
+        allPoints.add(backLeftBottom);
+        allPoints.add(backRightBottom);
     }
 
     @Override
@@ -40,67 +40,67 @@ public class TetraPrism extends Shape {
         return allPoints;
     }
 
-    public Point getParallelepipedFrontLeftTop() {
-        return parallelepipedFrontLeftTop;
+    public Point getFrontLeftTop() {
+        return frontLeftTop;
     }
 
-    public void setParallelepipedFrontLeftTop(Point parallelepipedFrontLeftTop) {
-        this.parallelepipedFrontLeftTop = parallelepipedFrontLeftTop;
+    public void setFrontLeftTop(Point frontLeftTop) {
+        this.frontLeftTop = frontLeftTop;
     }
 
-    public Point getParallelepipedFrontRightTop() {
-        return parallelepipedFrontRightTop;
+    public Point getFrontRightTop() {
+        return frontRightTop;
     }
 
-    public void setParallelepipedFrontRightTop(Point parallelepipedFrontRightTop) {
-        this.parallelepipedFrontRightTop = parallelepipedFrontRightTop;
+    public void setFrontRightTop(Point frontRightTop) {
+        this.frontRightTop = frontRightTop;
     }
 
-    public Point getParallelepipedFrontLeftBottom() {
-        return parallelepipedFrontLeftBottom;
+    public Point getFrontLeftBottom() {
+        return frontLeftBottom;
     }
 
-    public void setParallelepipedFrontLeftBottom(Point parallelepipedFrontLeftBottom) {
-        this.parallelepipedFrontLeftBottom = parallelepipedFrontLeftBottom;
+    public void setFrontLeftBottom(Point frontLeftBottom) {
+        this.frontLeftBottom = frontLeftBottom;
     }
 
-    public Point getParallelepipedFrontRightBottom() {
-        return parallelepipedFrontRightBottom;
+    public Point getFrontRightBottom() {
+        return frontRightBottom;
     }
 
-    public void setParallelepipedFrontRightBottom(Point parallelepipedFrontRightBottom) {
-        this.parallelepipedFrontRightBottom = parallelepipedFrontRightBottom;
+    public void setFrontRightBottom(Point frontRightBottom) {
+        this.frontRightBottom = frontRightBottom;
     }
 
-    public Point getParallelepipedBackLeftTop() {
-        return parallelepipedBackLeftTop;
+    public Point getBackLeftTop() {
+        return backLeftTop;
     }
 
-    public void setParallelepipedBackLeftTop(Point parallelepipedBackLeftTop) {
-        this.parallelepipedBackLeftTop = parallelepipedBackLeftTop;
+    public void setBackLeftTop(Point backLeftTop) {
+        this.backLeftTop = backLeftTop;
     }
 
-    public Point getParallelepipedBackRightTop() {
-        return parallelepipedBackRightTop;
+    public Point getBackRightTop() {
+        return backRightTop;
     }
 
-    public void setParallelepipedBackRightTop(Point parallelepipedBackRightTop) {
-        this.parallelepipedBackRightTop = parallelepipedBackRightTop;
+    public void setBackRightTop(Point backRightTop) {
+        this.backRightTop = backRightTop;
     }
 
-    public Point getParallelepipedBackLeftBottom() {
-        return parallelepipedBackLeftBottom;
+    public Point getBackLeftBottom() {
+        return backLeftBottom;
     }
 
-    public void setParallelepipedBackLeftBottom(Point parallelepipedBackLeftBottom) {
-        this.parallelepipedBackLeftBottom = parallelepipedBackLeftBottom;
+    public void setBackLeftBottom(Point backLeftBottom) {
+        this.backLeftBottom = backLeftBottom;
     }
 
-    public Point getParallelepipedBackRightBottom() {
-        return parallelepipedBackRightBottom;
+    public Point getBackRightBottom() {
+        return backRightBottom;
     }
 
-    public void setParallelepipedBackRightBottom(Point parallelepipedBackRightBottom) {
-        this.parallelepipedBackRightBottom = parallelepipedBackRightBottom;
+    public void setBackRightBottom(Point backRightBottom) {
+        this.backRightBottom = backRightBottom;
     }
 }

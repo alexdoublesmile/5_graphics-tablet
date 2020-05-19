@@ -11,6 +11,8 @@ import java.util.HashMap;
 
 public class Model {
 
+
+
     public static final double PARALLELOGRAM_FACTOR = Float.parseFloat(Config.getProperty(Config.PARALLELOGRAM_FACTOR));
 
     public static final double PYRAMID_MAIN_FACTOR = Float.parseFloat(Config.getProperty(Config.PYRAMID_MAIN_LINE_FACTOR));
@@ -79,6 +81,7 @@ public class Model {
     public static final int INDICATOR_TOP_OFFSET = Integer.parseInt(Config.getProperty(Config.INDICATOR_TOP_OFFSET));
     public static final int INDICATOR_BOTTOM_OFFSET = Integer.parseInt(Config.getProperty(Config.INDICATOR_BOTTOM_OFFSET));
 
+    public static final DrawMode DEFAULT_DRAWMODE = DrawMode.PENCIL;
 
     private ArrayList<DrawMode> shapeModeList;
     private ArrayList<DrawMode> customShapeModeList;
@@ -91,49 +94,6 @@ public class Model {
 
     private boolean firstMove;
     private boolean rectExtract;
-
-    {
-        shapeModeList = new ArrayList<>();
-        shapeModeList.add(DrawMode.LINE);
-//        shapeModeList.add(DrawMode.DOTTED_LINE);
-        shapeModeList.add(DrawMode.ARROW);
-//        shapeModeList.add(DrawMode.CIRCLE);
-        shapeModeList.add(DrawMode.ELLIPSE);
-        shapeModeList.add(DrawMode.RECT);
-//        shapeModeList.add(DrawMode.PARALLELOGRAM);
-        shapeModeList.add(DrawMode.POLYGON);
-        shapeModeList.add(DrawMode.PYRAMID);
-        shapeModeList.add(DrawMode.PYRAMID_TETRA);
-//        shapeModeList.add(DrawMode.PYRAMID_CUSTOM);
-        shapeModeList.add(DrawMode.PRISM);
-        shapeModeList.add(DrawMode.PARALLELEPIPED);
-//        shapeModeList.add(DrawMode.PRISM_CUSTOM);
-        shapeModeList.add(DrawMode.CONE);
-        shapeModeList.add(DrawMode.CYLINDER);
-        shapeModeList.add(DrawMode.SPHERE);
-//        shapeModeList.add(DrawMode.COPY);
-        shapeModeList.add(DrawMode.CUT);
-//        shapeModeList.add(DrawMode.COPY_SHAPE);
-        shapeModeList.add(DrawMode.CUT_SHAPE);
-//        shapeModeList.add(DrawMode.PASTE);
-
-        copyModeList = new ArrayList<>();
-//        copyModeList.add(DrawMode.COPY);
-        copyModeList.add(DrawMode.CUT);
-//        copyModeList.add(DrawMode.COPY_SHAPE);
-        copyModeList.add(DrawMode.CUT_SHAPE);
-
-        customShapeModeList = new ArrayList<>();
-        customShapeModeList.add(DrawMode.POLYGON);
-//        customShapeModeList.add(DrawMode.PYRAMID_CUSTOM);
-//        customShapeModeList.add(DrawMode.PRISM_CUSTOM);
-
-        noButtonModeList = new ArrayList<>();
-        noButtonModeList.add(DrawMode.SCALE);
-        noButtonModeList.add(DrawMode.PASTE);
-
-        allPoints = new ArrayList<>();
-    }
 
     private ArrayList<UndoRedoService> undoList;
     private DrawMode drawMode;
@@ -163,7 +123,43 @@ public class Model {
     private Cylinder cylinder;
     private Sphere sphere;
 
-    {
+    private ArrayList<Point> allPoints;
+    private ArrayList<Point> pointList;
+    private ArrayList<Point> prismTopPointList;
+
+    private Polygon polygon;
+
+    private boolean scaleMode;
+    private boolean polygonInWork;
+    private double currentScale;
+    private boolean cutting;
+
+    private HashMap<DrawMode, Float> strokeList;
+    private HashMap<DrawMode, Float> defaultStrokeList;
+    private float pencilStroke;
+
+    public Model() {
+        createShapes();
+        createStrokeList();
+        createModeLists();
+
+        undoList = new ArrayList<>();
+
+        drawMode = DEFAULT_DRAWMODE;
+        eraserStroke = Integer.valueOf(Config.getProperty(Config.ERASER_BASIC_STROKE));
+        ragStroke = Integer.valueOf(Config.getProperty(Config.RAG_BASIC_STROKE));
+
+        pointList = new ArrayList<>();
+        prismTopPointList = new ArrayList<>();
+        polygon = new Polygon();
+
+        currentScale = 1;
+        drawPanelWidth = 0;
+        drawPanelHeight = 0;
+
+    }
+
+    private void createShapes() {
         line = new Line();
         arrow = new Arrow();
         ellipse = new Ellipse();
@@ -192,98 +188,7 @@ public class Model {
         shapeList.add(sphere);
     }
 
-
-
-//    private Point triPyramidFront;
-//    private Point triPyramidLeft;
-//    private Point triPyramidRight;
-//
-//    private Point tetraPyramidFrontLeft;
-//    private Point tetraPyramidFrontRight;
-//    private Point tetraPyramidBackLeft;
-//    private Point tetraPyramidBackRight;
-//    private Point tetraPyramidBottomCenter;
-//
-//    private Point triPrismLeftTop;
-//    private Point triPrismLeftBottom;
-//    private Point triPrismRightTop;
-//    private Point triPrismRightBottom;
-//
-//    private Point parallelepipedFrontLeftTop;
-//    private Point parallelepipedFrontRightTop;
-//    private Point parallelepipedFrontLeftBottom;
-//    private Point parallelepipedFrontRightBottom;
-//    private Point parallelepipedBackLeftTop;
-//    private Point parallelepipedBackRightTop;
-//    private Point parallelepipedBackLeftBottom;
-//    private Point parallelepipedBackRightBottom;
-//
-//    private Point parallelogramLeftBottom;
-//    private Point parallelogramRightTop;
-
-//    private Point circleCenter;
-
-//    private Point ellipseCenter;
-//
-//    private Point arrowLeftPoint;
-//    private Point arrowRightPoint;
-
-    private ArrayList<Point> allPoints;
-    private ArrayList<Point> pointList;
-    private ArrayList<Point> prismTopPointList;
-
-    private Polygon polygon;
-
-    private boolean scaleMode;
-    private boolean polygonInWork;
-    private double currentScale;
-    private boolean cutting;
-
-    private HashMap<DrawMode, Float> strokeList;
-    private HashMap<DrawMode, Float> defaultStrokeList;
-    private float pencilStroke;
-
-    public Model() {
-        undoList = new ArrayList<>();
-
-        drawMode = DrawMode.PENCIL;
-        eraserStroke = Integer.valueOf(Config.getProperty(Config.ERASER_BASIC_STROKE));
-        ragStroke = Integer.valueOf(Config.getProperty(Config.RAG_BASIC_STROKE));
-//        triPyramidFront = new Point(0, 0);
-//        triPyramidLeft = new Point(0, 0);
-//        triPyramidRight = new Point(0, 0);
-//        tetraPyramidFrontLeft = new Point(0, 0);
-//        tetraPyramidBackLeft = new Point(0, 0);
-//        tetraPyramidBackRight = new Point(0, 0);
-//        tetraPyramidFrontRight = new Point(0, 0);
-//        tetraPyramidBottomCenter = new Point(0, 0);
-//        triPrismLeftTop = new Point(0, 0);
-//        triPrismLeftBottom = new Point(0, 0);
-//        triPrismRightTop = new Point(0, 0);
-//        triPrismRightBottom = new Point(0, 0);
-//        parallelepipedFrontLeftTop = new Point(0, 0);
-//        parallelepipedFrontRightTop = new Point(0, 0);
-//        parallelepipedFrontLeftBottom = new Point(0, 0);
-//        parallelepipedFrontRightBottom = new Point(0, 0);
-//        parallelepipedBackLeftTop = new Point(0, 0);
-//        parallelepipedBackRightTop = new Point(0, 0);
-//        parallelepipedBackLeftBottom = new Point(0, 0);
-//        parallelepipedBackRightBottom = new Point(0, 0);
-//        parallelogramLeftBottom = new Point(0, 0);
-//        parallelogramRightTop = new Point(0, 0);
-
-//        circleCenter = new Point(0, 0);
-//        circleCenter = new Point(0, 0);
-//        arrowLeftPoint = new Point(0, 0);
-//        arrowRightPoint = new Point(0, 0);
-
-        pointList = new ArrayList<>();
-        prismTopPointList = new ArrayList<>();
-        polygon = new Polygon();
-        currentScale = 1;
-        drawPanelWidth = 0;
-        drawPanelHeight = 0;
-
+    private void createStrokeList() {
         strokeList = new HashMap<>();
         strokeList.put(DrawMode.PENCIL, Float.valueOf(Config.getProperty(Config.PENCIL_BASIC_STROKE)));
         strokeList.put(DrawMode.RAG, Float.valueOf(Config.getProperty(Config.RAG_BASIC_STROKE)));
@@ -315,6 +220,48 @@ public class Model {
         defaultStrokeList.put(DrawMode.CYLINDER, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         defaultStrokeList.put(DrawMode.SPHERE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         defaultStrokeList.put(DrawMode.POLYGON, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+    }
+
+    private void createModeLists() {
+        shapeModeList = new ArrayList<>();
+        shapeModeList.add(DrawMode.LINE);
+        shapeModeList.add(DrawMode.ARROW);
+//        shapeModeList.add(DrawMode.CIRCLE);
+        shapeModeList.add(DrawMode.ELLIPSE);
+        shapeModeList.add(DrawMode.RECT);
+//        shapeModeList.add(DrawMode.PARALLELOGRAM);
+        shapeModeList.add(DrawMode.POLYGON);
+        shapeModeList.add(DrawMode.PYRAMID);
+        shapeModeList.add(DrawMode.PYRAMID_TETRA);
+//        shapeModeList.add(DrawMode.PYRAMID_CUSTOM);
+        shapeModeList.add(DrawMode.PRISM);
+        shapeModeList.add(DrawMode.PARALLELEPIPED);
+//        shapeModeList.add(DrawMode.PRISM_CUSTOM);
+        shapeModeList.add(DrawMode.CONE);
+        shapeModeList.add(DrawMode.CYLINDER);
+        shapeModeList.add(DrawMode.SPHERE);
+//        shapeModeList.add(DrawMode.COPY);
+        shapeModeList.add(DrawMode.CUT);
+//        shapeModeList.add(DrawMode.COPY_SHAPE);
+        shapeModeList.add(DrawMode.CUT_SHAPE);
+//        shapeModeList.add(DrawMode.PASTE);
+
+        customShapeModeList = new ArrayList<>();
+        customShapeModeList.add(DrawMode.POLYGON);
+//        customShapeModeList.add(DrawMode.PYRAMID_CUSTOM);
+//        customShapeModeList.add(DrawMode.PRISM_CUSTOM);
+
+        copyModeList = new ArrayList<>();
+//        copyModeList.add(DrawMode.COPY);
+        copyModeList.add(DrawMode.CUT);
+//        copyModeList.add(DrawMode.COPY_SHAPE);
+        copyModeList.add(DrawMode.CUT_SHAPE);
+
+        noButtonModeList = new ArrayList<>();
+        noButtonModeList.add(DrawMode.SCALE);
+        noButtonModeList.add(DrawMode.PASTE);
+
+        allPoints = new ArrayList<>();
     }
 
     public int getEllipseBigRadius() {
@@ -357,32 +304,6 @@ public class Model {
     }
 
     public void resetAllPoints() {
-//        triPyramidFront = new Point(finalX, finalY);
-//        triPyramidLeft = new Point(finalX, finalY);
-//        triPyramidRight = new Point(finalX, finalY);
-//        tetraPyramidFrontLeft = new Point(finalX, finalY);
-//        tetraPyramidBackLeft = new Point(finalX, finalY);
-//        tetraPyramidBackRight = new Point(finalX, finalY);
-//        tetraPyramidFrontRight = new Point(finalX, finalY);
-//        tetraPyramidBottomCenter = new Point(finalX, finalY);
-//        triPrismLeftTop = new Point(finalX, finalY);
-//        triPrismLeftBottom = new Point(finalX, finalY);
-//        triPrismRightTop = new Point(finalX, finalY);
-//        triPrismRightBottom = new Point(finalX, finalY);
-//        parallelepipedFrontLeftTop = new Point(finalX, finalY);
-//        parallelepipedFrontRightTop = new Point(finalX, finalY);
-//        parallelepipedFrontLeftBottom = new Point(finalX, finalY);
-//        parallelepipedFrontRightBottom = new Point(finalX, finalY);
-//        parallelepipedBackLeftBottom = new Point(finalX, finalY);
-//        parallelepipedBackLeftTop = new Point(finalX, finalY);
-//        parallelepipedBackRightTop = new Point(finalX, finalY);
-//        parallelepipedBackRightBottom = new Point(finalX, finalY);
-//        parallelogramLeftBottom = new Point(finalX, finalY);
-//        parallelogramRightTop = new Point(finalX, finalY);
-//
-//        circleCenter = new Point(finalX, finalY);
-//        circleCenter = new Point(finalX, finalY);
-
         for (Shape shape : shapeList) {
             for (Point point : shape.getAllPoints()) {
                 point.move(finalX, finalY);
@@ -390,8 +311,8 @@ public class Model {
         }
     }
 
-    public boolean wasIterated(int undoIndex) {
-        return undoList.get(undoIndex).isWasIterated();
+    public boolean isIterated(int undoIndex) {
+        return undoList.get(undoIndex).isIterated();
     }
 
     public  void saveAction(BufferedImage action, int undoIndex) {
@@ -429,38 +350,6 @@ public class Model {
         this.drawMode = drawMode;
     }
 
-    public int getFinalX() {
-        return finalX;
-    }
-
-    public void setFinalX(int finalX) {
-        this.finalX = finalX;
-    }
-
-    public int getStartX() {
-        return startX;
-    }
-
-    public void setStartX(int startX) {
-        this.startX = startX;
-    }
-
-    public int getStartY() {
-        return startY;
-    }
-
-    public void setStartY(int startY) {
-        this.startY = startY;
-    }
-
-    public int getFinalY() {
-        return finalY;
-    }
-
-    public void setFinalY(int finalY) {
-        this.finalY = finalY;
-    }
-
     public boolean isLoading() {
         return loading;
     }
@@ -468,198 +357,6 @@ public class Model {
     public void setLoading(boolean loading) {
         this.loading = loading;
     }
-
-    public int getEraserStroke() {
-        return eraserStroke;
-    }
-
-    public void setEraserStroke(int eraserStroke) {
-        this.eraserStroke = eraserStroke;
-    }
-
-    public int getRagStroke() {
-        return ragStroke;
-    }
-
-    public void setRagStroke(int ragStroke) {
-        this.ragStroke = ragStroke;
-    }
-
-    public Point getTriPyramidLeft() {
-        return pyramid.getTriPyramidLeft();
-    }
-
-    public Point getTriPyramidRight() {
-        return pyramid.getTriPyramidRight();
-    }
-
-    public Point getTetraPyramidFrontLeft() {
-        return tetraPyramid.getTetraPyramidFrontLeft();
-    }
-
-    public Point getTetraPyramidBackLeft() {
-        return tetraPyramid.getTetraPyramidBackLeft();
-    }
-
-    public Point getTetraPyramidBackRight() {
-        return tetraPyramid.getTetraPyramidBackRight();
-    }
-
-//    public Point getCircleCenter() {
-//        return circleCenter;
-//    }
-//
-//    public void setCircleCenter(Point circleCenter) {
-//        this.circleCenter = circleCenter;
-//    }
-
-    public Point getTriPrismLeftTop() {
-        return prism.getTriPrismLeftTop();
-    }
-
-    public Point getTriPrismLeftBottom() {
-        return prism.getTriPrismLeftBottom();
-    }
-
-    public Point getTriPrismRightTop() {
-        return prism.getTriPrismRightTop();
-    }
-
-    public Point getTriPrismRightBottom() {
-        return prism.getTriPrismRightBottom();
-    }
-
-    public Point getTetraPyramidFrontRight() {
-        return tetraPyramid.getTetraPyramidFrontRight();
-    }
-
-    public Point getParallelepipedFrontLeftTop() {
-        return tetraPrism.getParallelepipedFrontLeftTop();
-    }
-
-    public Point getParallelepipedFrontRightTop() {
-        return tetraPrism.getParallelepipedFrontRightTop();
-    }
-
-    public Point getParallelepipedFrontLeftBottom() {
-        return tetraPrism.getParallelepipedFrontLeftBottom();
-    }
-
-    public Point getParallelepipedBackLeftBottom() {
-        return tetraPrism.getParallelepipedBackLeftBottom();
-    }
-
-    public Point getParallelepipedBackRightTop() {
-        return tetraPrism.getParallelepipedBackRightTop();
-    }
-
-    public Point getParallelepipedBackRightBottom() {
-        return tetraPrism.getParallelepipedBackRightBottom();
-    }
-
-//    public Point getParallelogramLeftBottom() {
-//        return parallelogramLeftBottom;
-//    }
-//
-//    public Point getParallelogramRightTop() {
-//        return parallelogramRightTop;
-//    }
-
-    public Point getEllipseCenter() {
-        return ellipse.getEllipseCenter();
-    }
-
-//    public void setTriPyramidLeft(Point triPyramidLeft) {
-//        this.triPyramidLeft = triPyramidLeft;
-//    }
-//
-//    public void setTriPyramidRight(Point triPyramidRight) {
-//        this.triPyramidRight = triPyramidRight;
-//    }
-//
-//    public void setTetraPyramidFrontLeft(Point tetraPyramidFrontLeft) {
-//        this.tetraPyramidFrontLeft = tetraPyramidFrontLeft;
-//    }
-//
-//    public void setTetraPyramidFrontRight(Point tetraPyramidFrontRight) {
-//        this.tetraPyramidFrontRight = tetraPyramidFrontRight;
-//    }
-//
-//    public void setTetraPyramidBackLeft(Point tetraPyramidBackLeft) {
-//        this.tetraPyramidBackLeft = tetraPyramidBackLeft;
-//    }
-//
-//    public void setTetraPyramidBackRight(Point tetraPyramidBackRight) {
-//        this.tetraPyramidBackRight = tetraPyramidBackRight;
-//    }
-//
-//    public void setTriPrismLeftTop(Point triPrismLeftTop) {
-//        this.triPrismLeftTop = triPrismLeftTop;
-//    }
-//
-//    public void setTriPrismLeftBottom(Point triPrismLeftBottom) {
-//        this.triPrismLeftBottom = triPrismLeftBottom;
-//    }
-//
-//    public void setTriPrismRightTop(Point triPrismRightTop) {
-//        this.triPrismRightTop = triPrismRightTop;
-//    }
-//
-//    public void setTriPrismRightBottom(Point triPrismRightBottom) {
-//        this.triPrismRightBottom = triPrismRightBottom;
-//    }
-//
-//    public void setParallelepipedFrontLeftTop(Point parallelepipedFrontLeftTop) {
-//        this.parallelepipedFrontLeftTop = parallelepipedFrontLeftTop;
-//    }
-//
-//    public void setParallelepipedFrontRightTop(Point parallelepipedFrontRightTop) {
-//        this.parallelepipedFrontRightTop = parallelepipedFrontRightTop;
-//    }
-//
-//    public void setParallelepipedFrontLeftBottom(Point parallelepipedFrontLeftBottom) {
-//        this.parallelepipedFrontLeftBottom = parallelepipedFrontLeftBottom;
-//    }
-//
-//    public void setParallelepipedBackLeftBottom(Point parallelepipedBackLeftBottom) {
-//        this.parallelepipedBackLeftBottom = parallelepipedBackLeftBottom;
-//    }
-//
-//    public void setParallelepipedBackRightTop(Point parallelepipedBackRightTop) {
-//        this.parallelepipedBackRightTop = parallelepipedBackRightTop;
-//    }
-//
-//    public void setParallelepipedBackRightBottom(Point parallelepipedBackRightBottom) {
-//        this.parallelepipedBackRightBottom = parallelepipedBackRightBottom;
-//    }
-//
-//    public void setParallelogramLeftBottom(Point parallelogramLeftBottom) {
-//        this.parallelogramLeftBottom = parallelogramLeftBottom;
-//    }
-//
-//    public void setParallelogramRightTop(Point parallelogramRightTop) {
-//        this.parallelogramRightTop = parallelogramRightTop;
-//    }
-
-    public void setEllipseCenter(Point ellipseCenter) {
-        ellipse.setEllipseCenter(ellipseCenter);
-    }
-
-    public Point getTriPyramidFront() {
-        return pyramid.getTriPyramidFront();
-    }
-
-//    public void setTriPyramidFront(Point triPyramidFront) {
-//        pyramid.setTriPyramidFront(triPyramidFront);
-//    }
-
-    public Point getTetraPyramidBottomCenter() {
-        return tetraPyramid.getTetraPyramidBottomCenter();
-    }
-
-//    public void setTetraPyramidBottomCenter(Point tetraPyramidBottomCenter) {
-//        this.tetraPyramidBottomCenter = tetraPyramidBottomCenter;
-//    }
 
     public ArrayList<Point> getPointList() {
         return pointList;
@@ -693,22 +390,6 @@ public class Model {
 
         polygon = new Polygon(xPoints, yPoints, xPoints.length);
     }
-
-//    public Point getArrowLeftPoint() {
-//        return arrowLeftPoint;
-//    }
-//
-//    public void setArrowLeftPoint(Point arrowLeftPoint) {
-//        this.arrowLeftPoint = arrowLeftPoint;
-//    }
-//
-//    public Point getArrowRightPoint() {
-//        return arrowRightPoint;
-//    }
-//
-//    public void setArrowRightPoint(Point arrowRightPoint) {
-//        this.arrowRightPoint = arrowRightPoint;
-//    }
 
     public boolean isShapeMode() {
         return shapeMode;
@@ -748,14 +429,6 @@ public class Model {
 
     public void setPolygonInWork(boolean polygonInWork) {
         this.polygonInWork = polygonInWork;
-    }
-
-    public Point getParallelepipedFrontRightBottom() {
-        return tetraPrism.getParallelepipedFrontRightBottom();
-    }
-
-    public Point getParallelepipedBackLeftTop() {
-        return tetraPrism.getParallelepipedBackLeftTop();
     }
 
     public ArrayList<DrawMode> getNoButtonModeList() {
@@ -884,5 +557,87 @@ public class Model {
 
     public HashMap<DrawMode, Float> getDefaultStrokeList() {
         return defaultStrokeList;
+    }
+
+
+
+    public int getFinalX() {
+        return finalX;
+    }
+
+    public void setFinalX(int finalX) {
+        this.finalX = finalX;
+    }
+
+    public int getStartX() {
+        return startX;
+    }
+
+    public void setStartX(int startX) {
+        this.startX = startX;
+    }
+
+    public int getStartY() {
+        return startY;
+    }
+
+    public void setStartY(int startY) {
+        this.startY = startY;
+    }
+
+    public int getFinalY() {
+        return finalY;
+    }
+
+    public void setFinalY(int finalY) {
+        this.finalY = finalY;
+    }
+
+    public Line getLine() {
+        return line;
+    }
+
+    public Arrow getArrow() {
+        return arrow;
+    }
+
+    public Ellipse getEllipse() {
+        return ellipse;
+    }
+
+    public Rect getRect() {
+        return rect;
+    }
+
+    public Parallelogram getParallelogram() {
+        return parallelogram;
+    }
+
+    public Pyramid getPyramid() {
+        return pyramid;
+    }
+
+    public Prism getPrism() {
+        return prism;
+    }
+
+    public TetraPyramid getTetraPyramid() {
+        return tetraPyramid;
+    }
+
+    public TetraPrism getTetraPrism() {
+        return tetraPrism;
+    }
+
+    public Cone getCone() {
+        return cone;
+    }
+
+    public Cylinder getCylinder() {
+        return cylinder;
+    }
+
+    public Sphere getSphere() {
+        return sphere;
     }
 }

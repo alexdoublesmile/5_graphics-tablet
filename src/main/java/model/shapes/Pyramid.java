@@ -5,20 +5,20 @@ import java.util.ArrayList;
 
 public class Pyramid extends Shape {
 
-    private Point triPyramidFront;
-    private Point triPyramidLeft;
-    private Point triPyramidRight;
+    private Point front;
+    private Point left;
+    private Point right;
 
     private ArrayList<Point> allPoints;
 
     public Pyramid() {
         allPoints = new ArrayList<>();
-        triPyramidFront = new Point(0, 0);
-        triPyramidLeft = new Point(0, 0);
-        triPyramidRight = new Point(0, 0);
-        allPoints.add(triPyramidFront);
-        allPoints.add(triPyramidLeft);
-        allPoints.add(triPyramidRight);
+        front = new Point(0, 0);
+        left = new Point(0, 0);
+        right = new Point(0, 0);
+        allPoints.add(front);
+        allPoints.add(left);
+        allPoints.add(right);
     }
 
     @Override
@@ -26,27 +26,27 @@ public class Pyramid extends Shape {
         return allPoints;
     }
 
-    public Point getTriPyramidFront() {
-        return triPyramidFront;
+    public Point getFront() {
+        return front;
     }
 
-    public void setTriPyramidFront(Point triPyramidFront) {
-        this.triPyramidFront = triPyramidFront;
+    public void setFront(Point front) {
+        this.front = front;
     }
 
-    public Point getTriPyramidLeft() {
-        return triPyramidLeft;
+    public Point getLeft() {
+        return left;
     }
 
-    public void setTriPyramidLeft(Point triPyramidLeft) {
-        this.triPyramidLeft = triPyramidLeft;
+    public void setLeft(Point left) {
+        this.left = left;
     }
 
-    public Point getTriPyramidRight() {
-        return triPyramidRight;
+    public Point getRight() {
+        return right;
     }
 
-    public void setTriPyramidRight(Point triPyramidRight) {
-        this.triPyramidRight = triPyramidRight;
+    public void setRight(Point right) {
+        this.right = right;
     }
 }

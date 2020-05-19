@@ -5,17 +5,17 @@ import java.util.ArrayList;
 
 public class Arrow extends Shape {
 
-    private Point arrowLeftPoint;
-    private Point arrowRightPoint;
+    private Point leftPoint;
+    private Point rightPoint;
 
     private ArrayList<Point> allPoints;
 
     public Arrow() {
         allPoints = new ArrayList<>();
-        arrowLeftPoint = new Point(0, 0);
-        arrowRightPoint = new Point(0, 0);
-        allPoints.add(arrowLeftPoint);
-        allPoints.add(arrowRightPoint);
+        leftPoint = new Point(0, 0);
+        rightPoint = new Point(0, 0);
+        allPoints.add(leftPoint);
+        allPoints.add(rightPoint);
     }
 
     @Override
@@ -23,20 +23,20 @@ public class Arrow extends Shape {
         return allPoints;
     }
 
-    public Point getArrowLeftPoint() {
-        return arrowLeftPoint;
+    public Point getLeftPoint() {
+        return leftPoint;
     }
 
-    public void setArrowLeftPoint(Point arrowLeftPoint) {
-        this.arrowLeftPoint = arrowLeftPoint;
+    public void setLeftPoint(Point leftPoint) {
+        this.leftPoint = leftPoint;
     }
 
-    public Point getArrowRightPoint() {
-        return arrowRightPoint;
+    public Point getRightPoint() {
+        return rightPoint;
     }
 
-    public void setArrowRightPoint(Point arrowRightPoint) {
-        this.arrowRightPoint = arrowRightPoint;
+    public void setRightPoint(Point rightPoint) {
+        this.rightPoint = rightPoint;
     }
 
 }

@@ -5,22 +5,22 @@ import java.util.ArrayList;
 
 public class Prism extends Shape {
 
-    private Point triPrismLeftTop;
-    private Point triPrismLeftBottom;
-    private Point triPrismRightTop;
-    private Point triPrismRightBottom;
+    private Point leftTop;
+    private Point leftBottom;
+    private Point rightTop;
+    private Point rightBottom;
     private ArrayList<Point> allPoints;
 
     public Prism() {
         allPoints = new ArrayList<>();
-        triPrismLeftBottom = new Point(0, 0);
-        triPrismLeftTop = new Point(0, 0);
-        triPrismRightBottom = new Point(0, 0);
-        triPrismRightTop = new Point(0, 0);
-        allPoints.add(triPrismLeftBottom);
-        allPoints.add(triPrismLeftTop);
-        allPoints.add(triPrismRightBottom);
-        allPoints.add(triPrismRightTop);
+        leftBottom = new Point(0, 0);
+        leftTop = new Point(0, 0);
+        rightBottom = new Point(0, 0);
+        rightTop = new Point(0, 0);
+        allPoints.add(leftBottom);
+        allPoints.add(leftTop);
+        allPoints.add(rightBottom);
+        allPoints.add(rightTop);
     }
 
     @Override
@@ -28,35 +28,35 @@ public class Prism extends Shape {
         return allPoints;
     }
 
-    public Point getTriPrismLeftTop() {
-        return triPrismLeftTop;
+    public Point getLeftTop() {
+        return leftTop;
     }
 
-    public void setTriPrismLeftTop(Point triPrismLeftTop) {
-        this.triPrismLeftTop = triPrismLeftTop;
+    public void setLeftTop(Point leftTop) {
+        this.leftTop = leftTop;
     }
 
-    public Point getTriPrismLeftBottom() {
-        return triPrismLeftBottom;
+    public Point getLeftBottom() {
+        return leftBottom;
     }
 
-    public void setTriPrismLeftBottom(Point triPrismLeftBottom) {
-        this.triPrismLeftBottom = triPrismLeftBottom;
+    public void setLeftBottom(Point leftBottom) {
+        this.leftBottom = leftBottom;
     }
 
-    public Point getTriPrismRightTop() {
-        return triPrismRightTop;
+    public Point getRightTop() {
+        return rightTop;
     }
 
-    public void setTriPrismRightTop(Point triPrismRightTop) {
-        this.triPrismRightTop = triPrismRightTop;
+    public void setRightTop(Point rightTop) {
+        this.rightTop = rightTop;
     }
 
-    public Point getTriPrismRightBottom() {
-        return triPrismRightBottom;
+    public Point getRightBottom() {
+        return rightBottom;
     }
 
-    public void setTriPrismRightBottom(Point triPrismRightBottom) {
-        this.triPrismRightBottom = triPrismRightBottom;
+    public void setRightBottom(Point rightBottom) {
+        this.rightBottom = rightBottom;
     }
 }

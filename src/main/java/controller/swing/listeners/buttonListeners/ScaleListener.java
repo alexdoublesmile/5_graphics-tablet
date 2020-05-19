@@ -10,23 +10,19 @@ public class ScaleListener {
     private final PlusButtonListener PLUS_BUTTON_LISTENER;
     private final MinusButtonListener MINUS_BUTTON_LISTENER;
     private final RefreshButtonListener REFRESH_BUTTON_LISTENER;
-    private final ExpandButtonListener EXPAND_BUTTON_LISTENER;
 
     private SwingViewImpl view;
     private Model model;
     private SwingControllerImpl controller;
-//    private JPanel mainPanel;
 
     public ScaleListener(SwingViewImpl view, Model model, SwingControllerImpl controller) {
         this.view = view;
         this.model = model;
         this.controller = controller;
-//        mainPanel = view.getMainPanel();
 
         PLUS_BUTTON_LISTENER = new PlusButtonListener();
         MINUS_BUTTON_LISTENER = new MinusButtonListener();
         REFRESH_BUTTON_LISTENER = new RefreshButtonListener();
-        EXPAND_BUTTON_LISTENER = new ExpandButtonListener();
     }
 
     private class PlusButtonListener extends AbstractAction {
@@ -46,10 +42,6 @@ public class ScaleListener {
 //            view.getMainPanel().repaint();
 //
 //            view.testSizes();
-
-
-            MouseDrawListener.increaseCustomFactor();
-            MouseDrawListener.rebaseDefaultStroke();
         }
     }
 
@@ -93,29 +85,6 @@ public class ScaleListener {
             view.testSizes();
 
         }
-    }
-
-    private class ExpandButtonListener extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!view.isExtended()) {
-                view.setVisible(false);
-                view.setUndecorated(true);
-                view.setExtended(true);
-                view.setVisible(true);
-
-            } else {
-                view.setVisible(false);
-                view.setUndecorated(false);
-                view.setExtended(false);
-                view.setVisible(true);
-            }
-
-        }
-    }
-
-    public ExpandButtonListener getEXPAND_BUTTON_LISTENER() {
-        return EXPAND_BUTTON_LISTENER;
     }
 
     public PlusButtonListener getPLUS_BUTTON_LISTENER() {
