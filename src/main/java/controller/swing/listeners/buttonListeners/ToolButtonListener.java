@@ -19,6 +19,9 @@ public class ToolButtonListener implements ActionListener {
     private SwingViewImpl.ToolDialog toolDialog;
     private JLabel strokeLabel;
     private JSlider strokeSlider;
+    private JRadioButton solidStyleButton;
+    private JRadioButton dottedStyleButton;
+
 
     private float modeStrokeFactor = 1;
 
@@ -145,6 +148,8 @@ public class ToolButtonListener implements ActionListener {
         if (drawMode != DrawMode.CUT && drawMode != DrawMode.CUT_SHAPE) {
             strokeLabel = toolDialog.getWidthLabel();
             strokeSlider = toolDialog.getWidthSlider();
+            solidStyleButton = toolDialog.getSolid();
+            dottedStyleButton = toolDialog.getDotted();
 
             strokeSlider.addChangeListener(e -> {
 
@@ -166,6 +171,17 @@ public class ToolButtonListener implements ActionListener {
                 view.setMainColor(SwingViewImpl.DEFAULT_COLOR);
                 view.getColorButton().setBackground(SwingViewImpl.DEFAULT_COLOR);
 
+            });
+
+//            solidStyleButton.addChangeListener(e -> {
+//                if (solidStyleButton.isSelected()) {
+//                    model.setDotted(false);
+//                }
+//            });
+            dottedStyleButton.addChangeListener(e -> {
+                if (dottedStyleButton.isSelected()) {
+                    model.setDotted(true);
+                }
             });
         } else {
             // TODO

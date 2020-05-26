@@ -139,6 +139,8 @@ public class Model {
     private HashMap<DrawMode, Float> strokeList;
     private HashMap<DrawMode, Float> defaultStrokeList;
     private float pencilStroke;
+    private boolean dotted;
+
 
     public Model() {
         createShapes();
@@ -569,7 +571,13 @@ public class Model {
         return defaultStrokeList;
     }
 
+    public boolean isDotted() {
+        return dotted;
+    }
 
+    public void setDotted(boolean dotted) {
+        this.dotted = dotted;
+    }
 
     public int getFinalX() {
         return finalX;

@@ -48,15 +48,6 @@ import static model.Model.STICKY_LINE_FACTOR;
 
 public class MouseDrawListener {
     private static float CUSTOM_FACTOR = 1f;
-    private boolean dotted;
-
-    public boolean isDotted() {
-        return dotted;
-    }
-
-    public void setDotted(boolean dotted) {
-        this.dotted = dotted;
-    }
 
     private static final BasicStroke DOTTED_LINE = new BasicStroke(
             Float.valueOf(Config.getProperty(Config.BASIC_STROKE_WIDTH)),
@@ -535,7 +526,7 @@ public class MouseDrawListener {
                 g2.setStroke(new BasicStroke(
                         model.getStrokeList().get(model.getDrawMode())));
 
-                if (dotted) {
+                if (model.isDotted()) {
                     g2.setStroke(DOTTED_LINE);
                 }
             }
@@ -556,7 +547,7 @@ public class MouseDrawListener {
                     break;
                 case CUT:
                     g2.setStroke(DOTTED_LINE);
-                    g2.setColor(Color.BLACK);
+                    g2.setColor(Color.BLUE);
                     cutPart(Math.min(startX , finalX), Math.min(startY, finalY),
                             Math.abs(startX - finalX), Math.abs(startY - finalY));
                     g2.drawRect(Math.min(startX , finalX), Math.min(startY, finalY),
@@ -565,6 +556,7 @@ public class MouseDrawListener {
 //                case COPY_SHAPE:
                 case CUT_SHAPE:
                     g2.setStroke(DOTTED_LINE);
+                    g2.setColor(Color.BLUE);
                     view.saveCurrentImage();
                     cutDefaultShape();
                     if (model.isCutting()) {
@@ -863,6 +855,8 @@ public class MouseDrawListener {
                         view.getMainImage(),
                         view.getTabbedPane().getSelectedIndex());
             }
+
+            model.setDotted(false);
 
             view.getMainPanel().repaint();
             g2.dispose();
@@ -1365,7 +1359,7 @@ public class MouseDrawListener {
             g1.setClip(0, 0, view.getMainImage().getWidth(), view.getMainImage().getHeight());
             g1.setColor(Color.BLUE);
             if (model.isCutting()) {
-                g1.setColor(Color.BLACK);
+                g1.setColor(Color.BLUE);
             }
             ((Graphics2D)g1).setStroke(DOTTED_LINE);
             g1.drawPolygon(mys);
