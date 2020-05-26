@@ -265,7 +265,7 @@ public class SwingViewImpl extends JFrame implements View {
         toolBar.setRollover(false);
         toolBar.setBorderPainted(false);
         toolBar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        toolBar.setPreferredSize(new Dimension(mainFrame.getWidth(), 35));
+        toolBar.setPreferredSize(new Dimension(mainFrame.getWidth(), 40));
 
         toolBar.setBackground(CONTROL_PANEL_COLOR);
 
