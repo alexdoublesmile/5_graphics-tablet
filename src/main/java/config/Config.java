@@ -7,6 +7,10 @@ import java.util.Properties;
 public class Config {
 
     private static final String PROPERTIES_FILE_NAME = "settings.properties";
+    public static final String CREATOR = "creator";
+
+    public static final String VERSION = "version.number";
+    public static final String VERSION_DATE = "version.date";
 
     public static final String PENCIL_CURSOR_PATH = "pencil.cursor.path";
     public static final String PENCIL_CURSOR_XPOINT = "pencil.cursor.x.point";

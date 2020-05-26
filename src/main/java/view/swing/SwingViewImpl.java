@@ -47,6 +47,17 @@ public class SwingViewImpl extends JFrame implements View {
     private static final String MEMORY_MENU_NAME = "Memory";
     private static final String STATISTIC_MENU_NAME = "Statistic";
 
+    private static final String VERSION_MESSAGE_TITLE = "Graphics Tablet version";
+    private static final String VERSION = Config.getProperty(Config.VERSION);
+    private static final String VERSION_DATE = Config.getProperty(Config.VERSION_DATE);
+    private static final String PROGRAM_CREATOR = Config.getProperty(Config.CREATOR);
+    private static final String VERSION_MESSAGE_TEXT =
+            String.format("<html>" +
+                            "<p>GTv.%s</p>" +
+                            "<p>revision %s</p>" +
+                            "<p style=\"color: red; text-align:center\">by %s</p>",
+                    VERSION, VERSION_DATE, PROGRAM_CREATOR);
+
 
 
     private static final String DISCOLOR_BUTTON_NAME = "Discolor";
@@ -217,25 +228,28 @@ public class SwingViewImpl extends JFrame implements View {
         mainMenu.add(Box.createGlue());
         mainMenu.add(closeButton);
 
-        fileMenu.add(newMenu);
-        fileMenu.addSeparator();
+//        fileMenu.add(newMenu);
+//        fileMenu.addSeparator();
         fileMenu.add(loadMenu);
-        fileMenu.add(loadNewMenu);
-        fileMenu.add(loadRecentMenu);
+//        fileMenu.add(loadNewMenu);
+//        fileMenu.add(loadRecentMenu);
         fileMenu.addSeparator();
         fileMenu.add(saveMenu);
         fileMenu.add(saveAsMenu);
-        fileMenu.add(saveAllMenu);
-        fileMenu.addSeparator();
-        fileMenu.add(renameMenu);
-        fileMenu.addSeparator();
-        fileMenu.add(closeMenu);
-        fileMenu.add(closeAllMenu);
-        fileMenu.add(exitMenu);
+//        fileMenu.add(saveAllMenu);
+//        fileMenu.addSeparator();
+//        fileMenu.add(renameMenu);
+//        fileMenu.addSeparator();
+//        fileMenu.add(closeMenu);
+//        fileMenu.add(closeAllMenu);
+//        fileMenu.add(exitMenu);
 
         helpMenu.add(versionMenu);
         versionMenu.addActionListener(e -> JOptionPane.showMessageDialog(
-                null, "GTv.6.2.4\nby Alex Plohoy"));
+                null,
+                VERSION_MESSAGE_TEXT,
+                VERSION_MESSAGE_TITLE,
+                JOptionPane.INFORMATION_MESSAGE));
 //        helpMenu.add(helpModeMenu);
 
         adminMenu.add(logsMenu);

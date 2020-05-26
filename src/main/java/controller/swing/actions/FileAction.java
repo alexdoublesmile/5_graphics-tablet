@@ -108,9 +108,7 @@ public class FileAction {
                     chooseValue = fileChooser.showSaveDialog(null);
                     if (chooseValue == JFileChooser.APPROVE_OPTION) {
                         model.setFileName(fileChooser.getSelectedFile().getAbsolutePath());
-                    } else {
-                        return;
-                    }
+                    } else return;
                 }
                 writeToFile();
         }
@@ -139,7 +137,8 @@ public class FileAction {
                         new  File(model.getFileName() + PNG_FILTER.getFileResolution()));
             }
             else {
-                ImageIO.write(view.getMainImage(),
+                ImageIO.write(
+                        view.getMainImage(),
                         JPG_FILTER.getFileFormat(),
                         new  File(model.getFileName() + JPG_FILTER.getFileResolution()));
             }
