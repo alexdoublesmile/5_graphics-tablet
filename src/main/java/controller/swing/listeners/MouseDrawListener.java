@@ -152,6 +152,9 @@ public class MouseDrawListener {
                     g2.setStroke(new BasicStroke(
                             model.getStrokeList().get(model.getDrawMode())));
                 }
+                if (model.isShapeMode()) {
+                    g2.setStroke(DOTTED_LINE);
+                }
                 switch (model.getDrawMode()) {
                     case PENCIL:
                         g2.drawLine(finalX, finalY, mouseEvent.getX(), mouseEvent.getY());
@@ -169,7 +172,7 @@ public class MouseDrawListener {
                         break;
                     case CUT:
                         g2.setStroke(DOTTED_LINE);
-                        g2.setColor(Color.BLACK);
+                        g2.setColor(Color.BLUE);
                         finalX = mouseEvent.getX();
                         finalY = mouseEvent.getY();
                         g2.drawRect(Math.min(startX, finalX), Math.min(startY, finalY), Math.abs(finalX - startX), Math.abs(finalY - startY));
@@ -179,7 +182,7 @@ public class MouseDrawListener {
                         polY.add(mouseEvent.getY());
                         g2.setColor(Color.BLUE);
                         if (model.isCutting()) {
-                            g2.setColor(Color.BLACK);
+                            g2.setColor(Color.BLUE);
                         }
                         g2.drawLine(startX, startY, mouseEvent.getX(),mouseEvent.getY());
                         startX = mouseEvent.getX();
@@ -198,6 +201,7 @@ public class MouseDrawListener {
                         break;
                     case LINE:
                     case ARROW:
+                        g2.setStroke(DEFAULT_LINE);
                         drawStickyLine();
                         break;
 //                    case CIRCLE:
