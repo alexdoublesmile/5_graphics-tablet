@@ -17,13 +17,10 @@ public class FunctionButtonListener {
 
     private SwingViewImpl view;
     private Model model;
-//    private JPanel mainPanel;
 
     public FunctionButtonListener(SwingViewImpl view, Model model) {
         this.view = view;
         this.model = model;
-//        mainPanel = view.getMainPanel();
-
         DISCOLOR_BUTTON_LISTENER = new DiscolorButtonListener();
         CLEAN_BUTTON_LISTENER = new CleanButtonListener();
         CALCULATOR_BUTTON_LISTENER = new CalculatorButtonListener();
@@ -57,11 +54,8 @@ public class FunctionButtonListener {
             }
 
             view.setMainImage(result);
-
             model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
-//            model.saveAction(view.getMainPanel(), view.getTabbedPane().getSelectedIndex());
             view.saveCurrentImage();
-
             view.getMainPanel().repaint();
         }
     }
@@ -72,7 +66,6 @@ public class FunctionButtonListener {
 
             if (model.isPolygonInWork()) {
                 view.setMainImage(model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
-//                view.setMainPanel((JPanel) model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
                 view.getMainPanel().repaint();
                 model.setPolygonInWork(false);
 
@@ -85,9 +78,7 @@ public class FunctionButtonListener {
             g2.setColor(Color.black);
 
             model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
-//            model.saveAction(view.getMainPanel(), view.getTabbedPane().getSelectedIndex());
             view.saveCurrentImage();
-
             view.getMainPanel().repaint();
         }
     }

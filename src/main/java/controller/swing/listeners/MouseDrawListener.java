@@ -1205,22 +1205,8 @@ public class MouseDrawListener {
         return MOUSE_ADAPTER;
     }
 
-//    public void copyPart(int x1, int y1, int h, int w) {
-//        polX.add(x1);
-//        polY.add(y1);
-//        polX.add(x1 + h);
-//        polY.add(y1);
-//        polX.add(x1 + h);
-//        polY.add(y1 + w);
-//        polX.add(x1);
-//        polY.add(y1 + w);
-//        cutDefaultShape();
-//    }
-
     public void cutPart(int x1, int y1, int h, int w) {
         view.loadSavedImage();
-//        copyPart(x1, y1, h, w);
-
         polX.add(x1);
         polY.add(y1);
         polX.add(x1 + h);
@@ -1242,8 +1228,7 @@ public class MouseDrawListener {
 
         view.saveCurrentImage();
         pasteDefaultShape(finalX - (polCopyX[1] - polCopyX[0]) / 2, finalY - (polCopyY[2] - polCopyY[1]) / 2);
-//        view.resetToolButtonBorders();
-//        view.getToolButtons().get("PASTE").setBorderPainted(true);
+        view.resetToolButtonBorders();
         model.setDrawMode(DrawMode.PASTE);
         view.getTabbedPane().setCursor(CursorBuilder.buildCursorByDrawMode(DrawMode.PASTE));
         try {
@@ -1291,8 +1276,7 @@ public class MouseDrawListener {
 
 
 
-//        view.resetToolButtonBorders();
-//        view.getToolButtons().get("PASTE").setBorderPainted(true);
+        view.resetToolButtonBorders();
         model.setDrawMode(DrawMode.PASTE);
         view.getTabbedPane().setCursor(
                 CursorBuilder.buildCursorByDrawMode(DrawMode.PASTE));

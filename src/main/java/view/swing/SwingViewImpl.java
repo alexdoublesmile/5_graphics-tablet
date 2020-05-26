@@ -235,7 +235,7 @@ public class SwingViewImpl extends JFrame implements View {
 
         helpMenu.add(versionMenu);
         versionMenu.addActionListener(e -> JOptionPane.showMessageDialog(
-                null, "version 6.1.2"));
+                null, "GTv.6.2.4\nby Alex Plohoy"));
 //        helpMenu.add(helpModeMenu);
 
         adminMenu.add(logsMenu);

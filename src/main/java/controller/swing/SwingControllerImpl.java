@@ -67,7 +67,6 @@ public class SwingControllerImpl implements Controller {
         JPG_FILTER = new ResolutionFileFilter(ResolutionFileFilter.getJpgFormat());
 
         frame = view.getMainFrame();
-//        panel = view.getMainPanel();
         fileChooser = view.getFileChooser();
         fileChooser.addChoosableFileFilter(PNG_FILTER);
         fileChooser.addChoosableFileFilter(JPG_FILTER);

@@ -334,6 +334,18 @@ public class Model {
         return undoList.get(undoIndex).getNextAction();
     }
 
+    public ArrayList<UndoRedoService> getUndoList() {
+        return undoList;
+    }
+
+    public int getUndoQuantity() {
+        return UndoRedoService.getUndoQuantity();
+    }
+
+    public void setUndoQuantity(int newUndoQuantity) {
+        UndoRedoService.setUndoQuantity(newUndoQuantity);
+    }
+
     public String getFileName() {
         return fileName;
     }
@@ -374,7 +386,6 @@ public class Model {
         this.polygon = new Polygon();
         this.pointList = new ArrayList<>();
         this.prismTopPointList = new ArrayList<>();
-
     }
 
     public void fillPolygon() {
@@ -492,19 +503,6 @@ public class Model {
 
     public void setDrawPanelHeight(int drawPanelHeight) {
         this.drawPanelHeight = drawPanelHeight;
-    }
-
-    public ArrayList<UndoRedoService> getUndoList() {
-        return undoList;
-    }
-
-    public int getUndoQuantity() {
-        return UndoRedoService.getUndoQuantity();
-    }
-
-    public void setUndoQuantity(int newUndoQuantity) {
-
-            UndoRedoService.setUndoQuantity(newUndoQuantity);
     }
 
     public boolean isCopyMode() {

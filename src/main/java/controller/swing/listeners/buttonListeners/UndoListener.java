@@ -22,7 +22,6 @@ public class UndoListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             view.setMainImage(model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
-//            view.setMainPanel((JPanel) model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
             view.getMainPanel().repaint();
         }
     }
@@ -31,7 +30,6 @@ public class UndoListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             view.setMainImage(model.getNextAction(view.getTabbedPane().getSelectedIndex()));
-//            view.setMainPanel((JPanel) model.getNextAction(view.getTabbedPane().getSelectedIndex()));
             view.getMainPanel().repaint();
         }
     }

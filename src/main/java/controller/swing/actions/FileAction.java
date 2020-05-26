@@ -33,7 +33,6 @@ public class FileAction {
     private Model model;
 
     private JFrame frame;
-//    private JPanel panel;
     private BufferedImage image;
     private JFileChooser fileChooser;
     private int chooseValue;
@@ -49,7 +48,6 @@ public class FileAction {
         JPG_FILTER = new ResolutionFileFilter(ResolutionFileFilter.getJpgFormat());
 
         frame = view.getMainFrame();
-//        panel = view.getMainPanel();
         fileChooser = view.getFileChooser();
         fileChooser.addChoosableFileFilter(PNG_FILTER);
         fileChooser.addChoosableFileFilter(JPG_FILTER);
@@ -110,9 +108,10 @@ public class FileAction {
                     chooseValue = fileChooser.showSaveDialog(null);
                     if (chooseValue == JFileChooser.APPROVE_OPTION) {
                         model.setFileName(fileChooser.getSelectedFile().getAbsolutePath());
+                    } else {
+                        return;
                     }
                 }
-
                 writeToFile();
         }
     }
@@ -124,10 +123,10 @@ public class FileAction {
         public void actionPerformed(ActionEvent e) {
                 chooseValue = fileChooser.showSaveDialog(null);
                 if (chooseValue == JFileChooser.APPROVE_OPTION) {
-                    filePath = fileChooser.getSelectedFile().getAbsolutePath();
+                    model.setFileName(fileChooser.getSelectedFile().getAbsolutePath());
+                    writeToFile();
                 }
 
-                writeToFile();
         }
     }
 
