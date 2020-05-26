@@ -14,7 +14,7 @@
         <version-date>${maven.build.timestamp}</version-date>
         <maven.build.timestamp.format>dd-MM-yyyy HH:mm</maven.build.timestamp.format>
 
-        <version-number>6.4.4</version-number>
+        <version-number>6.4.6</version-number>
     </properties>
 
     <build>

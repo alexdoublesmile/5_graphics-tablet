@@ -538,14 +538,15 @@ public class SwingViewImpl extends JFrame implements View {
         private final JPanel buttonPanel;
         private ToolDialog toolWindow;
         private JPanel optionPanel;
+        private JPanel stylePanel;
         private JLabel widthLabel;
+        private JLabel solidStyleLabel;
+        private JLabel dottedStyleLabel;
         private JSlider widthSlider;
         private JToolBar colorBar;
-        private JLabel lineType;
         private JRadioButton solid;
-        private JRadioButton dashed;
         private JRadioButton dotted;
-        private ButtonGroup lineTypeGroup;
+        private ButtonGroup styleGroup;
         private JButton closeButton;
 
 
@@ -557,7 +558,10 @@ public class SwingViewImpl extends JFrame implements View {
             setLayout(new BorderLayout());
 
             optionPanel = new JPanel();
+            stylePanel = new JPanel();
+
             optionPanel.setLayout(new GridLayout(4, 0));
+//            stylePanel.setLayout(new GridLayout(6, 0));
             widthLabel = new JLabel();
             widthLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
             widthSlider = new JSlider();
@@ -581,22 +585,26 @@ public class SwingViewImpl extends JFrame implements View {
             colorBar.add(greenButton);
             colorBar.add(orangeButton);
             colorBar.add(whiteButton);
-            lineType = new JLabel("lineType");
-            lineTypeGroup = new ButtonGroup();
+            styleGroup = new ButtonGroup();
             solid = new JRadioButton();
-            dashed = new JRadioButton();
             dotted = new JRadioButton();
-            lineTypeGroup.add(solid);
-            lineTypeGroup.add(dashed);
-            lineTypeGroup.add(dotted);
+            solidStyleLabel = new JLabel("solid");
+            dottedStyleLabel = new JLabel("dotted");
+            styleGroup.add(solid);
+            styleGroup.add(dotted);
+            solid.setSelected(true);
+
             optionPanel.add(widthLabel);
             optionPanel.add(widthSlider);
             optionPanel.add(colorBar);
 
-//            optionPanel.add(lineType);
-//            optionPanel.add(solid);
-//            optionPanel.add(dashed);
-//            optionPanel.add(dotted);
+            optionPanel.add(stylePanel);
+
+            stylePanel.add(solidStyleLabel);
+            stylePanel.add(solid);
+            stylePanel.add(dottedStyleLabel);
+            stylePanel.add(dotted);
+
 
             buttonPanel = new JPanel();
             buttonPanel.setLayout(new GridLayout(2, 0));
@@ -650,13 +658,6 @@ public class SwingViewImpl extends JFrame implements View {
             this.colorBar = colorBar;
         }
 
-        public JLabel getLineType() {
-            return lineType;
-        }
-
-        public void setLineType(JLabel lineType) {
-            this.lineType = lineType;
-        }
 
         public JRadioButton getSolid() {
             return solid;
@@ -666,13 +667,13 @@ public class SwingViewImpl extends JFrame implements View {
             this.solid = solid;
         }
 
-        public JRadioButton getDashed() {
-            return dashed;
-        }
-
-        public void setDashed(JRadioButton dashed) {
-            this.dashed = dashed;
-        }
+//        public JRadioButton getDashed() {
+//            return dashed;
+//        }
+//
+//        public void setDashed(JRadioButton dashed) {
+//            this.dashed = dashed;
+//        }
 
         public JRadioButton getDotted() {
             return dotted;
@@ -682,12 +683,12 @@ public class SwingViewImpl extends JFrame implements View {
             this.dotted = dotted;
         }
 
-        public ButtonGroup getLineTypeGroup() {
-            return lineTypeGroup;
+        public ButtonGroup getStyleGroup() {
+            return styleGroup;
         }
 
-        public void setLineTypeGroup(ButtonGroup lineTypeGroup) {
-            this.lineTypeGroup = lineTypeGroup;
+        public void setStyleGroup(ButtonGroup styleGroup) {
+            this.styleGroup = styleGroup;
         }
 
         public JButton getCloseButton() {
@@ -700,6 +701,18 @@ public class SwingViewImpl extends JFrame implements View {
 
         public JButton getDefaultButton() {
             return defaultButton;
+        }
+
+        public JPanel getStylePanel() {
+            return stylePanel;
+        }
+
+        public JLabel getSolidStyleLabel() {
+            return solidStyleLabel;
+        }
+
+        public JLabel getDottedStyleLabel() {
+            return dottedStyleLabel;
         }
     }
 

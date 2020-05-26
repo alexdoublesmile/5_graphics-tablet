@@ -48,6 +48,15 @@ import static model.Model.STICKY_LINE_FACTOR;
 
 public class MouseDrawListener {
     private static float CUSTOM_FACTOR = 1f;
+    private boolean dotted;
+
+    public boolean isDotted() {
+        return dotted;
+    }
+
+    public void setDotted(boolean dotted) {
+        this.dotted = dotted;
+    }
 
     private static final BasicStroke DOTTED_LINE = new BasicStroke(
             Float.valueOf(Config.getProperty(Config.BASIC_STROKE_WIDTH)),
@@ -477,6 +486,7 @@ public class MouseDrawListener {
 
     private class MouseAdapter implements MouseListener {
 
+
         public void mouseEntered(MouseEvent e) { }
         public void mouseExited(MouseEvent e) { }
         @Override
@@ -524,6 +534,10 @@ public class MouseDrawListener {
             if (!model.isCopyMode()) {
                 g2.setStroke(new BasicStroke(
                         model.getStrokeList().get(model.getDrawMode())));
+
+                if (dotted) {
+                    g2.setStroke(DOTTED_LINE);
+                }
             }
             switch(model.getDrawMode()) {
                 case PENCIL:
