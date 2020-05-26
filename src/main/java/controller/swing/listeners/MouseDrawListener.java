@@ -522,7 +522,7 @@ public class MouseDrawListener {
                 view.loadSavedImage();
             }
 
-            if (!model.isCopyMode()) {
+            if (!model.isCopyMode() && model.getDrawMode() != DrawMode.FILL) {
                 g2.setStroke(new BasicStroke(
                         model.getStrokeList().get(model.getDrawMode())));
 

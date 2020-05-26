@@ -81,10 +81,10 @@ public class ToolButtonListener implements ActionListener {
         && !model.getCopyModeList().contains(drawMode)) {
             view.loadSavedImage();
         }
-        if (drawMode == DrawMode.FILL) {
-            view.setMainColor(Color.white);
-            view.getColorButton().setBackground(view.getMainColor());
-        }
+//        if (drawMode == DrawMode.FILL) {
+//            view.setMainColor(Color.white);
+//            view.getColorButton().setBackground(view.getMainColor());
+//        }
 
 
         if (!model.getCopyModeList().contains(previousDrawMode)
