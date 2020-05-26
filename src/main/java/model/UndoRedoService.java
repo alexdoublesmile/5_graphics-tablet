@@ -113,4 +113,12 @@ public class UndoRedoService {
     public static int getUndoQuantity() {
         return UNDO_QUANTITY;
     }
+
+    public boolean hasPreviousAction() {
+        return actionCounter > 1;
+    }
+
+    public boolean hasNextAction() {
+        return actionCounter < actionList.size();
+    }
 }

@@ -658,4 +658,12 @@ public class Model {
     public Sphere getSphere() {
         return sphere;
     }
+
+    public boolean hasPreviousAction(int selectedIndex) {
+        return undoList.get(selectedIndex).hasPreviousAction();
+    }
+
+    public boolean hasNextAction(int selectedIndex) {
+        return undoList.get(selectedIndex).hasNextAction();
+    }
 }

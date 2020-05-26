@@ -854,6 +854,7 @@ public class MouseDrawListener {
                 model.saveAction(
                         view.getMainImage(),
                         view.getTabbedPane().getSelectedIndex());
+                view.getUndoButton().setEnabled(true);
             }
 
             model.setDotted(false);

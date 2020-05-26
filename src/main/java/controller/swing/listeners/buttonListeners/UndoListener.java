@@ -22,6 +22,10 @@ public class UndoListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             view.setMainImage(model.getPreviousAction(view.getTabbedPane().getSelectedIndex()));
+            if (!model.hasPreviousAction(view.getTabbedPane().getSelectedIndex())) {
+                view.getUndoButton().setEnabled(false);
+            }
+            view.getRedoButton().setEnabled(true);
             view.getMainPanel().repaint();
         }
     }
@@ -30,6 +34,10 @@ public class UndoListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             view.setMainImage(model.getNextAction(view.getTabbedPane().getSelectedIndex()));
+            if (!model.hasNextAction(view.getTabbedPane().getSelectedIndex())) {
+                view.getRedoButton().setEnabled(false);
+            }
+            view.getUndoButton().setEnabled(true);
             view.getMainPanel().repaint();
         }
     }

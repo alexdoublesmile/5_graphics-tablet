@@ -415,11 +415,13 @@ public class SwingViewImpl extends JFrame implements View {
         minusButton.setEnabled(false);
         refreshButton.setEnabled(false);
 
+        toolBar.addSeparator();
+        toolBar.add(colorButton);
+
         toolBar.add(Box.createGlue());
         toolBar.add(clearButton);
         toolBar.add(undoChangeButton);
         toolBar.addSeparator();
-        toolBar.add(colorButton);
     }
 
     public void changeVisibility(Component component) {
@@ -607,7 +609,7 @@ public class SwingViewImpl extends JFrame implements View {
 
 
             buttonPanel = new JPanel();
-            buttonPanel.setLayout(new GridLayout(2, 0));
+            buttonPanel.setLayout(new GridLayout(1, 0));
             defaultButton = new JButton("Load Defaults");
             defaultButton.setMnemonic('d');
             buttonPanel.add(defaultButton);
