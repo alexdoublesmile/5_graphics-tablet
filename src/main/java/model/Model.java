@@ -1,6 +1,7 @@
 package model;
 
 import config.Config;
+import javafx.scene.shape.Circle;
 import model.shapes.*;
 import model.shapes.Shape;
 
@@ -112,6 +113,7 @@ public class Model {
     private ArrayList<Shape> shapeList;
     private Line line;
     private Arrow arrow;
+    private Ellipse circle;
     private Ellipse ellipse;
     private Rect rect;
     private Parallelogram parallelogram;
@@ -162,6 +164,7 @@ public class Model {
     private void createShapes() {
         line = new Line();
         arrow = new Arrow();
+        circle = new Ellipse();
         ellipse = new Ellipse();
         rect = new Rect();
         parallelogram = new Parallelogram();
@@ -176,6 +179,7 @@ public class Model {
         shapeList = new ArrayList<>();
         shapeList.add(line);
         shapeList.add(arrow);
+        shapeList.add(circle);
         shapeList.add(ellipse);
         shapeList.add(rect);
         shapeList.add(parallelogram);
@@ -193,8 +197,10 @@ public class Model {
         strokeList.put(DrawMode.PENCIL, Float.valueOf(Config.getProperty(Config.PENCIL_BASIC_STROKE)));
         strokeList.put(DrawMode.RAG, Float.valueOf(Config.getProperty(Config.RAG_BASIC_STROKE)));
         strokeList.put(DrawMode.LINE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.CIRCLE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         strokeList.put(DrawMode.ELLIPSE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         strokeList.put(DrawMode.RECT, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.PARALLELOGRAM, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         strokeList.put(DrawMode.ARROW, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         strokeList.put(DrawMode.PYRAMID, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         strokeList.put(DrawMode.PYRAMID_TETRA, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
@@ -204,13 +210,17 @@ public class Model {
         strokeList.put(DrawMode.CYLINDER, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         strokeList.put(DrawMode.SPHERE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         strokeList.put(DrawMode.POLYGON, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.PYRAMID_CUSTOM, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        strokeList.put(DrawMode.PRISM_CUSTOM, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
 
         defaultStrokeList = new HashMap<>();
         defaultStrokeList.put(DrawMode.PENCIL, Float.valueOf(Config.getProperty(Config.PENCIL_BASIC_STROKE)));
         defaultStrokeList.put(DrawMode.RAG, Float.valueOf(Config.getProperty(Config.RAG_BASIC_STROKE)));
         defaultStrokeList.put(DrawMode.LINE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.CIRCLE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         defaultStrokeList.put(DrawMode.ELLIPSE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         defaultStrokeList.put(DrawMode.RECT, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.PARALLELOGRAM, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         defaultStrokeList.put(DrawMode.ARROW, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         defaultStrokeList.put(DrawMode.PYRAMID, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         defaultStrokeList.put(DrawMode.PYRAMID_TETRA, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
@@ -220,23 +230,25 @@ public class Model {
         defaultStrokeList.put(DrawMode.CYLINDER, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         defaultStrokeList.put(DrawMode.SPHERE, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
         defaultStrokeList.put(DrawMode.POLYGON, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.PYRAMID_CUSTOM, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
+        defaultStrokeList.put(DrawMode.PRISM_CUSTOM, Float.valueOf(Config.getProperty(Config.FIGURE_BASIC_STROKE)));
     }
 
     private void createModeLists() {
         shapeModeList = new ArrayList<>();
         shapeModeList.add(DrawMode.LINE);
         shapeModeList.add(DrawMode.ARROW);
-//        shapeModeList.add(DrawMode.CIRCLE);
+        shapeModeList.add(DrawMode.CIRCLE);
         shapeModeList.add(DrawMode.ELLIPSE);
         shapeModeList.add(DrawMode.RECT);
-//        shapeModeList.add(DrawMode.PARALLELOGRAM);
+        shapeModeList.add(DrawMode.PARALLELOGRAM);
         shapeModeList.add(DrawMode.POLYGON);
         shapeModeList.add(DrawMode.PYRAMID);
         shapeModeList.add(DrawMode.PYRAMID_TETRA);
-//        shapeModeList.add(DrawMode.PYRAMID_CUSTOM);
+        shapeModeList.add(DrawMode.PYRAMID_CUSTOM);
         shapeModeList.add(DrawMode.PRISM);
         shapeModeList.add(DrawMode.PARALLELEPIPED);
-//        shapeModeList.add(DrawMode.PRISM_CUSTOM);
+        shapeModeList.add(DrawMode.PRISM_CUSTOM);
         shapeModeList.add(DrawMode.CONE);
         shapeModeList.add(DrawMode.CYLINDER);
         shapeModeList.add(DrawMode.SPHERE);
@@ -248,8 +260,8 @@ public class Model {
 
         customShapeModeList = new ArrayList<>();
         customShapeModeList.add(DrawMode.POLYGON);
-//        customShapeModeList.add(DrawMode.PYRAMID_CUSTOM);
-//        customShapeModeList.add(DrawMode.PRISM_CUSTOM);
+        customShapeModeList.add(DrawMode.PYRAMID_CUSTOM);
+        customShapeModeList.add(DrawMode.PRISM_CUSTOM);
 
         copyModeList = new ArrayList<>();
 //        copyModeList.add(DrawMode.COPY);

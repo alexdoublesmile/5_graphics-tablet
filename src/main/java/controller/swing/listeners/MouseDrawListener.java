@@ -38,6 +38,7 @@ import static model.Model.CYLINDER_TOP_RIGHT_BUG_FACTOR;
 import static model.Model.PARALLELEPIPED_CURVE_FACTOR;
 import static model.Model.PARALLELEPIPED_FRONT_ANGLE_FACTOR;
 import static model.Model.PARALLELEPIPED_SIDE_ANGLE_FACTOR;
+import static model.Model.PARALLELOGRAM_FACTOR;
 import static model.Model.POLYGON_ACCURACY_FACTOR;
 import static model.Model.PYRAMID_LEFT_XFACTOR;
 import static model.Model.PYRAMID_LEFT_YFACTOR;
@@ -204,14 +205,14 @@ public class MouseDrawListener {
                         g2.setStroke(DEFAULT_LINE);
                         drawStickyLine();
                         break;
-//                    case CIRCLE:
-//                        Point center = model.getCenter();
-//                        int radius = model.getEllipseBigRadius();
-//
-//                        g2.drawOval(center.x - radius, center.y - radius,
-//                                abs(center.x - finalX), abs(center.x - finalX));
-//                        g2.drawLine(center.x, center.y, center.x, center.y);
-//                        break;
+                    case CIRCLE:
+                        Point center = model.getEllipse().getCenter();
+                        int radius = model.getEllipseBigRadius();
+
+                        g2.drawOval(center.x - radius, center.y - radius,
+                                abs(center.x - finalX), abs(center.x - finalX));
+                        g2.drawLine(center.x, center.y, center.x, center.y);
+                        break;
                     case ELLIPSE:
                         Point ellipseCenter = model.getEllipse().getCenter();
                         int bigRadius = model.getEllipseBigRadius();
@@ -230,21 +231,21 @@ public class MouseDrawListener {
                         setHorizontalIndicator(rectCenter,
                                 abs(abs(startX - finalX) - abs(startY - finalY)));
                         break;
-//                    case PARALLELOGRAM:
-//                        model.getRightTop().setLocation(
-//                                finalX + drawLine * PARALLELOGRAM_FACTOR,
-//                                startY);
-//                        model.getLeftBottom().setLocation(
-//                                startX - drawLine * PARALLELOGRAM_FACTOR,
-//                                finalY);
-//                        Point pmLeftBottom = model.getLeftBottom();
-//                        Point pmRightTop = model.getRightTop();
-//
-//                        g2.drawLine(startX, startY, pmRightTop.x, pmRightTop.y);
-//                        g2.drawLine(startX, startY, pmLeftBottom.x, pmLeftBottom.y);
-//                        g2.drawLine(pmLeftBottom.x, pmLeftBottom.y, finalX, finalY);
-//                        g2.drawLine(pmRightTop.x, pmRightTop.y, finalX, finalY);
-//                        break;
+                    case PARALLELOGRAM:
+                        model.getParallelogram().getRightTop().setLocation(
+                                finalX + drawLine * PARALLELOGRAM_FACTOR,
+                                startY);
+                        model.getParallelogram().getLeftBottom().setLocation(
+                                startX - drawLine * PARALLELOGRAM_FACTOR,
+                                finalY);
+                        Point pmLeftBottom = model.getParallelogram().getLeftBottom();
+                        Point pmRightTop = model.getParallelogram().getRightTop();
+
+                        g2.drawLine(startX, startY, pmRightTop.x, pmRightTop.y);
+                        g2.drawLine(startX, startY, pmLeftBottom.x, pmLeftBottom.y);
+                        g2.drawLine(pmLeftBottom.x, pmLeftBottom.y, finalX, finalY);
+                        g2.drawLine(pmRightTop.x, pmRightTop.y, finalX, finalY);
+                        break;
                     case PYRAMID:
                         model.getPyramid().getFront().setLocation(
                                 startX + drawLine * PYRAMID_MAIN_FACTOR, finalY);
@@ -574,14 +575,14 @@ public class MouseDrawListener {
                     drawStickyLine();
                     drawArrowPeak();
                     break;
-//                case CIRCLE:
-//                    Point center = model.getEllipse().getCenter();
-//                    int radius = model.getEllipseBigRadius();
-//
-//                    g2.drawOval(center.x - radius, center.y - radius,
-//                            abs(center.x - finalX), abs(center.x - finalX));
-//                    g2.drawLine(center.x, center.y, center.x, center.y);
-//                    break;
+                case CIRCLE:
+                    Point center = model.getEllipse().getCenter();
+                    int radius = model.getEllipseBigRadius();
+
+                    g2.drawOval(center.x - radius, center.y - radius,
+                            abs(center.x - finalX), abs(center.x - finalX));
+                    g2.drawLine(center.x, center.y, center.x, center.y);
+                    break;
                 case ELLIPSE:
                     Point ellipseCenter = model.getEllipse().getCenter();
                     int bigRadius = model.getEllipseBigRadius();
@@ -595,15 +596,15 @@ public class MouseDrawListener {
                     g2.drawRect(min(finalX, startX), min(finalY, startY),
                             abs(startX - finalX), abs(startY - finalY));
                     break;
-//                case PARALLELOGRAM:
-//                    Point pmLeftBottom = model.getLeftBottom();
-//                    Point pmRightTop = model.getRightTop();
-//
-//                    g2.drawLine(startX, startY, pmRightTop.x, pmRightTop.y);
-//                    g2.drawLine(startX, startY, pmLeftBottom.x, pmLeftBottom.y);
-//                    g2.drawLine(pmLeftBottom.x, pmLeftBottom.y, finalX, finalY);
-//                    g2.drawLine(pmRightTop.x, pmRightTop.y, finalX, finalY);
-//                    break;
+                case PARALLELOGRAM:
+                    Point pmLeftBottom = model.getParallelogram().getLeftBottom();
+                    Point pmRightTop = model.getParallelogram().getRightTop();
+
+                    g2.drawLine(startX, startY, pmRightTop.x, pmRightTop.y);
+                    g2.drawLine(startX, startY, pmLeftBottom.x, pmLeftBottom.y);
+                    g2.drawLine(pmLeftBottom.x, pmLeftBottom.y, finalX, finalY);
+                    g2.drawLine(pmRightTop.x, pmRightTop.y, finalX, finalY);
+                    break;
                 case POLYGON:
                     drawPolygonIfPointRepeats();
                     if (pointIsNew) {
@@ -646,16 +647,16 @@ public class MouseDrawListener {
                     g2.drawLine(frontLeft.x, frontLeft.y, backLeft.x, backLeft.y);
                     g2.drawLine(backRight.x, backRight.y, backLeft.x, backLeft.y);
                     break;
-//                case PYRAMID_CUSTOM:
-//                    drawPyramidIfPointRepeats();
-//                    if (pointIsNew) {
-//                        if (!model.isPolygonInWork()) {
-//                            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
-//                            model.setPolygonInWork(true);
-//                        }
-//                        g2.drawLine(finalX, finalY, finalX, finalY);
-//                        model.getPointList().add(new Point(finalX, finalY));
-//                    }
+                case PYRAMID_CUSTOM:
+                    drawPyramidIfPointRepeats();
+                    if (pointIsNew) {
+                        if (!model.isPolygonInWork()) {
+                            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
+                            model.setPolygonInWork(true);
+                        }
+                        g2.drawLine(finalX, finalY, finalX, finalY);
+                        model.getPointList().add(new Point(finalX, finalY));
+                    }
 //                    break;
                 case PRISM:
                     Point leftTop = model.getPrism().getLeftTop();
@@ -712,18 +713,18 @@ public class MouseDrawListener {
                     g2.drawLine(backRightBottom.x, backRightBottom.y, backLeftBottom.x, backLeftBottom.y);
                     g2.drawLine(backLeftTop.x, backLeftTop.y, backLeftBottom.x, backLeftBottom.y);
                     break;
-//                case PRISM_CUSTOM:
-//                    drawPrismIfPointRepeats();
-//
-//                    if (pointIsNew) {
-//                        if (!model.isPolygonInWork()) {
-//                            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
-//                            model.setPolygonInWork(true);
-//                        }
-//                        g2.drawLine(finalX, finalY, finalX, finalY);
-//                        model.getPointList().add(new Point(finalX, finalY));
-//                    }
-//                    break;
+                case PRISM_CUSTOM:
+                    drawPrismIfPointRepeats();
+
+                    if (pointIsNew) {
+                        if (!model.isPolygonInWork()) {
+                            model.saveAction(view.getMainImage(), view.getTabbedPane().getSelectedIndex());
+                            model.setPolygonInWork(true);
+                        }
+                        g2.drawLine(finalX, finalY, finalX, finalY);
+                        model.getPointList().add(new Point(finalX, finalY));
+                    }
+                    break;
                 case CONE:
                     Point coneCenter = model.getEllipse().getCenter();
                     int coneBigRadius = model.getEllipseBigRadius();
