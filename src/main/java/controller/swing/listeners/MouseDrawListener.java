@@ -505,8 +505,8 @@ public class MouseDrawListener {
 
 
             if (
-//                    model.getDrawMode() == DrawMode.CIRCLE
-//                    ||
+                    model.getDrawMode() == DrawMode.CIRCLE
+                    ||
                     model.getDrawMode() == DrawMode.ELLIPSE
                     || model.getDrawMode() == DrawMode.SPHERE
                             || model.getDrawMode() == DrawMode.CONE
